@@ -4,6 +4,9 @@
 2.env
 *.env
 !.env.example
+envs/*.env
+!envs/.env.example
+!envs/.gitkeep
 
 # Data files
 saved_html/

@@ -1,4 +1,4 @@
-./run_jobs_tmux.sh .env search_terms.txt 1.env search_terms1.txt
+./run_jobs_tmux.sh envs/1.env search_terms/search_terms.txt envs/2.env search_terms/search_terms1.txt
 
-./run_jobs_tmux_emails.sh .env 1.env
+./run_jobs_tmux_emails.sh envs/1.env envs/2.env
 
