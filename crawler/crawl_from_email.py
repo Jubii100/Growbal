@@ -689,7 +689,7 @@ async def main(env_path: str) -> None:
                     log_file.write(log_message + "\n")
             else:
                 missed_df = pd.concat([missed_df, group.to_frame().T], ignore_index=True)
-                missed_df_path = os.path.join(os.path.dirname(__file__), "missed_entries.csv")
+                missed_df_path = os.environ["MISSED_ENTRIES_PATH"]
                 missed_df.to_csv(missed_df_path, index=False)
                 log_message = f"No relevant link found for search term: {result.search_term}"
                 print(log_message)
@@ -697,7 +697,7 @@ async def main(env_path: str) -> None:
                     log_file.write(log_message + "\n")
         except Exception as e:
             missed_df = pd.concat([missed_df, group.to_frame().T], ignore_index=True)
-            missed_df_path = os.path.join(os.path.dirname(__file__), "missed_entries.csv")
+            missed_df_path = os.environ["MISSED_ENTRIES_PATH"]
             missed_df.to_csv(missed_df_path, index=False)
             error_message = f"Error processing Entry {i}/{len(grouped)} Organization: {organization}: {e}"
             print(error_message)
