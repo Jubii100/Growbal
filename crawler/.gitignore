@@ -22,7 +22,10 @@ logs/*.log
 mysql_dump/
 
 # Media files
-media/
+growbal_django/media/logos_test/
+growbal_django/media/logos/*
+!growbal_django/media/logos/logo-placeholder.png
+!growbal_django/media/logos/.gitkeep
 
 # Local LLM models
 exllamav2/
