@@ -11,7 +11,7 @@ from asgiref.sync import sync_to_async
 from dotenv import load_dotenv
 load_dotenv()
 
-sys.path.insert(0, '/home/mohammed/Desktop/tech_projects/growbal/growbal_django')
+sys.path.insert(0, 'growbal_django')
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "growbal.settings")
 django.setup()
 
