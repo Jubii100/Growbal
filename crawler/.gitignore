@@ -9,9 +9,9 @@
 saved_html/
 email_lists/
 *.csv
+!affected_files.txt
 
 # Logs
-*.log
 logs/
 
 # MySQL dumps
