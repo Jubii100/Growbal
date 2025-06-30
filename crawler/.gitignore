@@ -15,7 +15,8 @@ email_lists/
 !affected_files.txt
 
 # Logs
-# logs/ - commented out to allow logs directory
+logs/*.log
+!logs/.gitkeep
 
 # MySQL dumps
 mysql_dump/

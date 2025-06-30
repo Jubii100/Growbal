@@ -647,7 +647,11 @@ async def main(env_path: str) -> None:
         log_file.write("")
 
     missed_df = pd.DataFrame()
-
+    
+    # Create or overwrite the missed entries file with an empty CSV
+    missed_df_path = os.environ["MISSED_ENTRIES_PATH"]
+    missed_df.to_csv(missed_df_path, index=False)
+    
     df = pd.read_csv(os.environ["EMAIL_LIST_PATH"])
     df = df[['ORGANIZATION','INDUSTRY', 'WEBSITE', 'COUNTRY', 'CITY', 'FIRSTNAME', 'LASTNAME', 'EMAIL', 'LINKEDIN', 'DESIGNATION']]
     df['ORGANIZATION_COPY'] = df['ORGANIZATION']
