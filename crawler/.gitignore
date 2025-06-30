@@ -1,0 +1,26 @@
+# Environment variables
+.env
+1.env
+2.env
+*.env
+!.env.example
+
+# Data files
+saved_html/
+email_lists/
+*.csv
+
+# Logs
+*.log
+logs/
+
+# MySQL dumps
+mysql_dump/
+
+# Media files
+media/
+
+# Local LLM models
+exllamav2/
+tabbyAPI/
+pytorch/
