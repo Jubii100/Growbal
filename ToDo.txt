@@ -1,0 +1,28 @@
+create users with unique usernames instead of emails
+
+make sure that the html includes the footers and all dynamic content that might include contact info.
+
+invest time in better prompt engineering.
+
+get_or_create for services to avoid duplication there too.
+
+Finally show an analytical breakdown of how much of the data are we receiving, how much of the websites are failing, how many html pages are having corresponding stored data, etc.
+
+filter relevant data from multiple scraped sources and ingest into PosgreSQL database
+store all raw scraped data into blobs after each crawl and link it to its http address and corresponding created/existing SQL record
+avoid duplicates by simply tracking which links are processed and which are failed to process.
+avoid duplicate generation by querying existing data and updating what's already there (check for each field if all the existing instances matches the potential instance)
+generate/update natural language description based on the filtered/existing SQL data for later email writing and retrieval purposes (excluding sensitive info like credentials, internal unique IDs, etc.)
+store generated description with embeddings for RAG using PGvector
+write emails for sufficient newly ingested data and update notified_time and notified_via fields once email sent
+keep track of all conversation text and update at every action
+
+
+
+The most important selling points of the agent is the speed, ease of use and suggestion engine for potential user's interests.
+From engineering perspective the engine and agentic behavior are practically useless without an evaluation system.
+
+You can build workflows for rag+minimal agentic applications and have agents decide how to use them to yield better results on some validation metric.
+You can wrap the crawler workflow with an agent that decides which terms yield better performance in terms of user enquiries, less duplicates, better coverage, less cost.
+
+

@@ -1,0 +1,14 @@
+{
+    "LLM":"codellama:34b",
+    "TEMPERATURE": 0,
+    "EMBEDDING_MODEL":"nomic-embed-text:latest",
+    "EMBED_TEMPERATURE": 0,
+    "OLLAMA_MAX_LOADED_MODELS": 1,
+    "OLLAMA_NUM_PARALLEL": 4,
+    "OLLAMA_MAX_QUEUE": 200,
+    "BASE_URL": "http://localhost:11434",
+    "LOAD_MODEL_API_PATH": "http://localhost:11434/api/pull",
+    "GENERATE_API_PATH": "http://localhost:11434/api/generate",
+    "CHAT_API_PATH": "http://localhost:11434/api/chat",
+    "EMBEDDING_API_PATH": "http://localhost:11434/api/embed"
+  }

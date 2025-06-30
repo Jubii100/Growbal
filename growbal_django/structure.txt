@@ -1,0 +1,28 @@
+growbal/                # Django project root
+├── manage.py
+├── growbal/            # Project settings package
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
+├── accounts/           # App for user profiles
+│   ├── models.py
+│   ├── admin.py
+│   ├── views.py
+│   ├── serializers.py
+│   └── ... (apps.py, etc.)
+├── services/           # App for scraped service data
+│   ├── models.py
+│   ├── admin.py
+│   ├── views.py
+│   ├── serializers.py
+│   └── ... 
+├── api/
+│   ├── urls.py         # API URL routes (viewsets and token auth)
+│   └── __init__.py
+├── scraper/            # Placeholder for future web scraping module
+│   ├── __init__.py
+│   └── scraper_demo.py (e.g., an empty module or example scraping script)
+└── media/              # Media directory for uploaded files (logo images)
+    └── logos/

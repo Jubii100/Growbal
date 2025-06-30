@@ -1,0 +1,11 @@
+before next crawl:
+- update django code and run migrations
+- make sure place logo place holder file in logos directory
+
+- address the duplicate issue from both the scrape and name side.
+- 107 service instances, 88 unique service names, 89 unique service description, 218 establishment instances
+- are the logos stored in the media table?
+- Postgresql to MySQL data export.
+- Uniform data system (Country naming, establishment type, etc.)
+- Service.description exports to establishment.description
+- Service.service_title 
