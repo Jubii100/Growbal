@@ -12,7 +12,7 @@ email_lists/
 !affected_files.txt
 
 # Logs
-logs/
+# logs/ - commented out to allow logs directory
 
 # MySQL dumps
 mysql_dump/
