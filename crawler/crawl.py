@@ -675,7 +675,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "env_path",
-        help="Path to the .env file (e.g., /home/user/.env)."
+        help="Path to the .env file (e.g., envs/1.env)."
     )
 
     parser.add_argument(
