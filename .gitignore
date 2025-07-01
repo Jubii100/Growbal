@@ -163,3 +163,7 @@ dmypy.json
 
 # Research resources (kept locally but not in repo)
 research_resources/
+
+# Local requirements files
+requirements_1.txt
+requirements_2.txt
