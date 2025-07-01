@@ -8,7 +8,7 @@ import asyncio
 import string
 import random
 
-sys.path.insert(0, 'growbal_django')
+sys.path.insert(0, '../growbal_django')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "growbal.settings")
 
@@ -22,7 +22,7 @@ from asgiref.sync import sync_to_async
 import shutil
 import mimetypes
 
-logos_dest_dir = 'growbal_django/media/logos_test'
+logos_dest_dir = '../growbal_django/media/logos_test'
 
 @sync_to_async
 def load_all_services():

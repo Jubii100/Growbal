@@ -233,7 +233,7 @@ from urllib.parse import urlparse
 from django.core.validators import validate_email, URLValidator
 from django.core.exceptions import ValidationError
 
-sys.path.insert(0, 'growbal_django')
+sys.path.insert(0, '../growbal_django')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "growbal.settings")
 

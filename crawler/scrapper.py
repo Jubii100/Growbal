@@ -361,7 +361,7 @@ class HtmlScraper:
         file_path = Path(self.save_directory) / f"{slugify(link)}.html"
         file_path.write_text(html_content, encoding="utf-8")
 
-    # def save_logo(self, logo_url: str, download_dir="growbal_django/media/logos"):
+    # def save_logo(self, logo_url: str, download_dir="../growbal_django/media/logos"):
     #     os.makedirs(download_dir, exist_ok=True)
     #     is_logo = True
     #     if not logo_url:
@@ -401,7 +401,7 @@ class HtmlScraper:
     def save_logo(
         self,
         logo_url: str,
-        download_dir="growbal_django/media/logos",
+        download_dir="../growbal_django/media/logos",
     ):
         os.makedirs(download_dir, exist_ok=True)
 
