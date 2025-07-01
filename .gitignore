@@ -160,3 +160,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Research resources (kept locally but not in repo)
+research_resources/
