@@ -1,6 +1,7 @@
 """
 Gradio Streaming Chat App - Enhanced Service Provider Search
 Features: No rocket emoji, no undo button, proper clear chat functionality with process halting
+Modified: Increased chat history box height
 """
 import gradio as gr
 import asyncio
@@ -538,8 +539,8 @@ def create_streaming_interface():
         with open(logo_path, 'r') as f:
             logo_content = f.read()
             logo_html = f"""
-            <div style="display: flex; justify-content: center; align-items: center; padding: 20px 0; background: #ffffff; margin-bottom: 20px; border-radius: 15px; box-shadow: 0 8px 32px rgba(43, 85, 86, 0.15);">
-                <div style="max-width: 300px; height: auto;">
+            <div style="display: flex; justify-content: center; align-items: center; padding: 10px 0; background: #ffffff; margin-bottom: 10px; border-radius: 15px; box-shadow: 0 8px 32px rgba(43, 85, 86, 0.15);">
+                <div style="max-width: 200px; height: auto;">
                     {logo_content}
                 </div>
             </div>
@@ -556,12 +557,18 @@ def create_streaming_interface():
         box-shadow: 0 10px 50px rgba(25, 132, 132, 0.1) !important;
     }
     
-    /* Chat Interface Styling */
+    /* Chat Interface Styling - INCREASED HEIGHT */
     .chat-interface {
-        height: 700px !important;
+        height: 900px !important;
         border-radius: 15px !important;
         overflow: hidden !important;
         box-shadow: 0 8px 32px rgba(25, 132, 132, 0.08) !important;
+    }
+    
+    /* Chatbot container - INCREASED HEIGHT */
+    .chatbot {
+        height: 750px !important;
+        max-height: 750px !important;
     }
     
     /* Message Styling */
@@ -650,12 +657,12 @@ def create_streaming_interface():
         box-shadow: 0 4px 15px rgba(25, 132, 132, 0.2) !important;
     }
     
-    /* Input Field Styling */
+    /* Input Field Styling - REDUCED HEIGHT */
     .textbox input, .textbox textarea {
         border: 2px solid rgba(25, 132, 132, 0.2) !important;
         border-radius: 10px !important;
-        padding: 15px !important;
-        font-size: 16px !important;
+        padding: 12px !important;
+        font-size: 15px !important;
         transition: all 0.3s ease !important;
         background: #ffffff !important;
     }
@@ -666,27 +673,27 @@ def create_streaming_interface():
         outline: none !important;
     }
     
-    /* Header Styling */
+    /* Header Styling - MINIMAL PADDING */
     .app-header {
         text-align: center !important;
-        padding: 30px 0 !important;
+        padding: 10px 0 !important;
         background: linear-gradient(135deg, #2b5556 0%, #21908f 100%) !important;
         border-radius: 15px !important;
-        margin-bottom: 30px !important;
+        margin-bottom: 10px !important;
         box-shadow: 0 8px 32px rgba(25, 132, 132, 0.15) !important;
     }
     
     .app-title {
         color: #ffffff !important;
-        font-size: 2.5rem !important;
+        font-size: 1.5rem !important;
         font-weight: 700 !important;
-        margin-bottom: 10px !important;
+        margin-bottom: 4px !important;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
     }
     
     .app-description {
         color: #f8fffe !important;
-        font-size: 1.1rem !important;
+        font-size: 0.9rem !important;
         font-weight: 400 !important;
         max-width: 600px !important;
         margin: 0 auto !important;
@@ -743,6 +750,17 @@ def create_streaming_interface():
     .loading {
         animation: pulse 2s infinite !important;
     }
+    
+    /* Examples section - COMPACT */
+    .examples {
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .examples button {
+        font-size: 14px !important;
+        padding: 8px 12px !important;
+    }
     """
     
     # Create custom theme with our colors
@@ -778,7 +796,7 @@ def create_streaming_interface():
             placeholder="🔍 Ask me about service providers and watch the AI reasoning...",
             container=False,
             scale=7,
-            lines=2
+            lines=1  # Reduced from 2 to save space
         ),
         submit_btn=gr.Button("Search Providers", variant="primary"),  # No rocket emoji
         retry_btn=None,  # Remove retry button
@@ -809,8 +827,6 @@ def create_streaming_interface():
 
 def main():
     """Main function to launch the enhanced streaming interface"""
-    print("🚀 Launching Growbal Intelligence - Enhanced Streaming Service Provider Search...")
-    
     interface = create_streaming_interface()
     
     launch_config = {
@@ -820,18 +836,6 @@ def main():
         "quiet": False,
         "favicon_path": None  # Could add Growbal favicon here
     }
-    
-    print("🌐 Interface will be available at the URL shown below")
-    print("✨ Enhanced Features:")
-    print("   - 🎨 Beautiful teal & white design with Growbal branding")
-    print("   - 📊 Real-time streaming AI evaluation with profile names")
-    print("   - 🧠 Live LLM reasoning display in collapsible sections")
-    print("   - 🔍 Intelligent service provider matching")
-    print("   - 📈 Comprehensive analysis and recommendations")
-    print("   - 🔄 Automatic retry with graceful error handling")
-    print("   - 💫 Smooth animations and modern UI components")
-    print("   - 🛑 Proper process cancellation on clear chat")
-    print("   - 🎯 Streamlined UI (no rocket emoji, no undo button)")
     
     interface.launch(**launch_config)
 
