@@ -167,3 +167,8 @@ research_resources/
 # Local requirements files
 requirements_1.txt
 requirements_2.txt
+
+# Media logos - exclude all except placeholder
+growbal_django/media/logos/*
+!growbal_django/media/logos/logo-placeholder.png
+!growbal_django/media/logos/.gitkeep
