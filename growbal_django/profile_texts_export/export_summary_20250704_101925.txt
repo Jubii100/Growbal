@@ -1,0 +1,7 @@
+Profile Text Export Summary
+Generated: 2025-07-04 10:19:25.571683
+Total profiles exported: 3
+
+ID: 185 - AB Capital Services FZE (1957 chars)
+ID: 182 - Acuvat Auditing (1446 chars)
+ID: 192 - AGL & Co. Consulting (1427 chars)

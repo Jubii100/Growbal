@@ -1,0 +1,36 @@
+================================================================================
+Profile ID: 185
+Username: info@abcapital.ae
+================================================================================
+
+=== SERVICE PROVIDER PROFILE ===
+Company Name: AB Capital Services FZE
+Provider Type: Company
+Country: UAE
+Session Status: inactive
+Email Addresses: info@abcapital.ae
+Telephone Numbers: +971523655193, +971585857119
+Mobile Numbers: +971523655193, +971585619500, +971528690419
+Website: https://abcapital.ae
+LinkedIn: https://www.linkedin.com/company/ab-capital-services-fze
+Facebook: https://www.facebook.com/abcapitalservices
+Instagram: https://www.instagram.com/abcapitalservices
+Office Locations: Office No 404, Al Tawhidi Building, Bank Street, Bur Dubai, UAE
+Key Individuals: Bharat Bajaj - Founder (20 years finance experience), Alexey Myagchenkov - Senior Business Advisor (20+ years legal experience), Teena Bajaj - Head of Marketing & Strategy, Manan Shah - Senior Business Advisor, CA Mohammed Abid - Head of Accounting & Taxation
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Business Setup and Banking Solutions in Dubai
+Description: AB Capital Services provides comprehensive business setup and banking solutions in Dubai, UAE. Services include company formation in mainland, freezone and offshore jurisdictions, business bank account opening, accounting, VAT compliance, corporate tax advisory, and PRO services. They offer personalized packages and professional guidance for hassle-free business establishment.
+Tags: Business Setup, Company Formation, Bank Account Opening, Accounting Services, VAT Compliance, Corporate Tax Advisory, PRO Services, Business Consulting
+Rating Score: 5.0/5
+Rating Description: Highly rated with 5/5 for Quality, Schedule, Cost and Client Referrals based on client reviews. Clients praise their professional service, expertise in UAE business setup, and efficient account management.
+Pricing: Starting at AED 5,750 for Sharjah Freezone setup, AED 12,500 for Dubai Freezone setup, AED 11,990 for Rakez Freezone setup, and AED 19,990 for Dubai Mainland setup. Bank account opening services start from AED 999.
+
+================================================================================
+Statistics:
+- Text length: 1957 characters
+- Number of services: 1
+- Number of members: 0
+================================================================================

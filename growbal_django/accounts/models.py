@@ -2,10 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 # from services.models import Service
 from django.contrib.postgres.fields import ArrayField
+from pgvector.django import VectorField
 
 
 from django.db import IntegrityError, transaction
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
 class CustomUserManager(BaseUserManager):
     """
@@ -211,10 +213,111 @@ class ServiceProviderProfile(models.Model):
     representatives = models.TextField(blank=True, null=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    
+    # Vector embedding field for similarity search
+    # Using 1536 dimensions for OpenAI embeddings (text-embedding-ada-002)
+    # You can adjust the dimension based on your embedding model
+    profile_embedding = VectorField(dimensions=1536, blank=True, null=True)
 
 
     def __str__(self):
         return f"{self.user.username} Profile"
+    
+    def get_profile_text(self):
+        """
+        Combine ALL profile data and associated services into a single text representation
+        for embedding generation.
+        """
+        text_parts = []
+        
+        # Add ALL profile information
+        text_parts.append(f"=== SERVICE PROVIDER PROFILE ===")
+        
+        # Basic Information
+        if self.name:
+            text_parts.append(f"Company Name: {self.name}")
+        if self.provider_type:
+            text_parts.append(f"Provider Type: {self.provider_type}")
+        if self.country:
+            text_parts.append(f"Country: {self.country}")
+        if self.session_status:
+            text_parts.append(f"Session Status: {self.session_status}")
+        
+        # Vision and Description
+        if self.vision:
+            text_parts.append(f"Vision: {self.vision}")
+        
+        # Contact Information
+        if self.emails:
+            text_parts.append(f"Email Addresses: {', '.join(self.emails)}")
+        if self.telephones:
+            text_parts.append(f"Telephone Numbers: {', '.join(self.telephones)}")
+        if self.mobiles:
+            text_parts.append(f"Mobile Numbers: {', '.join(self.mobiles)}")
+        
+        # Online Presence
+        if self.website:
+            text_parts.append(f"Website: {self.website}")
+        if self.linkedin:
+            text_parts.append(f"LinkedIn: {self.linkedin}")
+        if self.facebook:
+            text_parts.append(f"Facebook: {self.facebook}")
+        if self.instagram:
+            text_parts.append(f"Instagram: {self.instagram}")
+        
+        # Location and People
+        if self.office_locations:
+            text_parts.append(f"Office Locations: {self.office_locations}")
+        if self.key_individuals:
+            text_parts.append(f"Key Individuals: {self.key_individuals}")
+        if self.representatives:
+            text_parts.append(f"Representatives: {self.representatives}")
+        
+        # Add member profiles if company
+        if self.provider_type == 'Company':
+            members = self.members.all()
+            if members:
+                text_parts.append("\n--- Company Members ---")
+                for member in members:
+                    member_text = f"Member: {member.name}"
+                    if member.role_description:
+                        member_text += f" - Role: {member.role_description}"
+                    if member.email:
+                        member_text += f" - Email: {member.email}"
+                    if member.additional_info:
+                        member_text += f" - Additional Info: {member.additional_info}"
+                    text_parts.append(member_text)
+        
+        # Add ALL services information with complete details
+        services = self.services.all()
+        if services:
+            text_parts.append("\n=== SERVICES OFFERED ===")
+            for i, service in enumerate(services, 1):
+                text_parts.append(f"\n--- Service {i} ---")
+                text_parts.append(f"Title: {service.service_title}")
+                
+                if service.service_description:
+                    text_parts.append(f"Description: {service.service_description}")
+                
+                # if service.general_service_description:
+                #     text_parts.append(f"General Description: {service.general_service_description}")
+                
+                # Include tags
+                tags = service.service_tags.all()
+                if tags:
+                    tag_names = [tag.name for tag in tags]
+                    text_parts.append(f"Tags: {', '.join(tag_names)}")
+                
+                if service.rating_score:
+                    text_parts.append(f"Rating Score: {service.rating_score}/5")
+                
+                if service.rating_description:
+                    text_parts.append(f"Rating Description: {service.rating_description}")
+                
+                if service.pricing:
+                    text_parts.append(f"Pricing: {service.pricing}")
+        
+        return "\n".join(text_parts)
 
 
 class ServiceProviderMemberProfile(models.Model):

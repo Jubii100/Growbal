@@ -90,9 +90,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'growbal_db',
+        # 'NAME': 'growbal_db3',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
+        # 'HOST': '13.62.18.220',
         'PORT': '5432',
     }
 }

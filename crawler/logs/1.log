@@ -3,3 +3,83 @@ Error getting profile from website: ServiceProviderProfile matching query does n
 Error profile does not exist!
 Successful processed entries 1/377 Organization: 360 Chartered Accountants
 Processing Entry 2/377 Organization: 3E Accounting India
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 2/377 Organization: 3E Accounting India
+Processing Entry 3/377 Organization: A S Agarwal & Co., Chartered Accountants
+No relevant link found for search term: A S Agarwal & Co Chartered Accountants
+Processing Entry 4/377 Organization: A&A Associate
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 3/377 Organization: A&A Associate
+Processing Entry 5/377 Organization: A&H CONSULTANTS LLC
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 4/377 Organization: A&H CONSULTANTS LLC
+Processing Entry 6/377 Organization: AA Consultant
+Successful processed entries 5/377 Organization: AA Consultant
+Processing Entry 7/377 Organization: AAA Associates Immigration
+Error processing https://aaa-international.com/our-team: 500 Server Error: Internal Server Error for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=https%3A%2F%2Faaa-international.com%2Four-team&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 6/377 Organization: AAA Associates Immigration
+Processing Entry 8/377 Organization: ACDORA DMCC
+Error processing https://www.acdora.com/about-us: 404 Client Error: Not Found for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=https%3A%2F%2Fwww.acdora.com%2Fabout-us&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Error processing https://www.acdora.com/contact-us: 404 Client Error: Not Found for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=https%3A%2F%2Fwww.acdora.com%2Fcontact-us&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Error processing https://www.acdora.com/services: 404 Client Error: Not Found for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=https%3A%2F%2Fwww.acdora.com%2Fservices&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Error processing https://www.acdora.com/our-team: 404 Client Error: Not Found for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=https%3A%2F%2Fwww.acdora.com%2Four-team&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 7/377 Organization: ACDORA DMCC
+Processing Entry 9/377 Organization: ACUVAT AUDITING
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 8/377 Organization: ACUVAT AUDITING
+Processing Entry 10/377 Organization: ADGM
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 9/377 Organization: ADGM
+Processing Entry 11/377 Organization: AKM Global
+Error processing https://www.akmglobal.com/services: 500 Server Error: Internal Server Error for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=https%3A%2F%2Fwww.akmglobal.com%2Fservices&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 10/377 Organization: AKM Global
+Processing Entry 12/377 Organization: AKT Associates
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 11/377 Organization: AKT Associates
+Processing Entry 13/377 Organization: ALNABAHA CONSULTANCIES
+Error processing https://www.alnabaha.com/service-Onlinebookkeeping.html: 404 Client Error: Not Found for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=https%3A%2F%2Fwww.alnabaha.com%2Fservice-Onlinebookkeeping.html&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Error processing https://www.alnabaha.com/service-Corporate Tax.html: 404 Client Error: Not Found for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=https%3A%2F%2Fwww.alnabaha.com%2Fservice-Corporate+Tax.html&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Error processing https://www.alnabaha.com/service-Auditing.html: 404 Client Error: Not Found for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=https%3A%2F%2Fwww.alnabaha.com%2Fservice-Auditing.html&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 12/377 Organization: ALNABAHA CONSULTANCIES
+Processing Entry 14/377 Organization: AMA Audit Tax Advisory
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 13/377 Organization: AMA Audit Tax Advisory
+Processing Entry 15/377 Organization: AMCA
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 14/377 Organization: AMCA
+Processing Entry 16/377 Organization: ARC Associates - Approved Auditors in UAE
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 15/377 Organization: ARC Associates - Approved Auditors in UAE
+Processing Entry 17/377 Organization: AX CAPITAL Real Estate
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 16/377 Organization: AX CAPITAL Real Estate
+Processing Entry 18/377 Organization: AY Chartered Accountants
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 17/377 Organization: AY Chartered Accountants
+Processing Entry 19/377 Organization: Abode Options
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 18/377 Organization: Abode Options
+Processing Entry 20/377 Organization: Accounting Drive
+Error processing base page: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}}
+Successful processed entries 19/377 Organization: Accounting Drive
+Processing Entry 21/377 Organization: Acuvat

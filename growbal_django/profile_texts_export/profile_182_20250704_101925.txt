@@ -1,0 +1,34 @@
+================================================================================
+Profile ID: 182
+Username: inquiries@acuvat.com
+================================================================================
+
+=== SERVICE PROVIDER PROFILE ===
+Company Name: Acuvat Auditing
+Provider Type: Company
+Country: UAE
+Session Status: inactive
+Email Addresses: inquiries@acuvat.com, moizalamdar@acuvat.com
+Telephone Numbers: +971 4 770 1633
+Mobile Numbers: +971 4 770 1633
+Website: https://acuvat.com
+LinkedIn: https://www.linkedin.com/company/acuvatcompany/
+Facebook: https://www.facebook.com/acuvat/
+Office Locations: 802, Westburry Business Tower, Business Bay, P.O BOX 385183, Dubai, U.A.E
+Key Individuals: Moiz Alamdar - Managing Director
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Professional Auditing, Accounting and Financial Services
+Description: Acuvat Auditing provides comprehensive financial services including accounting, auditing, taxation, and payroll services. They specialize in statutory audits, internal audits, tax audits, forensic audits, and other specialized auditing services. The firm also offers accounting services like bookkeeping, payroll processing, and financial advisory services to help businesses manage their finances efficiently and stay compliant with regulations.
+Tags: Statutory Audit, Internal Audit, Tax Audit, Forensic Audit, Liquidation Audit, Management Audit, Due Diligence Audit, Bookkeeping, Payroll Services, VAT Services, Corporate Tax, Business Advisory
+Rating Score: 4.9/5
+Rating Description: Excellent rating with 1000+ Google Reviews, demonstrating high client satisfaction and quality service delivery
+
+================================================================================
+Statistics:
+- Text length: 1446 characters
+- Number of services: 1
+- Number of members: 0
+================================================================================

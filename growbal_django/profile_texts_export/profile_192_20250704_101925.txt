@@ -1,0 +1,33 @@
+================================================================================
+Profile ID: 192
+Username: linnet@aglcoconsulting.com
+================================================================================
+
+=== SERVICE PROVIDER PROFILE ===
+Company Name: AGL & Co. Consulting
+Provider Type: Company
+Country: UAE
+Session Status: inactive
+Email Addresses: linnet@aglcoconsulting.com
+Telephone Numbers: 00971585766188
+Mobile Numbers: 00971585766188
+Website: https://aglcoconsulting.com
+Office Locations: Mamzar Shopping Centre - Office No: 16, 3rd Floor - near Al Qiyadah Metro Station - Dubai, UAE
+Key Individuals: Linnet Lee - Company Representative
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Business Setup and Consulting Services in Dubai
+Description: AGL & Co. provides comprehensive business setup and management consulting services in UAE, specializing in company formation, business licensing, visa services, and corporate solutions since 2010. They offer hassle-free services for entrepreneurs including freezone and mainland business setup packages.
+Tags: Business Setup, Company Formation, Visa Services, Business Consulting, Freezone Setup, Mainland License, Corporate Services, Business Management
+Rating Score: 4.8/5
+Rating Description: Highly rated based on client testimonials showing excellent customer satisfaction, quick service delivery (license in 2 days), and professional expertise particularly in Dubai business setup and incorporation services.
+Pricing: Starting from AED 4,400/year for Zero Visa Freezone Package; Special promotion: One Year 0 Visa Package at AED 13,200 (AED 4,400/year for three years)
+
+================================================================================
+Statistics:
+- Text length: 1427 characters
+- Number of services: 1
+- Number of members: 0
+================================================================================
