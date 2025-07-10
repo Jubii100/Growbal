@@ -168,7 +168,8 @@ research_resources/
 requirements_1.txt
 requirements_2.txt
 
-# Media logos - exclude all except placeholder
+# Media logos - exclude all except placeholder and update script
 growbal_django/media/logos/*
 !growbal_django/media/logos/logo-placeholder.png
 !growbal_django/media/logos/.gitkeep
+!growbal_django/media/logos/update_logo_paths.py

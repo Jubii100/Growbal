@@ -166,7 +166,7 @@ urllib3==2.4.0
 uvicorn==0.34.2
 uvloop==0.21.0
 watchfiles==1.0.5
-websockets==15.0.1
+websockets==11.0.3
 wrapt==1.17.2
 xformers==0.0.29.post2
 xgrammar==0.1.18
