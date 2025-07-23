@@ -1,13 +1,12 @@
 """
-Gradio Streaming Chat App - Enhanced Service Provider Search
-Features: No rocket emoji, no undo button, proper clear chat functionality with process halting
-Modified: Increased chat history box height
+Gradio Chat Interface App - Standalone
+Features: Chat interface that can be embedded in Django with session and country parameters
 """
 import gradio as gr
 import asyncio
 import sys
 import os
-import re
+import uuid
 from datetime import datetime
 from dotenv import load_dotenv
 from typing import AsyncGenerator, Dict, Any
@@ -21,19 +20,10 @@ load_dotenv(env_path)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-# Import COUNTRY_CHOICES from the utils module
-try:
-    from growbal_django.accounts.utils import COUNTRY_CHOICES
-    print("✅ Successfully imported country choices from utils module")
-except ImportError as e:
-    print(f"⚠️ Warning: Could not import country choices from utils: {e}")
-    # Fallback to a minimal list if import fails
-    COUNTRY_CHOICES = [
-        ('USA', 'USA'), ('UK', 'UK'), ('Canada', 'Canada'), 
-        ('Australia', 'Australia'), ('Germany', 'Germany')
-    ]
+# Change to project root directory to fix import issues
+os.chdir(project_root)
 
-# Import the Growbal Intelligence system with regular adjudicator
+# Import the Growbal Intelligence system
 try:
     from growbal_intelligence.core.models import WorkflowState, SearchAgentInput, SummarizerAgentInput
     from growbal_intelligence.agents.search_agent import SearchAgent
@@ -50,7 +40,7 @@ if not api_key:
     print("⚠️  WARNING: ANTHROPIC_API_KEY not found in environment!")
     sys.exit(1)
 
-# Initialize agents with regular adjudicator
+# Initialize agents
 search_agent = SearchAgent(api_key=api_key)
 adjudicator_agent = AdjudicatorAgent(api_key=api_key)
 summarizer_agent = SummarizerAgent(api_key=api_key)
@@ -60,10 +50,11 @@ print("✅ Growbal Intelligence agents initialized")
 app_state = {
     "active_workflows": {},
     "conversation_history": [],
-    "current_reasoning_streams": {},  # Track real-time reasoning
-    "current_tasks": set(),  # Track running asyncio tasks
-    "cancellation_flag": False,  # Flag to signal cancellation
-    "selected_country": None  # Store the selected country
+    "current_reasoning_streams": {},
+    "current_tasks": set(),
+    "cancellation_flag": False,
+    "session_id": None,
+    "selected_country": None
 }
 
 
@@ -138,7 +129,7 @@ def format_streaming_update(update: Dict[str, Any]) -> str:
     agent = update.get("agent", "unknown")
     
     if agent == "search":
-        # Search agent updates - keep same as v2
+        # Search agent updates
         if "strategy" in update:
             strategy = update.get("strategy", "unknown")
             return f"**Search Agent** - Strategy selected: **{strategy}**\n\n*Executing search...*"
@@ -182,7 +173,7 @@ def format_streaming_update(update: Dict[str, Any]) -> str:
             relevance_score = update.get("relevance_score", 0)
             reasoning = update.get("reasoning", "No reasoning provided")
             
-            # Show the full reasoning (including JSON if that's what we get)
+            # Show the full reasoning
             status = "RELEVANT" if is_relevant else "NOT RELEVANT"
             
             thinking_block = create_thinking_block(
@@ -219,7 +210,7 @@ def format_streaming_update(update: Dict[str, Any]) -> str:
             return f"**Adjudicator Agent** - {update.get('message', 'Processing...')}"
     
     elif agent == "summarizer":
-        # Summarization agent updates (same as before)
+        # Summarization agent updates
         if "progress" in update:
             progress = update.get("progress", "")
             return f"**Summarizer Agent** - {progress}\n\n*Finalizing analysis...*"
@@ -232,7 +223,7 @@ def format_streaming_update(update: Dict[str, Any]) -> str:
         else:
             return f"**Summarizer Agent** - {update.get('message', 'Processing...')}"
     
-    # Handle workflow completion and error updates (same as before)
+    # Handle workflow completion and error updates
     elif "success" in update and "summary" in update:
         summary = update.get("summary", {})
         stats = update.get("statistics", {})
@@ -287,9 +278,7 @@ def format_streaming_update(update: Dict[str, Any]) -> str:
 
 
 async def enhanced_workflow_streaming(query: str, max_results: int = 7) -> AsyncGenerator[str, None]:
-    """
-    Enhanced workflow that uses the streaming adjudicator for real-time reasoning display
-    """
+    """Enhanced workflow that uses the streaming adjudicator for real-time reasoning display"""
     workflow_id = f"workflow_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     
     try:
@@ -318,18 +307,15 @@ async def enhanced_workflow_streaming(query: str, max_results: int = 7) -> Async
                     yield "**Process Cancelled** - Search was interrupted."
                     return
                     
-                # Add agent field to match v2's format
+                # Add agent field to match format
                 search_update["agent"] = "search"
                 
                 # Handle the different update types
                 if search_update.get("type") == "strategy_complete":
-                    # Extract strategy for the format handler
                     search_update["strategy"] = search_update.get("strategy", "unknown")
                 elif search_update.get("type") == "search_progress":
-                    # Map found_profiles from search_progress
                     search_update["found_profiles"] = search_update.get("found_profiles", 0)
                 elif search_update.get("type") == "complete":
-                    # Store the response
                     search_response = search_update.get("response")
                     search_update["response"] = search_response
                 elif search_update.get("type") == "error":
@@ -377,7 +363,7 @@ async def enhanced_workflow_streaming(query: str, max_results: int = 7) -> Async
             relevance_threshold=0.7
         )
         
-        # Use the regular adjudicator agent with streaming
+        # Use the adjudicator agent with streaming
         adj_response = None
         current_profile_index = 0
         current_profile_name = "Unknown"
@@ -479,10 +465,52 @@ async def enhanced_workflow_streaming(query: str, max_results: int = 7) -> Async
             yield f"**System Error**: {str(e)}\n\nPlease try again later."
 
 
+async def get_search_agent_response(message: str, system_prompt: str) -> AsyncGenerator[str, None]:
+    """
+    Main function that MCP server calls - Enhanced workflow with system prompt support
+    """
+    if not message.strip():
+        yield "Please enter a search query."
+        return
+    
+    # Reset cancellation flag when starting new request
+    app_state["cancellation_flag"] = False
+    
+    # Apply system prompt to the query
+    enhanced_query = f"{system_prompt}\n\nUser Query: {message}"
+    
+    # Retry logic for API overload
+    max_retries = 3
+    retry_delay = 5
+    
+    for attempt in range(max_retries):
+        try:
+            async for response in enhanced_workflow_streaming(enhanced_query):
+                # Check if process was cancelled
+                if app_state["cancellation_flag"]:
+                    yield "**Process Cancelled** - Search was interrupted."
+                    return
+                yield response
+            return  # Success, exit retry loop
+            
+        except Exception as e:
+            error_str = str(e)
+            if "overloaded" in error_str.lower() or "529" in error_str:
+                if attempt < max_retries - 1:
+                    yield f"**API Overloaded** - Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})"
+                    await asyncio.sleep(retry_delay)
+                    retry_delay *= 2
+                    continue
+                else:
+                    yield f"**API Overloaded** - Please try again in a few minutes."
+                    return
+            else:
+                yield f"**Error**: {error_str}\n\nPlease try again later."
+                return
+
+
 async def chat_response(message: str, history: list) -> AsyncGenerator[str, None]:
-    """
-    Enhanced chat response with retry logic and real-time reasoning streaming
-    """
+    """Enhanced chat response with retry logic and real-time reasoning streaming"""
     if not message.strip():
         yield "Please enter a search query."
         return
@@ -541,158 +569,14 @@ async def reset_cancellation_flag():
     app_state["cancellation_flag"] = False
 
 
-def create_country_selection():
-    """Create country selection interface with same design as chat interface"""
+def create_chat_interface_app(session_id: str = None, country: str = None):
+    """Create the chat interface with session and country context"""
+    
+    # Store session info in app state
+    app_state["session_id"] = session_id or str(uuid.uuid4())
+    app_state["selected_country"] = country or "Not specified"
     
     # Read the logo file
-    import os
-    logo_path = os.path.join(os.path.dirname(__file__), "growbal_logoheader.svg")
-    logo_html = ""
-    if os.path.exists(logo_path):
-        with open(logo_path, 'r') as f:
-            logo_content = f.read()
-            logo_html = f"""
-            <div style="display: flex; justify-content: center; align-items: center; padding: 10px 0; background: #ffffff; margin-bottom: 10px; border-radius: 15px; box-shadow: 0 8px 32px rgba(43, 85, 86, 0.15);">
-                <div style="max-width: 200px; height: auto;">
-                    {logo_content}
-                </div>
-            </div>
-            """
-    
-    # Same CSS as chat interface
-    css = """
-    /* Global Container Styling */
-    .gradio-container {
-        max-width: 1400px !important;
-        margin: 0 auto !important;
-        background: linear-gradient(135deg, #f8fffe 0%, #f0f9f9 100%) !important;
-        padding: 20px !important;
-        border-radius: 20px !important;
-        box-shadow: 0 10px 50px rgba(25, 132, 132, 0.1) !important;
-    }
-    
-    /* Button Styling */
-    .btn-primary {
-        background: linear-gradient(135deg, #198484 0%, #16a6a6 100%) !important;
-        border: none !important;
-        color: white !important;
-        font-weight: 600 !important;
-        border-radius: 10px !important;
-        padding: 12px 24px !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 4px 15px rgba(25, 132, 132, 0.2) !important;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 25px rgba(25, 132, 132, 0.3) !important;
-        background: linear-gradient(135deg, #16a6a6 0%, #198484 100%) !important;
-    }
-    
-    /* Header Styling */
-    .app-header {
-        text-align: center !important;
-        padding: 10px 0 !important;
-        background: linear-gradient(135deg, #2b5556 0%, #21908f 100%) !important;
-        border-radius: 15px !important;
-        margin-bottom: 20px !important;
-        box-shadow: 0 8px 32px rgba(25, 132, 132, 0.15) !important;
-    }
-    
-    .app-title {
-        color: #ffffff !important;
-        font-size: 1.5rem !important;
-        font-weight: 700 !important;
-        margin-bottom: 4px !important;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
-    }
-    
-    .app-description {
-        color: #f8fffe !important;
-        font-size: 0.9rem !important;
-        font-weight: 400 !important;
-        max-width: 600px !important;
-        margin: 0 auto !important;
-    }
-    
-    /* Country selection specific */
-    .country-section {
-        max-width: 600px !important;
-        margin: 40px auto !important;
-        text-align: center !important;
-        padding: 40px !important;
-        background: white !important;
-        border-radius: 15px !important;
-        box-shadow: 0 8px 32px rgba(25, 132, 132, 0.08) !important;
-    }
-    """
-    
-    # Create custom theme with same colors
-    custom_theme = gr.themes.Soft(
-        primary_hue=gr.themes.colors.emerald,
-        secondary_hue=gr.themes.colors.teal,
-        neutral_hue=gr.themes.colors.gray,
-        font=[gr.themes.GoogleFont("Inter"), "Arial", "sans-serif"]
-    )
-    
-    with gr.Blocks(title="Growbal Intelligence - Country Selection", theme=custom_theme, css=css, fill_height=True) as interface:
-        # Header (same as chat interface)
-        gr.HTML(f"{logo_html}<div class='app-header'><h1 class='app-title'>Growbal Intelligence</h1><p class='app-description'>AI-powered service provider search</p></div>")
-        
-        # Country selection section
-        with gr.Column(elem_classes="country-section"):
-            gr.Markdown("## 🌍 Please select a country to begin")
-            gr.Markdown("Choose your target country for service provider search")
-            
-            country_dropdown = gr.Dropdown(
-                choices=[choice[1] for choice in COUNTRY_CHOICES],
-                label="Select Country",
-                info="Choose a country to search for service providers",
-                container=True
-            )
-            
-            continue_btn = gr.Button(
-                "Continue to Search", 
-                variant="primary", 
-                visible=False,
-                size="lg"
-            )
-            
-            status = gr.Markdown("")
-        
-        def show_continue(country):
-            if country:
-                app_state["selected_country"] = country
-                return gr.Button(visible=True), gr.Markdown(f"**Selected:** {country}")
-            return gr.Button(visible=False), gr.Markdown("")
-        
-        def proceed():
-            # Signal to restart with chat interface
-            import sys
-            import subprocess
-            
-            # Store the selected country in a temporary way
-            print(f"Selected country: {app_state.get('selected_country')}")
-            
-            # Set environment variable for the selected country
-            import os
-            os.environ['SELECTED_COUNTRY'] = app_state.get('selected_country', '')
-            
-            # Restart the app with a flag to show chat interface
-            subprocess.Popen([sys.executable, __file__, '--chat'])
-            
-            return gr.Markdown("✅ **Launching chat interface...**")
-        
-        country_dropdown.change(show_continue, inputs=[country_dropdown], outputs=[continue_btn, status])
-        continue_btn.click(proceed, outputs=[status])
-        
-    return interface
-
-def create_streaming_interface():
-    """Create the enhanced streaming chat interface"""
-    
-    # Read the logo file
-    import os
     logo_path = os.path.join(os.path.dirname(__file__), "growbal_logoheader.svg")
     logo_html = ""
     if os.path.exists(logo_path):
@@ -717,7 +601,7 @@ def create_streaming_interface():
         box-shadow: 0 10px 50px rgba(25, 132, 132, 0.1) !important;
     }
     
-    /* Chat Interface Styling - INCREASED HEIGHT */
+    /* Chat Interface Styling */
     .chat-interface {
         height: 900px !important;
         border-radius: 15px !important;
@@ -725,7 +609,7 @@ def create_streaming_interface():
         box-shadow: 0 8px 32px rgba(25, 132, 132, 0.08) !important;
     }
     
-    /* Chatbot container - INCREASED HEIGHT */
+    /* Chatbot container */
     .chatbot {
         height: 750px !important;
         max-height: 750px !important;
@@ -750,36 +634,6 @@ def create_streaming_interface():
         background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%) !important;
         color: #2d3748 !important;
         border: 1px solid rgba(25, 132, 132, 0.15) !important;
-    }
-    
-    /* Thinking Blocks Styling */
-    details {
-        margin: 12px 0 !important;
-        border-radius: 10px !important;
-        overflow: hidden !important;
-        box-shadow: 0 4px 20px rgba(25, 132, 132, 0.08) !important;
-    }
-    
-    details summary {
-        transition: all 0.3s ease !important;
-        cursor: pointer !important;
-        background: linear-gradient(135deg, #198484 0%, #16a6a6 100%) !important;
-    }
-    
-    details summary:hover {
-        background: linear-gradient(135deg, #16a6a6 0%, #198484 100%) !important;
-        transform: translateY(-1px) !important;
-        box-shadow: 0 6px 25px rgba(25, 132, 132, 0.15) !important;
-    }
-    
-    details[open] summary {
-        border-radius: 10px 10px 0 0 !important;
-    }
-    
-    details div {
-        background: #ffffff !important;
-        border: 1px solid rgba(25, 132, 132, 0.1) !important;
-        border-top: none !important;
     }
     
     /* Button Styling */
@@ -817,23 +671,7 @@ def create_streaming_interface():
         box-shadow: 0 4px 15px rgba(25, 132, 132, 0.2) !important;
     }
     
-    /* Input Field Styling - REDUCED HEIGHT */
-    .textbox input, .textbox textarea {
-        border: 2px solid rgba(25, 132, 132, 0.2) !important;
-        border-radius: 10px !important;
-        padding: 12px !important;
-        font-size: 15px !important;
-        transition: all 0.3s ease !important;
-        background: #ffffff !important;
-    }
-    
-    .textbox input:focus, .textbox textarea:focus {
-        border-color: #198484 !important;
-        box-shadow: 0 0 0 3px rgba(25, 132, 132, 0.1) !important;
-        outline: none !important;
-    }
-    
-    /* Header Styling - MINIMAL PADDING */
+    /* Header Styling */
     .app-header {
         text-align: center !important;
         padding: 10px 0 !important;
@@ -859,29 +697,53 @@ def create_streaming_interface():
         margin: 0 auto !important;
     }
     
-    /* Progress Elements */
-    .progress-bar {
-        background: linear-gradient(90deg, #198484 0%, #16a6a6 100%) !important;
+    /* Session info styling */
+    .session-info {
+        background: white !important;
+        padding: 15px !important;
         border-radius: 10px !important;
+        margin-bottom: 15px !important;
+        box-shadow: 0 4px 15px rgba(25, 132, 132, 0.08) !important;
+        text-align: center !important;
     }
     
-    /* Status Indicators */
-    .status-processing {
-        color: #198484 !important;
-        font-weight: 600 !important;
+    /* Input Field Styling */
+    .textbox input, .textbox textarea {
+        border: 2px solid rgba(25, 132, 132, 0.2) !important;
+        border-radius: 10px !important;
+        padding: 12px !important;
+        font-size: 15px !important;
+        transition: all 0.3s ease !important;
+        background: #ffffff !important;
     }
     
-    .status-completed {
-        color: #16a085 !important;
-        font-weight: 600 !important;
+    .textbox input:focus, .textbox textarea:focus {
+        border-color: #198484 !important;
+        box-shadow: 0 0 0 3px rgba(25, 132, 132, 0.1) !important;
+        outline: none !important;
     }
     
-    .status-error {
-        color: #e74c3c !important;
-        font-weight: 600 !important;
+    /* Thinking blocks styling */
+    details {
+        margin: 12px 0 !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 20px rgba(25, 132, 132, 0.08) !important;
     }
     
-    /* Scrollbar Styling */
+    details summary {
+        transition: all 0.3s ease !important;
+        cursor: pointer !important;
+        background: linear-gradient(135deg, #198484 0%, #16a6a6 100%) !important;
+    }
+    
+    details summary:hover {
+        background: linear-gradient(135deg, #16a6a6 0%, #198484 100%) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 25px rgba(25, 132, 132, 0.15) !important;
+    }
+    
+    /* Scrollbar styling */
     ::-webkit-scrollbar {
         width: 8px !important;
     }
@@ -899,31 +761,9 @@ def create_streaming_interface():
     ::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(135deg, #16a6a6 0%, #198484 100%) !important;
     }
-    
-    /* Animation for loading states */
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.7; }
-        100% { opacity: 1; }
-    }
-    
-    .loading {
-        animation: pulse 2s infinite !important;
-    }
-    
-    /* Examples section - COMPACT */
-    .examples {
-        margin-top: 10px !important;
-        margin-bottom: 10px !important;
-    }
-    
-    .examples button {
-        font-size: 14px !important;
-        padding: 8px 12px !important;
-    }
     """
     
-    # Create custom theme with our colors
+    # Create custom theme
     custom_theme = gr.themes.Soft(
         primary_hue=gr.themes.colors.emerald,
         secondary_hue=gr.themes.colors.teal,
@@ -934,14 +774,42 @@ def create_streaming_interface():
     # Custom clear function that resets state before clearing chat
     def custom_clear():
         reset_app_state()
-        return []  # Return empty list to clear chat
+        return []
     
-    # Simple chat interface without complex schema issues
+    # Create session info HTML
+    session_info = f"""
+    <div class="session-info">
+        <strong>Session:</strong> {app_state["session_id"]} | 
+        <strong>Country:</strong> {app_state["selected_country"]}
+    </div>
+    """
+    
+    # Create back button functionality
+    def go_back():
+        return gr.HTML("""
+        <script>
+            // Send message to parent Django window
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'redirect',
+                    url: '/country/'
+                }, '*');
+            } else {
+                // Fallback for standalone mode
+                window.location.href = '/country/';
+            }
+        </script>
+        <div style="text-align: center; padding: 20px; color: #198484;">
+            <h3>🔙 Returning to country selection...</h3>
+        </div>
+        """)
+    
+    # Create interface
     interface = gr.ChatInterface(
         fn=chat_response,
         type="messages",
         title=f"{logo_html}<div class='app-header'><h1 class='app-title'>Growbal Intelligence</h1><p class='app-description'>AI-powered service provider search</p></div>",
-        description=f"**Selected Country:** {app_state.get('selected_country', 'Not selected')}",
+        description=session_info,
         examples=[
             "🏢 I need immigration services for business migration to UAE",
             "💼 Find accounting firms in Dubai for tech startups", 
@@ -956,22 +824,29 @@ def create_streaming_interface():
             placeholder="🔍 Ask me about service providers and watch the AI reasoning...",
             container=False,
             scale=7,
-            lines=1  # Reduced from 2 to save space
+            lines=1
         ),
-        submit_btn=gr.Button("Search Providers", variant="primary"),  # No rocket emoji
-        retry_btn=None,  # Remove retry button
-        undo_btn=None,  # Remove undo button
-        clear_btn=gr.Button("🗑️ Clear Chat", variant="stop"),  # Keep clear button
+        submit_btn=gr.Button("Search Providers", variant="primary"),
+        retry_btn=None,
+        undo_btn=None,
+        clear_btn=gr.Button("🗑️ Clear Chat", variant="stop"),
         additional_inputs=[],
         multimodal=False,
         concurrency_limit=3,
         fill_height=True
     )
     
-    # Try to override the clear button functionality if possible
+    # Add back button
+    with interface:
+        with gr.Row():
+            back_btn = gr.Button("← Back to Country Selection", variant="secondary")
+            back_output = gr.HTML(visible=False)
+            
+        back_btn.click(go_back, outputs=[back_output])
+    
+    # Try to override the clear button functionality
     try:
         if hasattr(interface, 'clear_btn') and interface.clear_btn:
-            # Clear the existing click events and add our custom one
             interface.clear_btn.click(
                 fn=custom_clear,
                 outputs=interface.chatbot,
@@ -979,49 +854,47 @@ def create_streaming_interface():
                 show_progress=False
             )
     except Exception:
-        # If override fails, the button will still work with default functionality
         pass
     
     return interface
 
 
 def main():
-    """Main function to launch the two-step interface"""
-    import sys
-    import os
+    """Main function to launch the chat interface app"""
+    # Parse command line arguments
+    session_id = None
+    country = None
+    port = 7861
     
-    # Check if we should launch chat interface directly
-    if '--chat' in sys.argv or os.getenv('SELECTED_COUNTRY'):
-        # Get selected country from environment
-        selected_country = os.getenv('SELECTED_COUNTRY', '')
-        if selected_country:
-            app_state["selected_country"] = selected_country
-        
-        # Launch chat interface
-        chat_interface = create_streaming_interface()
-        
-        launch_config = {
-            "share": False,
-            "debug": True,
-            "inbrowser": True,
-            "quiet": False,
-            "favicon_path": None
-        }
-        
-        chat_interface.launch(**launch_config)
-    else:
-        # Step 1: Launch country selection
-        country_interface = create_country_selection()
-        
-        launch_config = {
-            "share": False,
-            "debug": True,
-            "inbrowser": True,
-            "quiet": False,
-            "favicon_path": None
-        }
-        
-        country_interface.launch(**launch_config)
+    if len(sys.argv) > 1:
+        try:
+            port = int(sys.argv[1])
+        except ValueError:
+            print("Invalid port number, using default 7861")
+    
+    if len(sys.argv) > 2:
+        session_id = sys.argv[2]
+    
+    if len(sys.argv) > 3:
+        country = sys.argv[3]
+    
+    # Create and launch interface
+    interface = create_chat_interface_app(session_id, country)
+    
+    launch_config = {
+        "server_port": port,
+        "share": False,
+        "debug": True,
+        "inbrowser": not ('--no-browser' in sys.argv),
+        "quiet": False,
+        "favicon_path": None
+    }
+    
+    print(f"🚀 Launching Chat Interface App on port {port}")
+    print(f"   Session: {session_id or 'Generated'}")
+    print(f"   Country: {country or 'Not specified'}")
+    
+    interface.launch(**launch_config)
 
 
 if __name__ == "__main__":
