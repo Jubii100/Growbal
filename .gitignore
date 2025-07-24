@@ -48,7 +48,7 @@ db.sqlite3
 db.sqlite3-journal
 # media/ - now handled more specifically in crawler/.gitignore
 staticfiles/
-# growbal_django/growbal/settings.py  # Temporarily commented out for push
+growbal_django/growbal/settings.py
 
 # MySQL
 *.sql
