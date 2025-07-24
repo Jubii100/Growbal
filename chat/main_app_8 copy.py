@@ -22,6 +22,7 @@ import gradio as gr
 from dotenv import load_dotenv
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+from session_manager import session_manager
 
 # Load environment variables
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,8 +33,8 @@ load_dotenv(env_path)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-# Global storage for session management
-session_store: Dict[str, Dict[str, Any]] = {}
+# Session manager handles all session operations with database backing
+# No longer using in-memory dictionary storage
 
 # MCP Server Configuration
 server_params = StdioServerParameters(
@@ -619,17 +620,19 @@ async def proceed_to_chat(request: Request, country: str = Form(...), service_ty
     if not country or not service_type:
         raise HTTPException(status_code=400, detail="Country and service type are required")
     
-    # Generate session ID
-    session_id = str(uuid.uuid4())
+    # Check for existing session with same country/service_type
+    # This handles duplicate prevention automatically
+    session_id, session_data, is_new = await session_manager.get_or_create_session(
+        session_id=request.session.get("session_id"),
+        country=country,
+        service_type=service_type,
+        user_id=None  # Anonymous for now
+    )
     
-    # Store session data
-    session_store[session_id] = {
-        "country": country,
-        "service_type": service_type,
-        "created_at": time.time(),
-        "active": True,
-        "last_activity": time.time()
-    }
+    if is_new:
+        print(f"🆕 Created new session: {session_id}")
+    else:
+        print(f"♻️  Reusing existing session: {session_id}")
     
     # Store in FastAPI session
     request.session["session_id"] = session_id
@@ -646,18 +649,19 @@ async def proceed_to_chat(request: Request, country: str = Form(...), service_ty
 async def chat_interface_page(request: Request, session_id: str = None, country: str = None, service_type: str = None):
     """Serve the chat interface page with orchestrator integration"""
     
-    # Verify session exists
-    if session_id not in session_store:
-        session_store[session_id] = {
-            "country": country,
-            "service_type": service_type,
-            "created_at": time.time(),
-            "active": True,
-            "last_activity": time.time()
-        }
+    # Get or create session in database
+    db_session_id, session_data, is_new = await session_manager.get_or_create_session(
+        session_id=session_id,
+        country=country,
+        service_type=service_type,
+        user_id=None  # Anonymous for now
+    )
     
-    # Update session
-    session_store[session_id]["last_activity"] = time.time()
+    # Use the database session ID (in case a different one was returned due to reuse)
+    session_id = db_session_id
+    
+    # Update activity timestamp
+    await session_manager.update_activity(session_id)
     
     # Store in FastAPI session
     request.session["session_id"] = session_id
@@ -790,9 +794,14 @@ def create_orchestrator_chat_interface():
             except Exception as e:
                 print(f"❌ [FastAPI Session] Error: {e}")
         
-        if session_id != "unknown" and session_id in session_store:
-            country = session_store[session_id].get("country", country)
-            service_type = session_store[session_id].get("service_type", service_type)
+        if session_id != "unknown":
+            # Retrieve session from database
+            session_data = await session_manager.get_session(session_id)
+            if session_data:
+                country = session_data.get("country", country)
+                service_type = session_data.get("service_type", service_type)
+                # Update activity
+                await session_manager.update_activity(session_id)
         
         # Update global context
         current_context["country"] = country
@@ -1121,15 +1130,16 @@ async def health_check():
         "service": "growbal-intelligence-orchestrator-dynamic",
         "version": "7.0.0",
         "features": ["orchestrator", "dynamic_suggestions", "clean_streaming", "tool_routing"],
-        "active_sessions": len(session_store)
+        "active_sessions": await session_manager.get_active_sessions_count()
     }
 
 @app.get("/debug/sessions")
 async def debug_sessions():
-    """Debug endpoint to show all active sessions"""
+    """Debug endpoint to show active sessions count"""
+    active_count = await session_manager.get_active_sessions_count()
     return {
-        "total_sessions": len(session_store),
-        "sessions": session_store
+        "total_active_sessions": active_count,
+        "note": "Session details are now stored in database for security"
     }
 
 @app.get("/debug/suggestions")

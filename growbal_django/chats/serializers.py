@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ChatSession, ChatMessage, ChatAnalytics
+from .models import ChatSession, ChatMessage
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -128,23 +128,3 @@ class ChatHistorySerializer(serializers.ModelSerializer):
                     history.append([msg.content, next_msg.content])
         
         return history
-
-
-class ChatAnalyticsSerializer(serializers.ModelSerializer):
-    """Serializer for ChatAnalytics model"""
-    
-    session_id = serializers.UUIDField(source='session.session_id', read_only=True)
-    country = serializers.CharField(source='session.country', read_only=True)
-    service_type = serializers.CharField(
-        source='session.get_service_type_display', 
-        read_only=True
-    )
-    
-    class Meta:
-        model = ChatAnalytics
-        fields = [
-            'session_id', 'country', 'service_type', 'total_messages',
-            'user_messages', 'assistant_messages', 'providers_found',
-            'search_queries', 'session_duration', 'updated_at'
-        ]
-        read_only_fields = fields

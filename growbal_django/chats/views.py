@@ -3,11 +3,11 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from .models import ChatSession, ChatMessage, ChatAnalytics
+from .models import ChatSession, ChatMessage
 from .serializers import (
     ChatSessionSerializer, ChatSessionCreateSerializer,
     ChatMessageSerializer, ChatMessageCreateSerializer,
-    ChatHistorySerializer, ChatAnalyticsSerializer
+    ChatHistorySerializer 
 )
 import uuid
 
@@ -60,10 +60,7 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
             session_data['user'] = request.user
         
         session = ChatSession.objects.create(**session_data)
-        
-        # Create analytics record
-        ChatAnalytics.objects.create(session=session)
-        
+                
         # Return the created session
         output_serializer = ChatSessionSerializer(session)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
@@ -196,38 +193,6 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
         output_serializer = ChatMessageSerializer(created_messages, many=True)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
-
-class ChatAnalyticsViewSet(viewsets.ReadOnlyModelViewSet):
-    """ViewSet for viewing chat analytics"""
-    
-    queryset = ChatAnalytics.objects.all()
-    serializer_class = ChatAnalyticsSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    
-    def get_queryset(self):
-        """Filter analytics by session parameters"""
-        queryset = super().get_queryset()
-        
-        # Filter by country
-        country = self.request.query_params.get('country')
-        if country:
-            queryset = queryset.filter(session__country=country)
-        
-        # Filter by service type
-        service_type = self.request.query_params.get('service_type')
-        if service_type:
-            queryset = queryset.filter(session__service_type=service_type)
-        
-        # Filter by date range
-        start_date = self.request.query_params.get('start_date')
-        end_date = self.request.query_params.get('end_date')
-        if start_date:
-            queryset = queryset.filter(session__created_at__gte=start_date)
-        if end_date:
-            queryset = queryset.filter(session__created_at__lte=end_date)
-        
-        return queryset
-    
     @action(detail=False, methods=['get'])
     def summary(self, request):
         """Get aggregated analytics summary"""

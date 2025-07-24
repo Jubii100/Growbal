@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
-from .models import ChatSession, ChatMessage, ChatAnalytics
+from .models import ChatSession, ChatMessage
 
 
 class ChatMessageInline(admin.TabularInline):
@@ -15,23 +15,6 @@ class ChatMessageInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):
         """Prevent deletion of messages to maintain history integrity"""
         return False
-
-
-class ChatAnalyticsInline(admin.StackedInline):
-    """Inline admin for chat analytics"""
-    model = ChatAnalytics
-    extra = 0
-    readonly_fields = (
-        'total_messages', 'user_messages', 'assistant_messages',
-        'providers_found', 'search_queries', 'session_duration', 'updated_at'
-    )
-    
-    def has_delete_permission(self, request, obj=None):
-        return False
-    
-    def has_add_permission(self, request, obj=None):
-        return False
-
 
 @admin.register(ChatSession)
 class ChatSessionAdmin(admin.ModelAdmin):
@@ -64,7 +47,7 @@ class ChatSessionAdmin(admin.ModelAdmin):
             'fields': ('message_count', 'chat_preview')
         })
     )
-    inlines = [ChatMessageInline, ChatAnalyticsInline]
+    inlines = [ChatMessageInline]
     date_hierarchy = 'created_at'
     
     def session_id_short(self, obj):
@@ -209,37 +192,6 @@ class ChatMessageAdmin(admin.ModelAdmin):
         )
     formatted_metadata.short_description = 'Formatted Metadata'
 
-
-@admin.register(ChatAnalytics)
-class ChatAnalyticsAdmin(admin.ModelAdmin):
-    """Admin interface for ChatAnalytics model"""
-    
-    list_display = (
-        'session_link', 'total_messages', 'user_messages', 
-        'assistant_messages', 'provider_count', 'updated_at'
-    )
-    list_filter = ('updated_at', 'session__country', 'session__service_type')
-    search_fields = ('session__session_id', 'providers_found', 'search_queries')
-    readonly_fields = (
-        'session', 'total_messages', 'user_messages', 'assistant_messages',
-        'formatted_providers', 'formatted_queries', 'session_duration', 'updated_at'
-    )
-    fieldsets = (
-        ('Session', {
-            'fields': ('session',)
-        }),
-        ('Message Statistics', {
-            'fields': ('total_messages', 'user_messages', 'assistant_messages')
-        }),
-        ('Search Data', {
-            'fields': ('formatted_providers', 'formatted_queries'),
-            'classes': ('collapse',)
-        }),
-        ('Timing', {
-            'fields': ('session_duration', 'updated_at')
-        })
-    )
-    
     def session_link(self, obj):
         """Link to session admin page"""
         url = reverse('admin:chats_chatsession_change', args=[obj.session.pk])
