@@ -9,7 +9,7 @@ source new-venv/bin/activate
 
 echo 'pip install -r requirements.txt' 
 
-#pip install -r requirements.txt
+pip install -r requirements.txt
 
 #npx prisma generate
 
