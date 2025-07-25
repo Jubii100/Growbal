@@ -176,3 +176,4 @@ zstandard==0.23.0
 pgvector==0.3.3
 mcp==1.10.1
 gradio==4.44.1
+itsdangerous==2.2.0

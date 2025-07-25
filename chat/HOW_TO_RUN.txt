@@ -1,0 +1,120 @@
+=====================================
+HOW TO RUN GROWBAL INTELLIGENCE APP
+=====================================
+
+QUICK START:
+------------
+1. Open a terminal
+2. Navigate to the chat directory:
+   cd /home/mohammed/Desktop/tech_projects/growbal/chat
+
+3. Run the application:
+   python improved_main_app.py
+
+   OR
+
+   uvicorn improved_main_app:app --host 0.0.0.0 --port 8000 --reload
+
+
+ACCESSING THE APPLICATION:
+-------------------------
+Once running, open your web browser and visit:
+
+• Main Page: http://localhost:8000
+• Country Selection: http://localhost:8000/country/
+• Health Check: http://localhost:8000/health
+• Debug Sessions: http://localhost:8000/debug/sessions
+
+
+STEP-BY-STEP USAGE:
+------------------
+1. Go to http://localhost:8000 in your browser
+2. You'll see the country selection page
+3. Select a country from the dropdown
+4. Click "Continue to Search"
+5. You'll be redirected to the chat interface
+6. Start chatting with the AI about service providers
+
+
+TESTING WORKFLOW:
+----------------
+1. Visit http://localhost:8000/country/
+2. Select "USA" or any country
+3. Click "Continue to Search"
+4. Check that you're redirected to /chat/{session_id}/{country}/
+5. Verify the chat interface loads with your country displayed
+
+
+TROUBLESHOOTING:
+---------------
+If you see any errors:
+
+1. Check dependencies are installed:
+   pip install -r requirements.txt
+
+2. Make sure you're in the correct directory:
+   pwd should show: /home/mohammed/Desktop/tech_projects/growbal/chat
+
+3. Check if port 8000 is already in use:
+   lsof -i :8000
+   (Kill any existing process if needed)
+
+4. Try a different port:
+   uvicorn improved_main_app:app --port 8001
+
+
+STOPPING THE APP:
+----------------
+Press CTRL+C in the terminal where it's running
+
+
+ALTERNATIVE LAUNCH METHODS:
+--------------------------
+Method 1 - Using the runner script:
+   python run_app.py
+
+Method 2 - Direct Python:
+   python improved_main_app.py
+
+Method 3 - Uvicorn with custom settings:
+   uvicorn improved_main_app:app --host 0.0.0.0 --port 8000 --reload --log-level info
+
+Method 4 - Production mode (no auto-reload):
+   uvicorn improved_main_app:app --host 0.0.0.0 --port 8000 --workers 4
+
+
+CHECKING IF IT'S WORKING:
+------------------------
+1. Look for this in terminal:
+   "INFO:     Uvicorn running on http://0.0.0.0:8000"
+   "INFO:     Application startup complete"
+
+2. Test the health endpoint:
+   curl http://localhost:8000/health
+
+   Should return:
+   {"status":"healthy","service":"growbal-intelligence","active_sessions":0,"cached_apps":0}
+
+3. Check mounted routes:
+   curl http://localhost:8000/debug/sessions
+   
+   Should show session information
+
+
+NOTES:
+------
+- The app uses FastAPI with Gradio integration
+- Country selection happens first, then redirects to chat
+- Sessions are managed automatically
+- The chat interface requires the Anthropic API key in the .env file
+- Make sure the growbal_logoheader.svg file exists in the chat directory
+
+
+QUICK TEST COMMAND:
+------------------
+cd /home/mohammed/Desktop/tech_projects/growbal/chat && python improved_main_app.py
+
+
+=====================================
+END OF INSTRUCTIONS
+=====================================
