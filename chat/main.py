@@ -112,11 +112,15 @@ class OrchestratorAgent:
     def __init__(self, api_key: str):
         self.api_key = api_key
         
-    async def analyze_and_route(self, message: str, history: List[Dict], country: str, service_type: str) -> Dict[str, Any]:
+    async def analyze_and_route(self, message: str, session_id: str, country: str, service_type: str) -> Dict[str, Any]:
         """Analyze message and history to determine tool usage and create summary"""
         import anthropic
         
         client = anthropic.Anthropic(api_key=self.api_key)
+        
+        # Get conversation history from database
+        from session_manager import session_manager
+        history = await session_manager.get_session_history_gradio(session_id) if session_id != "unknown" else []
         
         # Format conversation history
         history_text = ""
@@ -200,11 +204,15 @@ Guidelines:
                     "response": None
                 }
 
-    async def generate_suggestions(self, country: str, service_type: str, history: List[Dict]) -> List[str]:
+    async def generate_suggestions(self, country: str, service_type: str, session_id: str = None) -> List[str]:
         """Generate dynamic suggestions based on context and history"""
         import anthropic
         
         client = anthropic.Anthropic(api_key=self.api_key)
+        
+        # Get conversation history from database
+        from session_manager import session_manager
+        history = await session_manager.get_session_history_gradio(session_id) if session_id and session_id != "unknown" else []
         
         # Format conversation history
         history_text = ""
@@ -335,7 +343,7 @@ def is_status_update(chunk: str) -> bool:
     chunk_lower = chunk.lower()
     return any(keyword in chunk_lower for keyword in status_keywords)
 
-async def call_conversational_agent(message: str, country: str, service_type: str, history: List[Dict]):
+async def call_conversational_agent(message: str, country: str, service_type: str, session_id: str = None):
     """Call the conversational agent directly"""
     try:
         # Get API key
@@ -345,6 +353,10 @@ async def call_conversational_agent(message: str, country: str, service_type: st
         
         import anthropic
         client = anthropic.Anthropic(api_key=api_key)
+        
+        # Get conversation history from database
+        from session_manager import session_manager
+        history = await session_manager.get_session_history_gradio(session_id) if session_id and session_id != "unknown" else []
         
         # Format history for the agent
         history_text = ""
@@ -403,21 +415,37 @@ async def call_mcp_tool_streaming_clean(tool_name: str, message: str, system_pro
         final_result = ""
         current_status = ""
         
-        # Stream the response directly
-        async for chunk in get_search_agent_response(message, system_prompt):
-            # Check if this is a status update or final result
-            if is_status_update(chunk):
-                current_status = chunk
-                yield ("status", current_status)
-            else:
-                # Check if this contains final result
-                final_chunk = extract_final_result(chunk)
-                if final_chunk:
-                    final_result += final_chunk
-                    yield ("final", final_result)
-                elif len(chunk) > 50:  # Substantial content that's not a status
-                    final_result += chunk
-                    yield ("final", final_result)
+        # Stream the response directly - now expecting dict format
+        async for response_dict in get_search_agent_response(message, system_prompt):
+            # Extract response and status from the dictionary
+            chunk = response_dict.get("response", "")
+            status = response_dict.get("status", "processing")
+            
+            # Handle different status types
+            if status == "processing":
+                # This is a status update or intermediate response
+                if is_status_update(chunk):
+                    current_status = chunk
+                    yield ("status", current_status)
+                else:
+                    # Check if this contains final result
+                    final_chunk = extract_final_result(chunk)
+                    if final_chunk:
+                        final_result = final_chunk  # Replace, don't append for final results
+                        yield ("final", final_result)
+                    elif len(chunk) > 50:  # Substantial content that's not a status
+                        final_result = chunk  # Replace, don't append
+                        yield ("final", final_result)
+            elif status in ["success", "no_results"]:
+                # This is the final successful result
+                final_result = chunk
+                yield ("final", final_result)
+            elif status in ["error", "cancelled"]:
+                # This is an error or cancellation
+                yield ("error", chunk)
+            elif status == "retrying":
+                # This is a retry status
+                yield ("status", chunk)
             
     except Exception as e:
         print(f"❌ Streaming tool call error: {e}")
@@ -784,17 +812,13 @@ async def chat_interface_page(request: Request, session_id: str = None, country:
 def create_orchestrator_chat_interface():
     """Create chat interface with orchestrator and dynamic suggestions"""
     
-    # Global variables to store current context for suggestions
-    current_context = {
-        "country": "unknown",
-        "service_type": "unknown", 
-        "history": []
-    }
+    # Session-specific context storage (isolated per tab)
+    session_contexts = {}
     
-    async def get_dynamic_suggestions(country: str, service_type: str, history: list) -> List[str]:
+    async def get_dynamic_suggestions(country: str, service_type: str, session_id: str = None) -> List[str]:
         """Get dynamic suggestions from orchestrator"""
         try:
-            suggestions = await orchestrator.generate_suggestions(country, service_type, history)
+            suggestions = await orchestrator.generate_suggestions(country, service_type, session_id)
             return suggestions
         except Exception as e:
             print(f"❌ Error generating suggestions: {e}")
@@ -806,7 +830,7 @@ def create_orchestrator_chat_interface():
             ]
     
     def orchestrator_chat_wrapper(message: str, history: list, request: gr.Request):
-        """Orchestrator-enabled chat wrapper with dynamic suggestions"""
+        """Orchestrator-enabled chat wrapper with dynamic suggestions and history loading"""
         session_id = "unknown"
         country = "unknown"
         service_type = "unknown"
@@ -830,46 +854,113 @@ def create_orchestrator_chat_interface():
             except Exception as e:
                 print(f"❌ [FastAPI Session] Error: {e}")
         
-        # Create async function to handle database operations
-        async def get_session_data():
+        # Create async function to handle database operations and history loading
+        async def get_session_data_and_history():
             if session_id != "unknown":
                 # Retrieve session from database
                 session_data = await session_manager.get_session(session_id)
                 if session_data:
                     # Update activity
                     await session_manager.update_activity(session_id)
-                    return session_data.get("country", country), session_data.get("service_type", service_type)
-            return country, service_type
+                    
+                    # Load chat history if not already loaded
+                    if not history:  # Only load if history is empty (first load or reload)
+                        try:
+                            db_history = await session_manager.get_session_history_gradio(session_id)
+                            # Convert to ChatInterface format: [[user_msg, bot_msg], ...]
+                            chatbot_history = []
+                            for i in range(0, len(db_history), 2):
+                                if i + 1 < len(db_history):
+                                    user_msg = db_history[i].get("content", "")
+                                    bot_msg = db_history[i + 1].get("content", "")
+                                    chatbot_history.append([user_msg, bot_msg])
+                            
+                            print(f"📚 Loaded {len(chatbot_history)} conversation pairs from database")
+                            return (
+                                session_data.get("country", country), 
+                                session_data.get("service_type", service_type),
+                                chatbot_history
+                            )
+                        except Exception as e:
+                            print(f"❌ Error loading chat history: {e}")
+                    
+                    return (
+                        session_data.get("country", country), 
+                        session_data.get("service_type", service_type),
+                        history  # Use existing history if already loaded
+                    )
+            return country, service_type, history
         
-        # Run async function to get session data
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
+        # Run async function to get session data and history with proper event loop handling
+        def run_async_safely(coro):
+            """Safely run async function, handling multiple tabs"""
+            try:
+                # Try to get existing event loop
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # If loop is running (common in Gradio), use asyncio.run_coroutine_threadsafe
+                    import concurrent.futures
+                    import threading
+                    
+                    def run_in_thread():
+                        new_loop = asyncio.new_event_loop()
+                        asyncio.set_event_loop(new_loop)
+                        try:
+                            return new_loop.run_until_complete(coro)
+                        finally:
+                            new_loop.close()
+                    
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                        future = executor.submit(run_in_thread)
+                        return future.result(timeout=30)  # 30 second timeout
+                else:
+                    return loop.run_until_complete(coro)
+            except RuntimeError:
+                # No event loop exists, create a new one
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    return loop.run_until_complete(coro)
+                finally:
+                    loop.close()
         
-        country, service_type = loop.run_until_complete(get_session_data())
+        country, service_type, loaded_history = run_async_safely(get_session_data_and_history())
         
-        # Update global context
-        current_context["country"] = country
-        current_context["service_type"] = service_type
-        current_context["history"] = history
+        # No need to manipulate history - ChatInterface handles it via initial value
+        # Just process the new message normally
+        
+        # Update session-specific context (isolated per session)
+        session_contexts[session_id] = {
+            "country": country,
+            "service_type": service_type,
+            "session_id": session_id
+        }
         
         print(f"🎯 Final parameters: Session={session_id}, Country={country}, Service Type={service_type}")
         
         # Orchestrator coordination with clean streaming
         async def orchestrator_response():
+            final_assistant_response = ""  # Track the complete assistant response
+            
             try:
+                # Store user message immediately
+                if session_id != "unknown":
+                    try:
+                        await session_manager.add_message(session_id, "user", message)
+                    except Exception as db_error:
+                        print(f"❌ Error storing user message: {db_error}")
+                
                 # Analyze message and determine routing
-                analysis = await orchestrator.analyze_and_route(message, history, country, service_type)
+                analysis = await orchestrator.analyze_and_route(message, session_id, country, service_type)
                 
                 if analysis.get("tool_needed", False):
                     tool_name = analysis.get("tool_name", "search_service_providers")
                     
                     if tool_name == "conversational_agent":
                         # Handle conversational messages
-                        response = await call_conversational_agent(message, country, service_type, history)
-                        yield f"💬 {response}"
+                        response = await call_conversational_agent(message, country, service_type, session_id)
+                        final_assistant_response = f"💬 {response}"
+                        yield final_assistant_response
                         
                     else:  # search_service_providers
                         # Show orchestrator analysis first
@@ -885,6 +976,7 @@ def create_orchestrator_chat_interface():
                         final_result = orchestrator_message + "\n\n"
                         
                         # Stream results from the search agent
+                        search_agent_final_output = ""  # Track only the search agent's final output
                         async for result_type, content in call_mcp_tool_streaming_clean(
                             tool_name,
                             analysis.get("summary", message),
@@ -894,43 +986,52 @@ def create_orchestrator_chat_interface():
                                 # Show current status temporarily
                                 yield orchestrator_message + "\n\n" + content
                             elif result_type == "final":
-                                # Update final result
+                                # Update final result and capture search agent output
                                 final_result = orchestrator_message + "\n\n" + content
+                                search_agent_final_output = content  # Store only the search agent's output
+                                final_assistant_response = final_result
                                 yield final_result
                             elif result_type == "error":
-                                yield orchestrator_message + "\n\n" + content
+                                error_response = orchestrator_message + "\n\n" + content
+                                search_agent_final_output = content  # Store error as final output
+                                final_assistant_response = error_response
+                                yield error_response
+                        
+                        # Use search agent's final output for session storage if available
+                        if search_agent_final_output:
+                            final_assistant_response = search_agent_final_output
                     
                 else:
                     # Direct response without tool (shouldn't happen with updated orchestrator)
-                    yield f"💬 {analysis.get('response', 'I can help you find service providers. Please let me know what you need.')}"
+                    response = f"💬 {analysis.get('response', 'I can help you find service providers. Please let me know what you need.')}"
+                    final_assistant_response = response
+                    yield response
                 
-                # Store messages in database (if we have a valid session)
-                if session_id != "unknown":
+                # Store assistant response in database
+                if session_id != "unknown" and final_assistant_response:
                     try:
-                        # Store user message
-                        await session_manager.add_message(session_id, "user", message)
-                        # Store assistant response (use last yielded content)
-                        if 'final_result' in locals() and final_result:
-                            await session_manager.add_message(session_id, "assistant", final_result)
+                        await session_manager.add_message(session_id, "assistant", final_assistant_response)
                     except Exception as db_error:
-                        print(f"❌ Error storing messages in database: {db_error}")
+                        print(f"❌ Error storing assistant message: {db_error}")
                     
             except Exception as e:
+                error_msg = f"❌ Error: {str(e)}"
                 print(f"❌ Orchestrator error: {e}")
-                yield f"❌ Error: {str(e)}"
+                yield error_msg
+                
+                # Store error message as assistant response
+                if session_id != "unknown":
+                    try:
+                        await session_manager.add_message(session_id, "assistant", error_msg)
+                    except Exception as db_error:
+                        print(f"❌ Error storing error message: {db_error}")
         
-        # Run orchestrator with clean streaming
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        
+        # Run orchestrator with clean streaming using safe async pattern
         gen = orchestrator_response()
         last_response = ""
         try:
             while True:
-                response = loop.run_until_complete(gen.__anext__())
+                response = run_async_safely(gen.__anext__())
                 last_response = response  # Don't accumulate, just update
                 yield response
         except StopAsyncIteration:
@@ -1143,12 +1244,12 @@ def create_orchestrator_chat_interface():
             "Search for specialized professionals"
         ]
     
-    # Create chat interface with dynamic suggestions
+    # Create chat interface - we'll handle history loading in the wrapper function
     interface = gr.ChatInterface(
         fn=orchestrator_chat_wrapper,
         type="messages",
         title=f"{logo_html}<div class='app-header'><h1 class='app-title'>Growbal Intelligence</h1><p class='app-description'>AI-powered service provider search</p></div>",
-        examples=get_initial_suggestions(),  # This will be dynamically updated
+        examples=get_initial_suggestions(),
         cache_examples=False,
         theme=custom_theme,
         css=css,
@@ -1204,7 +1305,7 @@ async def debug_sessions():
 async def debug_suggestions(country: str = "USA", service_type: str = "Tax Services"):
     """Debug endpoint to test suggestion generation"""
     try:
-        suggestions = await orchestrator.generate_suggestions(country, service_type, [])
+        suggestions = await orchestrator.generate_suggestions(country, service_type, None)
         return {
             "country": country,
             "service_type": service_type,

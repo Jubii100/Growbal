@@ -1,23 +1,29 @@
 """
-ACTUALLY WORKING FastAPI application with proper Gradio integration
-- Uses server-side redirects instead of JavaScript (following FastAPI docs)
-- Implements proper parameter passing using FastAPI sessions
-- NO MORE IFRAME BULLSHIT - direct page navigation
-- Enhanced with wider country selection page and service type dropdown
-- MODIFIED VERSION: Includes system prompt for strict country/service filtering
+ORCHESTRATOR-ENABLED FastAPI application with DYNAMIC SUGGESTIONS
+- Uses orchestrator agent to coordinate tool selection
+- Integrates with MCP server for service provider search
+- Shows only current step and final response (no accumulated agentic history)
+- Provides dynamic suggestions based on country, service type, and conversation history
 """
 
 import os
 import sys
 import uuid
 import time
-from typing import Dict, Any, Optional
+import json
+import asyncio
+import re
+from typing import Dict, Any, Optional, List
 from fastapi import FastAPI, Request, HTTPException, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from contextlib import asynccontextmanager
 import gradio as gr
 from dotenv import load_dotenv
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from session_manager import session_manager
 
 # Load environment variables
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,14 +34,56 @@ load_dotenv(env_path)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-# Global storage for session management
-session_store: Dict[str, Dict[str, Any]] = {}
+# Session manager handles all session operations with database backing
+# No longer using in-memory dictionary storage
+
+# MCP Server Configuration
+server_params = StdioServerParameters(
+    command="python",
+    args=[os.path.join(os.path.dirname(__file__), "server.py")],
+    env=None
+)
+
+# Background task to clean up old sessions
+async def cleanup_old_sessions():
+    """Periodically deactivate old sessions on a weekly basis"""
+    while True:
+        try:
+            # Deactivate sessions older than 7 days (168 hours)
+            deactivated = await session_manager.deactivate_old_sessions(hours=168)
+            if deactivated > 0:
+                print(f"🧹 Weekly cleanup: Deactivated {deactivated} old sessions")
+            else:
+                print(f"🧹 Weekly cleanup: No old sessions to deactivate")
+        except Exception as e:
+            print(f"❌ Error during weekly session cleanup: {e}")
+        
+        # Run every week (7 days = 604800 seconds)
+        await asyncio.sleep(604800)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application lifecycle"""
+    # Startup
+    cleanup_task = asyncio.create_task(cleanup_old_sessions())
+    print("✅ Started weekly session cleanup task")
+    
+    yield
+    
+    # Shutdown
+    cleanup_task.cancel()
+    try:
+        await cleanup_task
+    except asyncio.CancelledError:
+        pass
+    print("🛑 Stopped session cleanup task")
 
 # Create FastAPI app
 app = FastAPI(
-    title="Growbal Intelligence Platform",
-    description="AI-powered service provider search with country selection and chat interface",
-    version="2.0.0"
+    title="Growbal Intelligence Platform - Orchestrator v8",
+    description="AI-powered service provider search with database-backed sessions",
+    version="8.0.0",
+    lifespan=lifespan
 )
 
 # Add middleware
@@ -47,23 +95,373 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Add session middleware (ESSENTIAL for parameter passing)
 app.add_middleware(
     SessionMiddleware,
     secret_key=os.getenv("SESSION_SECRET_KEY", "your-secret-key-change-in-production-2024")
 )
 
+# Import API key for orchestrator
+api_key = os.getenv('ANTHROPIC_API_KEY')
+if not api_key:
+    print("⚠️  WARNING: ANTHROPIC_API_KEY not found in environment!")
+    sys.exit(1)
 
+class OrchestratorAgent:
+    """Orchestrator agent for tool selection and query summarization"""
+    
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        
+    async def analyze_and_route(self, message: str, session_id: str, country: str, service_type: str) -> Dict[str, Any]:
+        """Analyze message and history to determine tool usage and create summary"""
+        import anthropic
+        
+        client = anthropic.Anthropic(api_key=self.api_key)
+        
+        # Get conversation history from database
+        from session_manager import session_manager
+        history = await session_manager.get_session_history_gradio(session_id) if session_id != "unknown" else []
+        
+        # Format conversation history
+        history_text = ""
+        for msg in history[-5:]:  # Last 5 messages for context
+            role = "User" if msg.get("role") == "user" else "Assistant"
+            content = msg.get("content", "")
+            history_text += f"{role}: {content}\n"
+        
+        # Create analysis prompt
+        analysis_prompt = f"""You are an orchestrator agent for a service provider search system.
+
+Available Tools:
+1. search_service_providers - Search for service providers with country/service filtering
+   - Use when user wants to find providers, companies, services, or professionals
+   - Parameters: message (search query), system_prompt (filtering criteria)
+
+2. conversational_agent - Handle general conversation, greetings, and questions
+   - Use for: greetings (hello, hi), thank you, general questions, system inquiries
+   - Parameters: message, country, service_type, history
+
+User Context:
+- Country: {country}
+- Service Type: {service_type}
+
+Recent Conversation History:
+{history_text}
+
+Current Message: {message}
+
+Analyze this request and provide a JSON response with:
+{{
+  "tool_needed": true/false,
+  "tool_name": "search_service_providers" or "conversational_agent" or null,
+  "summary": "concise summary of what user is looking for or saying",
+  "response": "only used if tool_needed is false"
+}}
+
+Guidelines:
+- Use conversational_agent for: greetings, thank you, general questions, system inquiries
+- Use search_service_providers for: explicit search requests, finding providers
+- Only set tool_needed to false if you're absolutely certain no tool is appropriate
+- Summary should be brief (1-2 sentences) describing the user's intent"""
+
+        try:
+            response = client.messages.create(
+                model="claude-3-haiku-20240307",
+                max_tokens=300,
+                messages=[{"role": "user", "content": analysis_prompt}]
+            )
+            
+            # Parse JSON response
+            result = json.loads(response.content[0].text)
+            return result
+            
+        except Exception as e:
+            print(f"❌ Orchestrator error: {e}")
+            # Fallback - check message pattern to decide which tool
+            message_lower = message.lower()
+            
+            # Check for conversational patterns
+            conversational_patterns = ["hello", "hi", "hey", "thanks", "thank you", "what", "how", "why"]
+            search_patterns = ["find", "search", "looking for", "need", "show me", "locate"]
+            
+            is_conversational = any(pattern in message_lower for pattern in conversational_patterns)
+            is_search = any(pattern in message_lower for pattern in search_patterns)
+            
+            if is_conversational and not is_search:
+                # Use conversational agent
+                return {
+                    "tool_needed": True,
+                    "tool_name": "conversational_agent",
+                    "summary": f"Conversational message: {message}",
+                    "response": None
+                }
+            else:
+                # Default to search
+                return {
+                    "tool_needed": True,
+                    "tool_name": "search_service_providers",
+                    "summary": f"Find {service_type} providers in {country}: {message}",
+                    "response": None
+                }
+
+    async def generate_suggestions(self, country: str, service_type: str, session_id: str = None) -> List[str]:
+        """Generate dynamic suggestions based on context and history"""
+        import anthropic
+        
+        client = anthropic.Anthropic(api_key=self.api_key)
+        
+        # Get conversation history from database
+        from session_manager import session_manager
+        history = await session_manager.get_session_history_gradio(session_id) if session_id and session_id != "unknown" else []
+        
+        # Format conversation history
+        history_text = ""
+        for msg in history[-3:]:  # Last 3 messages for context
+            role = "User" if msg.get("role") == "user" else "Assistant"
+            content = msg.get("content", "")
+            history_text += f"{role}: {content}\n"
+        
+        # Create suggestions prompt
+        suggestions_prompt = f"""You are generating helpful search suggestions for a service provider search system.
+
+Context:
+- Country: {country}
+- Service Type: {service_type}
+- Recent Conversation: {history_text}
+
+Generate exactly 3 concise, actionable search suggestions that would be helpful for someone looking for {service_type} providers in {country}.
+
+Requirements:
+- NO emojis or icons
+- Each suggestion should be 5-12 words and plausibly a subset of the service type and country
+- If there's conversation history, make suggestions that build on or complement what was discussed
+- Focus on practical, specific searches users might want to make
+
+Format as a JSON array of exactly 3 strings:
+["suggestion 1", "suggestion 2", "suggestion 3"]
+
+Examples for different contexts:
+- For Tax Services in USA: ["Find tax preparers for small businesses", "Compare CPA firms for individuals", "Search tax advisors with IRS experience"]
+- For Migration Services in Canada: ["Find immigration lawyers for work permits", "Search consultants for permanent residency", "Compare services for family sponsorship"]
+- For Business Setup in UAE: ["Find accountants for limited company formation in Dubai", "Search lawyers for business registration in Abu Dhabi", "Compare consultants for VAT registration"]
+"""
+
+        try:
+            response = client.messages.create(
+                model="claude-3-haiku-20240307",
+                max_tokens=200,
+                messages=[{"role": "user", "content": suggestions_prompt}]
+            )
+            
+            # Get the response text
+            response_text = response.content[0].text.strip()
+            print(f"🔍 Raw suggestions response: {response_text}")
+            
+            # Try to extract JSON from response
+            try:
+                # Look for JSON array pattern
+                import re
+                json_match = re.search(r'\[.*?\]', response_text, re.DOTALL)
+                if json_match:
+                    suggestions = json.loads(json_match.group())
+                else:
+                    # Try parsing the whole response
+                    suggestions = json.loads(response_text)
+                
+                # Ensure we have exactly 3 suggestions
+                if isinstance(suggestions, list) and len(suggestions) >= 3:
+                    return [str(s).strip() for s in suggestions[:3]]
+                else:
+                    raise ValueError("Invalid suggestions format")
+                    
+            except (json.JSONDecodeError, ValueError) as json_error:
+                print(f"❌ JSON parsing error: {json_error}")
+                print(f"❌ Response text: {response_text}")
+                raise json_error
+                
+        except Exception as e:
+            print(f"❌ Suggestions generation error: {e}")
+            # Fallback suggestions based on service type
+            fallback_suggestions = {
+                "Tax Services": [
+                    f"Find tax preparers in {country}",
+                    f"Compare CPA firms in {country}",
+                    f"Search tax advisors in {country}"
+                ],
+                "Business Setup Services": [
+                    f"Find business formation services in {country}",
+                    f"Compare company registration services in {country}",
+                    f"Search business lawyers in {country}"
+                ],
+                "Migration/Visa Services": [
+                    f"Find immigration lawyers in {country}",
+                    f"Compare visa consultants in {country}",
+                    f"Search migration advisors in {country}"
+                ]
+            }
+            return fallback_suggestions.get(service_type, [
+                f"Find {service_type.lower()} providers in {country}",
+                f"Compare {service_type.lower()} options in {country}",
+                f"Search professional services in {country}"
+            ])
+
+# Initialize orchestrator
+orchestrator = OrchestratorAgent(api_key)
+
+def extract_final_result(chunk: str) -> Optional[str]:
+    """Extract the final result from streaming chunks, filtering out agentic updates"""
+    # Look for final summary patterns
+    final_patterns = [
+        r'## Final Summary.*?(?=\n\n|\Z)',
+        r'## Summary.*?(?=\n\n|\Z)',
+        r'Based on.*?(?=\n\n|\Z)',
+        r'Here are.*?(?=\n\n|\Z)',
+        r'I found.*?(?=\n\n|\Z)',
+    ]
+    
+    for pattern in final_patterns:
+        match = re.search(pattern, chunk, re.DOTALL | re.IGNORECASE)
+        if match:
+            return match.group(0).strip()
+    
+    # If no specific pattern found, check if it's a substantial response (not just status updates)
+    if len(chunk) > 100 and not any(keyword in chunk.lower() for keyword in [
+        'searching', 'analyzing', 'processing', 'formulating', 'executing',
+        'strategy', 'progress', 'found profiles', 'complete'
+    ]):
+        return chunk.strip()
+    
+    return None
+
+def is_status_update(chunk: str) -> bool:
+    """Check if chunk is a status update that should be shown temporarily"""
+    status_keywords = [
+        'searching', 'analyzing', 'processing', 'formulating', 'executing',
+        'strategy', 'progress', 'found profiles', 'complete', 'step'
+    ]
+    
+    chunk_lower = chunk.lower()
+    return any(keyword in chunk_lower for keyword in status_keywords)
+
+async def call_conversational_agent(message: str, country: str, service_type: str, session_id: str = None):
+    """Call the conversational agent directly"""
+    try:
+        # Get API key
+        api_key = os.getenv('ANTHROPIC_API_KEY')
+        if not api_key:
+            return "I apologize, but I'm unable to respond at the moment. Please try again later."
+        
+        import anthropic
+        client = anthropic.Anthropic(api_key=api_key)
+        
+        # Get conversation history from database
+        from session_manager import session_manager
+        history = await session_manager.get_session_history_gradio(session_id) if session_id and session_id != "unknown" else []
+        
+        # Format history for the agent
+        history_text = ""
+        for msg in history[-3:]:  # Last 3 messages for context
+            role = "User" if msg.get("role") == "user" else "Assistant"
+            content = msg.get("content", "")
+            history_text += f"{role}: {content}\n"
+        
+        # Create conversational prompt
+        conversation_prompt = f"""You are a friendly assistant for Growbal Intelligence, a service provider search platform.
+
+User Context:
+- Country: {country}
+- Service Type: {service_type}
+- Recent History: {history_text}
+
+User Message: {message}
+
+Instructions:
+- Provide a friendly, helpful response to the user's message
+- If they're greeting you (hello, hi, etc.), welcome them warmly and briefly explain how you can help
+- If they're asking what you can do, explain that you help find {service_type} providers in {country}
+- If they're thanking you, respond graciously
+- Keep responses concise and friendly (2-3 sentences max)
+- Don't perform searches - just have a conversation
+- Suggest they can ask you to find specific providers when they're ready
+
+Response:"""
+
+        response = client.messages.create(
+            model="claude-3-haiku-20240307",
+            max_tokens=200,
+            messages=[{"role": "user", "content": conversation_prompt}]
+        )
+        
+        return response.content[0].text.strip()
+        
+    except Exception as e:
+        print(f"❌ Conversational agent error: {e}")
+        # Fallback responses
+        message_lower = message.lower()
+        if any(greeting in message_lower for greeting in ["hello", "hi", "hey"]):
+            return f"Hello! I'm here to help you find {service_type.lower()} providers in {country}. What specific services are you looking for?"
+        elif any(thanks in message_lower for thanks in ["thank", "thanks"]):
+            return "You're welcome! Let me know if you need help finding any other service providers."
+        else:
+            return f"I can help you search for {service_type.lower()} providers in {country}. Just tell me what specific services you need."
+
+
+async def call_mcp_tool_streaming_clean(tool_name: str, message: str, system_prompt: str):
+    """Call MCP server tool and stream results with clean status updates"""
+    try:
+        # Import the streaming function directly instead of using MCP
+        from chat.chat_interface import get_search_agent_response
+        
+        final_result = ""
+        current_status = ""
+        
+        # Stream the response directly - now expecting dict format
+        async for response_dict in get_search_agent_response(message, system_prompt):
+            # Extract response and status from the dictionary
+            chunk = response_dict.get("response", "")
+            status = response_dict.get("status", "processing")
+            
+            # Handle different status types
+            if status == "processing":
+                # This is a status update or intermediate response
+                if is_status_update(chunk):
+                    current_status = chunk
+                    yield ("status", current_status)
+                else:
+                    # Check if this contains final result
+                    final_chunk = extract_final_result(chunk)
+                    if final_chunk:
+                        final_result = final_chunk  # Replace, don't append for final results
+                        yield ("final", final_result)
+                    elif len(chunk) > 50:  # Substantial content that's not a status
+                        final_result = chunk  # Replace, don't append
+                        yield ("final", final_result)
+            elif status in ["success", "no_results"]:
+                # This is the final successful result
+                final_result = chunk
+                yield ("final", final_result)
+            elif status in ["error", "cancelled"]:
+                # This is an error or cancellation
+                yield ("error", chunk)
+            elif status == "retrying":
+                # This is a retry status
+                yield ("status", chunk)
+            
+    except Exception as e:
+        print(f"❌ Streaming tool call error: {e}")
+        import traceback
+        traceback.print_exc()
+        yield ("error", f"Error calling search tool: {str(e)}")
+
+# Copy all existing endpoints from main_app_6.py
 @app.get("/", response_class=HTMLResponse)
 async def root():
     """Root endpoint that redirects to country selection"""
     return RedirectResponse(url="/country/")
 
-
 @app.get("/country/", response_class=HTMLResponse)
 async def country_selection_page():
-    """Serve country selection page - NO IFRAME, direct Gradio integration"""
-    
+    """Serve country selection page"""
     # Import COUNTRY_CHOICES from the utils module
     try:
         from growbal_django.accounts.utils import COUNTRY_CHOICES
@@ -148,6 +546,14 @@ async def country_selection_page():
                 font-size: 1rem;
                 opacity: 0.9;
                 color: white;
+            }}
+            .orchestrator-badge {{
+                background: #ff6b6b;
+                color: white;
+                padding: 4px 8px;
+                border-radius: 8px;
+                font-size: 0.75rem;
+                margin-left: 10px;
             }}
             .selection-grid {{
                 display: grid;
@@ -272,27 +678,25 @@ async def country_selection_page():
     </html>
     """
 
-
 @app.post("/proceed-to-chat")
 async def proceed_to_chat(request: Request, country: str = Form(...), service_type: str = Form(...)):
-    """
-    Handle form submission and redirect to chat interface
-    This is the CORRECT way according to FastAPI documentation
-    """
+    """Handle form submission and redirect to chat interface"""
     if not country or not service_type:
         raise HTTPException(status_code=400, detail="Country and service type are required")
     
-    # Generate session ID
-    session_id = str(uuid.uuid4())
+    # Check for existing session with same country/service_type
+    # This handles duplicate prevention automatically
+    session_id, session_data, is_new = await session_manager.get_or_create_session(
+        session_id=request.session.get("session_id"),
+        country=country,
+        service_type=service_type,
+        user_id=None  # Anonymous for now
+    )
     
-    # Store session data
-    session_store[session_id] = {
-        "country": country,
-        "service_type": service_type,
-        "created_at": time.time(),
-        "active": True,
-        "last_activity": time.time()
-    }
+    if is_new:
+        print(f"🆕 Created new session: {session_id}")
+    else:
+        print(f"♻️  Reusing existing session: {session_id}")
     
     # Store in FastAPI session
     request.session["session_id"] = session_id
@@ -301,26 +705,27 @@ async def proceed_to_chat(request: Request, country: str = Form(...), service_ty
     
     print(f"🚀 Redirecting to chat: Session={session_id}, Country={country}, Service Type={service_type}")
     
-    # SERVER-SIDE REDIRECT - this actually works!
-    return RedirectResponse(url=f"/chat/{session_id}/{country}/{service_type}/", status_code=303)
+    # SERVER-SIDE REDIRECT using query parameters
+    redirect_url = f"/chat/?session_id={session_id}&country={country}&service_type={service_type}"
+    return RedirectResponse(url=redirect_url, status_code=303)
 
-
-@app.get("/chat/{session_id}/{country}/{service_type}/", response_class=HTMLResponse)
-async def chat_interface_page(session_id: str, country: str, service_type: str, request: Request):
-    """Serve the chat interface page with proper parameter passing"""
+@app.get("/chat/", response_class=HTMLResponse)
+async def chat_interface_page(request: Request, session_id: str = None, country: str = None, service_type: str = None):
+    """Serve the chat interface page with orchestrator integration"""
     
-    # Verify session exists
-    if session_id not in session_store:
-        session_store[session_id] = {
-            "country": country,
-            "service_type": service_type,
-            "created_at": time.time(),
-            "active": True,
-            "last_activity": time.time()
-        }
+    # Get or create session in database
+    db_session_id, session_data, is_new = await session_manager.get_or_create_session(
+        session_id=session_id,
+        country=country,
+        service_type=service_type,
+        user_id=None  # Anonymous for now
+    )
     
-    # Update session
-    session_store[session_id]["last_activity"] = time.time()
+    # Use the database session ID (in case a different one was returned due to reuse)
+    session_id = db_session_id
+    
+    # Update activity timestamp
+    await session_manager.update_activity(session_id)
     
     # Store in FastAPI session
     request.session["session_id"] = session_id
@@ -329,7 +734,6 @@ async def chat_interface_page(session_id: str, country: str, service_type: str, 
     
     print(f"✅ Chat interface loaded: Session={session_id}, Country={country}, Service Type={service_type}")
     
-    # Direct Gradio mount - NO IFRAME
     return f"""
     <!DOCTYPE html>
     <html>
@@ -372,6 +776,14 @@ async def chat_interface_page(session_id: str, country: str, service_type: str, 
                 color: #198484;
                 font-weight: bold;
             }}
+            .orchestrator-badge {{
+                background: #ff6b6b;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 0.7rem;
+                margin-left: 10px;
+            }}
         </style>
     </head>
     <body>
@@ -382,7 +794,7 @@ async def chat_interface_page(session_id: str, country: str, service_type: str, 
                 <a href="/country/" style="margin-left: 20px; color: #198484; text-decoration: none;">← Back to Country Selection</a>
             </div>
             <div class="gradio-container">
-                <iframe src="/chat-gradio/?session_id={session_id}&country={country}&service_type={service_type}" id="chatFrame" allow="camera; microphone; geolocation"></iframe>
+                <iframe src="/chat-public/?session_id={session_id}&country={country}&service_type={service_type}" id="chatFrame" allow="camera; microphone; geolocation"></iframe>
             </div>
         </div>
         
@@ -397,29 +809,41 @@ async def chat_interface_page(session_id: str, country: str, service_type: str, 
     </html>
     """
 
-
-def create_working_chat_interface():
-    """Create chat interface with PROPER parameter extraction and strict filtering"""
+def create_orchestrator_chat_interface():
+    """Create chat interface with orchestrator and dynamic suggestions"""
     
-    def chat_wrapper(message: str, history: list, request: gr.Request):
-        """
-        Chat wrapper with RELIABLE parameter extraction and strict system prompt
-        """
+    # Session-specific context storage (isolated per tab)
+    session_contexts = {}
+    
+    async def get_dynamic_suggestions(country: str, service_type: str, session_id: str = None) -> List[str]:
+        """Get dynamic suggestions from orchestrator"""
+        try:
+            suggestions = await orchestrator.generate_suggestions(country, service_type, session_id)
+            return suggestions
+        except Exception as e:
+            print(f"❌ Error generating suggestions: {e}")
+            # Fallback suggestions
+            return [
+                f"Find providers in {country}",
+                f"Compare {service_type.lower()} options",
+                f"Search professional services"
+            ]
+    
+    def orchestrator_chat_wrapper(message: str, history: list, request: gr.Request):
+        """Orchestrator-enabled chat wrapper with dynamic suggestions and history loading"""
         session_id = "unknown"
         country = "unknown"
         service_type = "unknown"
         
-        print(f"🔍 Chat wrapper called with message: {message}")
+        print(f"🧠 Orchestrator chat wrapper called with message: {message}")
         
-        # Method 1: Extract from query parameters (MOST RELIABLE)
+        # Extract parameters
         if request and hasattr(request, 'query_params'):
             query_params = dict(request.query_params)
             session_id = query_params.get('session_id', session_id)
             country = query_params.get('country', country)
             service_type = query_params.get('service_type', service_type)
-            print(f"✅ [Query] Session: {session_id}, Country: {country}, Service Type: {service_type}")
         
-        # Method 2: Extract from FastAPI session
         if (session_id == "unknown" or country == "unknown" or service_type == "unknown") and request:
             try:
                 fastapi_request = request.request if hasattr(request, 'request') else request
@@ -427,57 +851,193 @@ def create_working_chat_interface():
                     session_id = fastapi_request.session.get('session_id', session_id)
                     country = fastapi_request.session.get('country', country)
                     service_type = fastapi_request.session.get('service_type', service_type)
-                    print(f"✅ [FastAPI Session] Session: {session_id}, Country: {country}, Service Type: {service_type}")
             except Exception as e:
                 print(f"❌ [FastAPI Session] Error: {e}")
         
-        # Method 3: Check session store
-        if session_id != "unknown" and session_id in session_store:
-            country = session_store[session_id].get("country", country)
-            service_type = session_store[session_id].get("service_type", service_type)
-            print(f"✅ [Session Store] Session: {session_id}, Country: {country}, Service Type: {service_type}")
+        # Create async function to handle database operations and history loading
+        async def get_session_data_and_history():
+            if session_id != "unknown":
+                # Retrieve session from database
+                session_data = await session_manager.get_session(session_id)
+                if session_data:
+                    # Update activity
+                    await session_manager.update_activity(session_id)
+                    
+                    # Load chat history if not already loaded
+                    if not history:  # Only load if history is empty (first load or reload)
+                        try:
+                            db_history = await session_manager.get_session_history_gradio(session_id)
+                            # Convert to ChatInterface format: [[user_msg, bot_msg], ...]
+                            chatbot_history = []
+                            for i in range(0, len(db_history), 2):
+                                if i + 1 < len(db_history):
+                                    user_msg = db_history[i].get("content", "")
+                                    bot_msg = db_history[i + 1].get("content", "")
+                                    chatbot_history.append([user_msg, bot_msg])
+                            
+                            print(f"📚 Loaded {len(chatbot_history)} conversation pairs from database")
+                            return (
+                                session_data.get("country", country), 
+                                session_data.get("service_type", service_type),
+                                chatbot_history
+                            )
+                        except Exception as e:
+                            print(f"❌ Error loading chat history: {e}")
+                    
+                    return (
+                        session_data.get("country", country), 
+                        session_data.get("service_type", service_type),
+                        history  # Use existing history if already loaded
+                    )
+            return country, service_type, history
+        
+        # Run async function to get session data and history with proper event loop handling
+        def run_async_safely(coro):
+            """Safely run async function, handling multiple tabs"""
+            try:
+                # Try to get existing event loop
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # If loop is running (common in Gradio), use asyncio.run_coroutine_threadsafe
+                    import concurrent.futures
+                    import threading
+                    
+                    def run_in_thread():
+                        new_loop = asyncio.new_event_loop()
+                        asyncio.set_event_loop(new_loop)
+                        try:
+                            return new_loop.run_until_complete(coro)
+                        finally:
+                            new_loop.close()
+                    
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                        future = executor.submit(run_in_thread)
+                        return future.result(timeout=30)  # 30 second timeout
+                else:
+                    return loop.run_until_complete(coro)
+            except RuntimeError:
+                # No event loop exists, create a new one
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    return loop.run_until_complete(coro)
+                finally:
+                    loop.close()
+        
+        country, service_type, loaded_history = run_async_safely(get_session_data_and_history())
+        
+        # No need to manipulate history - ChatInterface handles it via initial value
+        # Just process the new message normally
+        
+        # Update session-specific context (isolated per session)
+        session_contexts[session_id] = {
+            "country": country,
+            "service_type": service_type,
+            "session_id": session_id
+        }
         
         print(f"🎯 Final parameters: Session={session_id}, Country={country}, Service Type={service_type}")
         
-        # Import and run the actual chat response function with enhanced system prompt
-        from chat.chat_interface import get_search_agent_response
-        import asyncio
+        # Orchestrator coordination with clean streaming
+        async def orchestrator_response():
+            final_assistant_response = ""  # Track the complete assistant response
+            
+            try:
+                # Store user message immediately
+                if session_id != "unknown":
+                    try:
+                        await session_manager.add_message(session_id, "user", message)
+                    except Exception as db_error:
+                        print(f"❌ Error storing user message: {db_error}")
+                
+                # Analyze message and determine routing
+                analysis = await orchestrator.analyze_and_route(message, session_id, country, service_type)
+                
+                if analysis.get("tool_needed", False):
+                    tool_name = analysis.get("tool_name", "search_service_providers")
+                    
+                    if tool_name == "conversational_agent":
+                        # Handle conversational messages
+                        response = await call_conversational_agent(message, country, service_type, session_id)
+                        final_assistant_response = f"💬 {response}"
+                        yield final_assistant_response
+                        
+                    else:  # search_service_providers
+                        # Show orchestrator analysis first
+                        orchestrator_message = f"🧠 **Orchestrator Analysis**: {analysis.get('summary', message)}"
+                        
+                        # Create system prompt for streaming tool
+                        system_prompt = f"""CRITICAL INSTRUCTIONS:
+1. Search ONLY for providers in {country}
+2. Search ONLY for {service_type} providers  
+3. Query: {analysis.get('summary', message)}"""
+                        
+                        # Track final result
+                        final_result = orchestrator_message + "\n\n"
+                        
+                        # Stream results from the search agent
+                        search_agent_final_output = ""  # Track only the search agent's final output
+                        async for result_type, content in call_mcp_tool_streaming_clean(
+                            tool_name,
+                            analysis.get("summary", message),
+                            system_prompt
+                        ):
+                            if result_type == "status":
+                                # Show current status temporarily
+                                yield orchestrator_message + "\n\n" + content
+                            elif result_type == "final":
+                                # Update final result and capture search agent output
+                                final_result = orchestrator_message + "\n\n" + content
+                                search_agent_final_output = content  # Store only the search agent's output
+                                final_assistant_response = final_result
+                                yield final_result
+                            elif result_type == "error":
+                                error_response = orchestrator_message + "\n\n" + content
+                                search_agent_final_output = content  # Store error as final output
+                                final_assistant_response = error_response
+                                yield error_response
+                        
+                        # Use search agent's final output for session storage if available
+                        if search_agent_final_output:
+                            final_assistant_response = search_agent_final_output
+                    
+                else:
+                    # Direct response without tool (shouldn't happen with updated orchestrator)
+                    response = f"💬 {analysis.get('response', 'I can help you find service providers. Please let me know what you need.')}"
+                    final_assistant_response = response
+                    yield response
+                
+                # Store assistant response in database
+                if session_id != "unknown" and final_assistant_response:
+                    try:
+                        await session_manager.add_message(session_id, "assistant", final_assistant_response)
+                    except Exception as db_error:
+                        print(f"❌ Error storing assistant message: {db_error}")
+                    
+            except Exception as e:
+                error_msg = f"❌ Error: {str(e)}"
+                print(f"❌ Orchestrator error: {e}")
+                yield error_msg
+                
+                # Store error message as assistant response
+                if session_id != "unknown":
+                    try:
+                        await session_manager.add_message(session_id, "assistant", error_msg)
+                    except Exception as db_error:
+                        print(f"❌ Error storing error message: {db_error}")
         
-        # Create system prompt that enforces country and service type filtering
-        system_prompt = f"""CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE EXACTLY:
-
-1. COUNTRY FILTER: You are STRICTLY limited to searching for service providers ONLY in {country}.
-
-2. SERVICE TYPE FILTER: You are STRICTLY limited to searching for {service_type} providers ONLY.
-
-4. USER COMMUNICATION:
-- When presenting results, clearly indicate that all providers are located in {country}
-- When presenting results, clearly indicate that all providers offer {service_type}
-- If no relevant results are found, explain that no {service_type} providers were found in {country}"""
-        
-        # Create async wrapper with system prompt
-        async def get_response():
-            async for chunk in get_search_agent_response(message, system_prompt):
-                yield chunk
-        
-        # Run the async response
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        
-        # Generate and return response
-        gen = get_response()
-        response = ""
+        # Run orchestrator with clean streaming using safe async pattern
+        gen = orchestrator_response()
+        last_response = ""
         try:
             while True:
-                response = loop.run_until_complete(gen.__anext__())
+                response = run_async_safely(gen.__anext__())
+                last_response = response  # Don't accumulate, just update
                 yield response
         except StopAsyncIteration:
             pass
         
-        return response
+        return last_response
     
     # Read the logo file
     logo_path = os.path.join(os.path.dirname(__file__), "growbal_logoheader.svg")
@@ -493,7 +1053,6 @@ def create_working_chat_interface():
             </div>
             """
     
-    # CSS styling
     css = """
     /* Global Container Styling */
     .gradio-container {
@@ -601,6 +1160,16 @@ def create_working_chat_interface():
         margin: 0 auto !important;
     }
     
+    /* Badge Styling */
+    .orchestrator-badge {
+        background: #ff6b6b !important;
+        color: white !important;
+        padding: 2px 6px !important;
+        border-radius: 4px !important;
+        font-size: 0.7rem !important;
+        margin-left: 8px !important;
+    }
+    
     /* Input Field Styling */
     .textbox input, .textbox textarea {
         border: 2px solid rgba(25, 132, 132, 0.2) !important;
@@ -665,31 +1234,35 @@ def create_working_chat_interface():
         font=[gr.themes.GoogleFont("Inter"), "Arial", "sans-serif"]
     )
     
-    # Create chat interface
+    # Function to generate initial suggestions (fallback to static for startup)
+    def get_initial_suggestions():
+        # Return static suggestions for startup to avoid event loop issues
+        # Dynamic suggestions will be generated during conversation
+        return [
+            "Find providers in your selected country",
+            "Compare service options and pricing",
+            "Search for specialized professionals"
+        ]
+    
+    # Create chat interface - we'll handle history loading in the wrapper function
     interface = gr.ChatInterface(
-        fn=chat_wrapper,
+        fn=orchestrator_chat_wrapper,
         type="messages",
         title=f"{logo_html}<div class='app-header'><h1 class='app-title'>Growbal Intelligence</h1><p class='app-description'>AI-powered service provider search</p></div>",
-        examples=[
-            "🏢 I need immigration services for business migration",
-            "💼 Find accounting firms for tech startups", 
-            "💻 Looking for IT consulting with cloud expertise",
-            "⚖️ Need legal services for fintech company setup",
-            "📈 Find B2B marketing agencies with AI experience"
-        ],
+        examples=get_initial_suggestions(),
         cache_examples=False,
         theme=custom_theme,
         css=css,
         textbox=gr.Textbox(
-            placeholder="🔍 Ask me about service providers...",
+            placeholder="Ask me anything - I'll route to the right agent...",
             container=False,
             scale=7,
             lines=1
         ),
-        submit_btn=gr.Button("Search Providers", variant="primary"),
+        submit_btn=gr.Button("Send", variant="primary"),
         retry_btn=None,
         undo_btn=None,
-        clear_btn=gr.Button("🗑️ Clear Chat", variant="stop"),
+        clear_btn=gr.Button("Clear Chat", variant="stop"),
         multimodal=False,
         concurrency_limit=3,
         fill_height=True
@@ -697,61 +1270,79 @@ def create_working_chat_interface():
     
     return interface
 
-
-# Mount the chat interface
-print("🔧 Setting up WORKING chat interface with strict filtering...")
-working_chat_app = create_working_chat_interface()
+# Mount the orchestrator chat interface
+print("🧠 Setting up chat interface with orchestrator...")
+orchestrator_chat_app = create_orchestrator_chat_interface()
 app = gr.mount_gradio_app(
     app,
-    working_chat_app,
-    path="/chat-gradio"
+    orchestrator_chat_app,
+    path="/chat-public"
 )
-print("✅ Working chat app mounted at /chat-gradio with strict country/service filtering")
+print("✅ Chat app mounted at /chat-public")
 
-
-# Health check endpoint
+# Health check and debug endpoints
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
     return {
         "status": "healthy", 
-        "service": "growbal-intelligence-with-strict-filtering",
-        "active_sessions": len(session_store)
+        "service": "growbal-intelligence-orchestrator-dynamic",
+        "version": "7.0.0",
+        "features": ["orchestrator", "dynamic_suggestions", "clean_streaming", "tool_routing"],
+        "active_sessions": await session_manager.get_active_sessions_count()
     }
 
-
-# Debug endpoint
 @app.get("/debug/sessions")
 async def debug_sessions():
-    """Debug endpoint to show all active sessions"""
+    """Debug endpoint to show active sessions count"""
+    active_count = await session_manager.get_active_sessions_count()
     return {
-        "total_sessions": len(session_store),
-        "sessions": session_store
+        "total_active_sessions": active_count,
+        "note": "Session details are now stored in database for security"
     }
 
+@app.get("/debug/suggestions")
+async def debug_suggestions(country: str = "USA", service_type: str = "Tax Services"):
+    """Debug endpoint to test suggestion generation"""
+    try:
+        suggestions = await orchestrator.generate_suggestions(country, service_type, None)
+        return {
+            "country": country,
+            "service_type": service_type,
+            "suggestions": suggestions
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "country": country,
+            "service_type": service_type
+        }
 
 if __name__ == "__main__":
     import uvicorn
     
-    print("🚀 Starting ENHANCED Growbal Intelligence FastAPI application...")
+    print("🚀 Starting Growbal Intelligence FastAPI application...")
     print("📍 Available endpoints:")
     print("   - / → Root (redirects to country selection)")
-    print("   - /country/ → Country selection page (NO IFRAME)")
-    print("   - /proceed-to-chat → Form submission handler (SERVER-SIDE REDIRECT)")
-    print("   - /chat/{session_id}/{country}/{service_type}/ → Chat interface")
-    print("   - /chat-gradio/ → Chat Gradio app (with query params)")
+    print("   - /country/ → Country selection page")
+    print("   - /proceed-to-chat → Form submission handler")
+    print("   - /chat/ → Chat interface with orchestrator")
+    print("   - /chat-public/ → Public chat interface (free tier)")
     print("   - /health → Health check")
     print("   - /debug/sessions → Debug session information")
+    print("   - /debug/suggestions → Debug suggestion generation")
     print()
-    print("🔧 ENHANCEMENTS IN THIS VERSION:")
-    print("   ✅ Strict system prompt enforcement for country/service filtering")
-    print("   ✅ Parameters from request are used to constrain AI search behavior")
-    print("   ✅ Agent will reject requests outside selected country/service")
-    print("   ✅ Search queries automatically include country and service context")
-    print("   ✅ Clear communication about filtering constraints to users")
+    print("🧠 Features:")
+    print("   ✅ Database-backed session management with duplicate prevention")
+    print("   ✅ Intelligent tool routing based on message analysis")
+    print("   ✅ Dynamic suggestions generated by orchestrator")
+    print("   ✅ Context-aware suggestions (country + service + history)")
+    print("   ✅ Clean streaming: shows only current step + final result")
+    print("   ✅ Weekly automatic cleanup of old sessions (>7 days)")
+    print("   ✅ Persistent chat history storage")
     
     uvicorn.run(
-        "main_app_2:app",
+        "main_app_8:app",
         host="0.0.0.0",
         port=8000,
         reload=True,

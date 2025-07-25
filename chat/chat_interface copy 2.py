@@ -1,6 +1,6 @@
 """
-Enhanced Gradio Chat Interface App - With System Prompt Support
-Features: Chat interface that accepts system prompts for strict filtering
+Gradio Chat Interface App - Standalone
+Features: Chat interface that can be embedded in Django with session and country parameters
 """
 import gradio as gr
 import asyncio
@@ -54,8 +54,7 @@ app_state = {
     "current_tasks": set(),
     "cancellation_flag": False,
     "session_id": None,
-    "selected_country": None,
-    "system_prompt": None
+    "selected_country": None
 }
 
 
@@ -278,8 +277,8 @@ def format_streaming_update(update: Dict[str, Any]) -> str:
     return f"Processing... ({update_type})"
 
 
-async def enhanced_workflow_streaming_with_prompt(query: str, system_prompt: str, max_results: int = 7) -> AsyncGenerator[str, None]:
-    """Enhanced workflow that uses the streaming adjudicator with system prompt enforcement"""
+async def enhanced_workflow_streaming(query: str, max_results: int = 7) -> AsyncGenerator[str, None]:
+    """Enhanced workflow that uses the streaming adjudicator for real-time reasoning display"""
     workflow_id = f"workflow_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     
     try:
@@ -287,17 +286,14 @@ async def enhanced_workflow_streaming_with_prompt(query: str, system_prompt: str
         if app_state["cancellation_flag"]:
             yield "**Process Cancelled** - Search was interrupted."
             return
-        
-        # Apply system prompt to the query
-        enhanced_query = f"{system_prompt}\n\nUser Query: {query}"
             
-        # Step 1: Search with enhanced query
+        # Step 1: Search
         yield format_streaming_update({
             "workflow_id": workflow_id,
             "query": query
         })
         
-        search_input = SearchAgentInput(query=enhanced_query, max_results=max_results, minimum_similarity=0.5)
+        search_input = SearchAgentInput(query=query, max_results=max_results, minimum_similarity=0.5)
         
         # Stream through the search agent
         search_response = None
@@ -358,11 +354,11 @@ async def enhanced_workflow_streaming_with_prompt(query: str, system_prompt: str
             yield "No search results found."
             return
         
-        # Step 2: Enhanced Adjudication with real-time streaming and system prompt
+        # Step 2: Enhanced Adjudication with real-time streaming
         from growbal_intelligence.core.models import AdjudicatorAgentInput
         
         adj_input = AdjudicatorAgentInput(
-            original_query=enhanced_query,  # Include system prompt in adjudication
+            original_query=query,
             candidate_profiles=search_data.candidate_profiles,
             relevance_threshold=0.7
         )
@@ -438,9 +434,9 @@ async def enhanced_workflow_streaming_with_prompt(query: str, system_prompt: str
             yield "**No Relevant Profiles Found**\n\nNo providers met the relevance criteria after detailed evaluation."
             return
         
-        # Step 3: Summarization with system prompt context
+        # Step 3: Summarization
         sum_input = SummarizerAgentInput(
-            original_query=enhanced_query,  # Include system prompt in summarization
+            original_query=query,
             relevant_profiles=relevant_profiles,
             summary_style="comprehensive"
         )
@@ -470,21 +466,54 @@ async def enhanced_workflow_streaming_with_prompt(query: str, system_prompt: str
 
 
 async def get_search_agent_response(message: str, system_prompt: str) -> AsyncGenerator[str, None]:
-    """Searches for service providers matching query with system prompt filtering.
-    
-    Args:
-        message: User's search query
-        system_prompt: Filtering criteria for provider selection
-        
-    Yields:
-        Formatted status updates and final analysis results
+    """
+    Main function that MCP server calls - Enhanced workflow with system prompt support
     """
     if not message.strip():
         yield "Please enter a search query."
         return
     
-    # Store system prompt in app state
-    app_state["system_prompt"] = system_prompt
+    # Reset cancellation flag when starting new request
+    app_state["cancellation_flag"] = False
+    
+    # Apply system prompt to the query
+    enhanced_query = f"{system_prompt}\n\nUser Query: {message}"
+    
+    # Retry logic for API overload
+    max_retries = 3
+    retry_delay = 5
+    
+    for attempt in range(max_retries):
+        try:
+            async for response in enhanced_workflow_streaming(enhanced_query):
+                # Check if process was cancelled
+                if app_state["cancellation_flag"]:
+                    yield "**Process Cancelled** - Search was interrupted."
+                    return
+                yield response
+            return  # Success, exit retry loop
+            
+        except Exception as e:
+            error_str = str(e)
+            if "overloaded" in error_str.lower() or "529" in error_str:
+                if attempt < max_retries - 1:
+                    yield f"**API Overloaded** - Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})"
+                    await asyncio.sleep(retry_delay)
+                    retry_delay *= 2
+                    continue
+                else:
+                    yield f"**API Overloaded** - Please try again in a few minutes."
+                    return
+            else:
+                yield f"**Error**: {error_str}\n\nPlease try again later."
+                return
+
+
+async def chat_response(message: str, history: list) -> AsyncGenerator[str, None]:
+    """Enhanced chat response with retry logic and real-time reasoning streaming"""
+    if not message.strip():
+        yield "Please enter a search query."
+        return
     
     # Reset cancellation flag when starting new request
     app_state["cancellation_flag"] = False
@@ -495,7 +524,7 @@ async def get_search_agent_response(message: str, system_prompt: str) -> AsyncGe
     
     for attempt in range(max_retries):
         try:
-            async for response in enhanced_workflow_streaming_with_prompt(message, system_prompt):
+            async for response in enhanced_workflow_streaming(message):
                 # Check if process was cancelled
                 if app_state["cancellation_flag"]:
                     yield "**Process Cancelled** - Search was interrupted."
@@ -531,11 +560,342 @@ def reset_app_state():
     app_state["current_tasks"].clear()
     
     # Reset cancellation flag after a brief delay
+    asyncio.create_task(reset_cancellation_flag())
+
+
+async def reset_cancellation_flag():
+    """Reset the cancellation flag after a brief delay"""
+    await asyncio.sleep(0.5)  # Give time for processes to see the flag
+    app_state["cancellation_flag"] = False
+
+
+def create_chat_interface_app(session_id: str = None, country: str = None):
+    """Create the chat interface with session and country context"""
+    
+    # Store session info in app state
+    app_state["session_id"] = session_id or str(uuid.uuid4())
+    app_state["selected_country"] = country or "Not specified"
+    
+    # Read the logo file
+    logo_path = os.path.join(os.path.dirname(__file__), "growbal_logoheader.svg")
+    logo_html = ""
+    if os.path.exists(logo_path):
+        with open(logo_path, 'r') as f:
+            logo_content = f.read()
+            logo_html = f"""
+            <div style="display: flex; justify-content: center; align-items: center; padding: 10px 0; background: #ffffff; margin-bottom: 10px; border-radius: 15px; box-shadow: 0 8px 32px rgba(43, 85, 86, 0.15);">
+                <div style="max-width: 200px; height: auto;">
+                    {logo_content}
+                </div>
+            </div>
+            """
+    
+    css = """
+    /* Global Container Styling */
+    .gradio-container {
+        max-width: 1400px !important;
+        margin: 0 auto !important;
+        background: linear-gradient(135deg, #f8fffe 0%, #f0f9f9 100%) !important;
+        padding: 20px !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 50px rgba(25, 132, 132, 0.1) !important;
+    }
+    
+    /* Chat Interface Styling */
+    .chat-interface {
+        height: 900px !important;
+        border-radius: 15px !important;
+        overflow: hidden !important;
+        box-shadow: 0 8px 32px rgba(25, 132, 132, 0.08) !important;
+    }
+    
+    /* Chatbot container */
+    .chatbot {
+        height: 750px !important;
+        max-height: 750px !important;
+    }
+    
+    /* Message Styling */
+    .message-wrap {
+        padding: 15px 20px !important;
+        border-radius: 15px !important;
+        margin: 10px 0 !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+        border: 1px solid rgba(25, 132, 132, 0.1) !important;
+    }
+    
+    .message-wrap.user {
+        background: linear-gradient(135deg, #198484 0%, #16a6a6 100%) !important;
+        color: white !important;
+        border: 1px solid rgba(25, 132, 132, 0.3) !important;
+    }
+    
+    .message-wrap.bot {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%) !important;
+        color: #2d3748 !important;
+        border: 1px solid rgba(25, 132, 132, 0.15) !important;
+    }
+    
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(135deg, #198484 0%, #16a6a6 100%) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        padding: 12px 24px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 15px rgba(25, 132, 132, 0.2) !important;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 25px rgba(25, 132, 132, 0.3) !important;
+        background: linear-gradient(135deg, #16a6a6 0%, #198484 100%) !important;
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%) !important;
+        border: 2px solid #198484 !important;
+        color: #198484 !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, #198484 0%, #16a6a6 100%) !important;
+        color: white !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 15px rgba(25, 132, 132, 0.2) !important;
+    }
+    
+    /* Header Styling */
+    .app-header {
+        text-align: center !important;
+        padding: 10px 0 !important;
+        background: linear-gradient(135deg, #2b5556 0%, #21908f 100%) !important;
+        border-radius: 15px !important;
+        margin-bottom: 10px !important;
+        box-shadow: 0 8px 32px rgba(25, 132, 132, 0.15) !important;
+    }
+    
+    .app-title {
+        color: #ffffff !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 4px !important;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .app-description {
+        color: #f8fffe !important;
+        font-size: 0.9rem !important;
+        font-weight: 400 !important;
+        max-width: 600px !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Session info styling */
+    .session-info {
+        background: white !important;
+        padding: 15px !important;
+        border-radius: 10px !important;
+        margin-bottom: 15px !important;
+        box-shadow: 0 4px 15px rgba(25, 132, 132, 0.08) !important;
+        text-align: center !important;
+    }
+    
+    /* Input Field Styling */
+    .textbox input, .textbox textarea {
+        border: 2px solid rgba(25, 132, 132, 0.2) !important;
+        border-radius: 10px !important;
+        padding: 12px !important;
+        font-size: 15px !important;
+        transition: all 0.3s ease !important;
+        background: #ffffff !important;
+    }
+    
+    .textbox input:focus, .textbox textarea:focus {
+        border-color: #198484 !important;
+        box-shadow: 0 0 0 3px rgba(25, 132, 132, 0.1) !important;
+        outline: none !important;
+    }
+    
+    /* Thinking blocks styling */
+    details {
+        margin: 12px 0 !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 20px rgba(25, 132, 132, 0.08) !important;
+    }
+    
+    details summary {
+        transition: all 0.3s ease !important;
+        cursor: pointer !important;
+        background: linear-gradient(135deg, #198484 0%, #16a6a6 100%) !important;
+    }
+    
+    details summary:hover {
+        background: linear-gradient(135deg, #16a6a6 0%, #198484 100%) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 25px rgba(25, 132, 132, 0.15) !important;
+    }
+    
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+        width: 8px !important;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1 !important;
+        border-radius: 4px !important;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #198484 0%, #16a6a6 100%) !important;
+        border-radius: 4px !important;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #16a6a6 0%, #198484 100%) !important;
+    }
+    """
+    
+    # Create custom theme
+    custom_theme = gr.themes.Soft(
+        primary_hue=gr.themes.colors.emerald,
+        secondary_hue=gr.themes.colors.teal,
+        neutral_hue=gr.themes.colors.gray,
+        font=[gr.themes.GoogleFont("Inter"), "Arial", "sans-serif"]
+    )
+    
+    # Custom clear function that resets state before clearing chat
+    def custom_clear():
+        reset_app_state()
+        return []
+    
+    # Create session info HTML
+    session_info = f"""
+    <div class="session-info">
+        <strong>Session:</strong> {app_state["session_id"]} | 
+        <strong>Country:</strong> {app_state["selected_country"]}
+    </div>
+    """
+    
+    # Create back button functionality
+    def go_back():
+        return gr.HTML("""
+        <script>
+            // Send message to parent Django window
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'redirect',
+                    url: '/country/'
+                }, '*');
+            } else {
+                // Fallback for standalone mode
+                window.location.href = '/country/';
+            }
+        </script>
+        <div style="text-align: center; padding: 20px; color: #198484;">
+            <h3>🔙 Returning to country selection...</h3>
+        </div>
+        """)
+    
+    # Create interface
+    interface = gr.ChatInterface(
+        fn=chat_response,
+        type="messages",
+        title=f"{logo_html}<div class='app-header'><h1 class='app-title'>Growbal Intelligence</h1><p class='app-description'>AI-powered service provider search</p></div>",
+        description=session_info,
+        examples=[
+            "🏢 I need immigration services for business migration to UAE",
+            "💼 Find accounting firms in Dubai for tech startups", 
+            "💻 Looking for IT consulting with cloud expertise",
+            "⚖️ Need legal services for fintech company setup",
+            "📈 Find B2B marketing agencies with AI experience"
+        ],
+        cache_examples=False,
+        theme=custom_theme,
+        css=css,
+        textbox=gr.Textbox(
+            placeholder="🔍 Ask me about service providers and watch the AI reasoning...",
+            container=False,
+            scale=7,
+            lines=1
+        ),
+        submit_btn=gr.Button("Search Providers", variant="primary"),
+        retry_btn=None,
+        undo_btn=None,
+        clear_btn=gr.Button("🗑️ Clear Chat", variant="stop"),
+        additional_inputs=[],
+        multimodal=False,
+        concurrency_limit=3,
+        fill_height=True
+    )
+    
+    # Add back button
+    with interface:
+        with gr.Row():
+            back_btn = gr.Button("← Back to Country Selection", variant="secondary")
+            back_output = gr.HTML(visible=False)
+            
+        back_btn.click(go_back, outputs=[back_output])
+    
+    # Try to override the clear button functionality
     try:
-        loop = asyncio.get_event_loop()
-        loop.call_later(0.5, lambda: setattr(app_state, 'cancellation_flag', False))
-    except RuntimeError:
-        # If no event loop, just reset immediately
-        app_state["cancellation_flag"] = False
+        if hasattr(interface, 'clear_btn') and interface.clear_btn:
+            interface.clear_btn.click(
+                fn=custom_clear,
+                outputs=interface.chatbot,
+                queue=False,
+                show_progress=False
+            )
+    except Exception:
+        pass
+    
+    return interface
 
 
+def main():
+    """Main function to launch the chat interface app"""
+    # Parse command line arguments
+    session_id = None
+    country = None
+    port = 7861
+    
+    if len(sys.argv) > 1:
+        try:
+            port = int(sys.argv[1])
+        except ValueError:
+            print("Invalid port number, using default 7861")
+    
+    if len(sys.argv) > 2:
+        session_id = sys.argv[2]
+    
+    if len(sys.argv) > 3:
+        country = sys.argv[3]
+    
+    # Create and launch interface
+    interface = create_chat_interface_app(session_id, country)
+    
+    launch_config = {
+        "server_port": port,
+        "share": False,
+        "debug": True,
+        "inbrowser": not ('--no-browser' in sys.argv),
+        "quiet": False,
+        "favicon_path": None
+    }
+    
+    print(f"🚀 Launching Chat Interface App on port {port}")
+    print(f"   Session: {session_id or 'Generated'}")
+    print(f"   Country: {country or 'Not specified'}")
+    
+    interface.launch(**launch_config)
+
+
+if __name__ == "__main__":
+    main()

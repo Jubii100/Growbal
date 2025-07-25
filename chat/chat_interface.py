@@ -465,12 +465,13 @@ async def enhanced_workflow_streaming(query: str, max_results: int = 7) -> Async
             yield f"**System Error**: {str(e)}\n\nPlease try again later."
 
 
-async def get_search_agent_response(message: str, system_prompt: str) -> AsyncGenerator[str, None]:
+async def get_search_agent_response(message: str, system_prompt: str) -> AsyncGenerator[Dict[str, str], None]:
     """
     Main function that MCP server calls - Enhanced workflow with system prompt support
+    Returns dict with 'response' and 'status' fields
     """
     if not message.strip():
-        yield "Please enter a search query."
+        yield {"response": "Please enter a search query.", "status": "error"}
         return
     
     # Reset cancellation flag when starting new request
@@ -485,32 +486,49 @@ async def get_search_agent_response(message: str, system_prompt: str) -> AsyncGe
     
     for attempt in range(max_retries):
         try:
+            final_response = ""
             async for response in enhanced_workflow_streaming(enhanced_query):
                 # Check if process was cancelled
                 if app_state["cancellation_flag"]:
-                    yield "**Process Cancelled** - Search was interrupted."
+                    yield {"response": "**Process Cancelled** - Search was interrupted.", "status": "cancelled"}
                     return
-                yield response
+                
+                # Determine status based on response content
+                if "**Analysis Complete!**" in response:
+                    final_response = response
+                    yield {"response": response, "status": "success"}
+                elif "**No Results Found**" in response or "**No Relevant Profiles Found**" in response:
+                    final_response = response
+                    yield {"response": response, "status": "no_results"}
+                elif "**Error**" in response or "**System Error**" in response:
+                    final_response = response
+                    yield {"response": response, "status": "error"}
+                elif "**Process Cancelled**" in response:
+                    final_response = response
+                    yield {"response": response, "status": "cancelled"}
+                else:
+                    # This is a status update or intermediate response
+                    yield {"response": response, "status": "processing"}
             return  # Success, exit retry loop
             
         except Exception as e:
             error_str = str(e)
             if "overloaded" in error_str.lower() or "529" in error_str:
                 if attempt < max_retries - 1:
-                    yield f"**API Overloaded** - Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})"
+                    yield {"response": f"**API Overloaded** - Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})", "status": "retrying"}
                     await asyncio.sleep(retry_delay)
                     retry_delay *= 2
                     continue
                 else:
-                    yield f"**API Overloaded** - Please try again in a few minutes."
+                    yield {"response": f"**API Overloaded** - Please try again in a few minutes.", "status": "error"}
                     return
             else:
-                yield f"**Error**: {error_str}\n\nPlease try again later."
+                yield {"response": f"**Error**: {error_str}\n\nPlease try again later.", "status": "error"}
                 return
 
 
 async def chat_response(message: str, history: list) -> AsyncGenerator[str, None]:
-    """Enhanced chat response with retry logic and real-time reasoning streaming"""
+    """Enhanced chat response with retry logic and real-time reasoning streaming - for Gradio interface"""
     if not message.strip():
         yield "Please enter a search query."
         return

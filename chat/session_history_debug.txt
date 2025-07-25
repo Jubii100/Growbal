@@ -1,0 +1,36 @@
+=== SESSION HISTORY DEBUG ===
+Session ID: 7637ff26-878f-4c04-80da-296a8742adbf
+Country: Bangladesh
+Service Type: Business Setup Services
+Created: 2025-07-25 11:03:48.898338+00:00
+Last Activity: 2025-07-25 11:03:55.677754+00:00
+Total Messages: 2
+==================================================
+
+Message #1
+Role: USER
+Time: 2025-07-25 11:03:52.545258+00:00
+Content: hi
+------------------------------
+
+Message #2
+Role: ASSISTANT
+Time: 2025-07-25 11:03:55.676322+00:00
+Content: 💬 Hello there! Welcome to Growbal Intelligence. I'm here to help you find the best Business Setup Services providers in Bangladesh. How can I assist you today? If you're ready, just let me know what kind of services you're looking for and I'll be happy to suggest some options. Otherwise, feel free to ask me anything – I'm here to help!
+------------------------------
+
+
+=== GRADIO FORMAT HISTORY ===
+[
+  {
+    "role": "user",
+    "content": "hi"
+  },
+  {
+    "role": "assistant",
+    "content": "\ud83d\udcac Hello there! Welcome to Growbal Intelligence. I'm here to help you find the best Business Setup Services providers in Bangladesh. How can I assist you today? If you're ready, just let me know what kind of services you're looking for and I'll be happy to suggest some options. Otherwise, feel free to ask me anything \u2013 I'm here to help!"
+  }
+]
+
+=== END OF HISTORY ===
+File updated at: 2025-07-25 11:03:55.680055+00:00
