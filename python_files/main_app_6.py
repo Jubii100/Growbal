@@ -1,7 +1,7 @@
 """
 ORCHESTRATOR-ENABLED FastAPI application with DYNAMIC SUGGESTIONS
 - Uses orchestrator agent to coordinate tool selection
-- Provides service provider search with real-time streaming
+- Integrates with MCP server for service provider search
 - Shows only current step and final response (no accumulated agentic history)
 - Provides dynamic suggestions based on country, service type, and conversation history
 """
@@ -17,6 +17,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from contextlib import asynccontextmanager
 import gradio as gr
 from dotenv import load_dotenv
+from mcp import StdioServerParameters
 from session_manager import session_manager
 from orchestrator_interface import create_orchestrator_chat_interface, OrchestratorAgent
 
@@ -35,6 +36,13 @@ if project_root not in sys.path:
 
 # Session manager handles all session operations with database backing
 # No longer using in-memory dictionary storage
+
+# MCP Server Configuration
+server_params = StdioServerParameters(
+    command="python",
+    args=[os.path.join(os.path.dirname(__file__), "server.py")],
+    env=None
+)
 
 # Background task to clean up old sessions
 async def cleanup_old_sessions():
@@ -325,6 +333,7 @@ async def proceed_to_chat(request: Request, country: str = Form(...), service_ty
     # Check for existing session with same country/service_type
     # This handles duplicate prevention automatically
     session_id, session_data, is_new = await session_manager.get_or_create_session(
+        session_id=request.session.get("session_id"),
         country=country,
         service_type=service_type,
         user_id=None  # Anonymous for now
@@ -343,25 +352,24 @@ async def proceed_to_chat(request: Request, country: str = Form(...), service_ty
     print(f"🚀 Redirecting to chat: Session={session_id}, Country={country}, Service Type={service_type}")
     
     # SERVER-SIDE REDIRECT using query parameters
-    redirect_url = f"/chat/?session_id={session_id}"
+    redirect_url = f"/chat/?session_id={session_id}&country={country}&service_type={service_type}"
     return RedirectResponse(url=redirect_url, status_code=303)
 
 @app.get("/chat/", response_class=HTMLResponse)
-async def chat_interface_page(request: Request, session_id: str = None):
+async def chat_interface_page(request: Request, session_id: str = None, country: str = None, service_type: str = None):
     """Serve the chat interface page with orchestrator integration"""
     
     # Get or create session in database
-    session = await session_manager.get_session(session_id)
-    if session is None:
-        # either 404 or redirect back to /country/
-        raise HTTPException(404, "Invalid session")
+    db_session_id, session_data, is_new = await session_manager.get_or_create_session(
+        session_id=session_id,
+        country=country,
+        service_type=service_type,
+        user_id=None  # Anonymous for now
+    )
     
     # Use the database session ID (in case a different one was returned due to reuse)
-    session_id = str(session.get("session_id"))
-    country = str(session.get("country"))
-    service_type = str(session.get("service_type"))
-    print(f"🚀 Chat interface loaded: Session={session_id}, Country={country}, Service Type={service_type}")
-
+    session_id = db_session_id
+    
     # Update activity timestamp
     await session_manager.update_activity(session_id)
     
@@ -622,7 +630,7 @@ async def chat_interface_page(request: Request, session_id: str = None):
                     if (assistantMsg) {{
                         historyHTML += `
                             <div class="chat-message assistant">
-                                <div class="message-role assistant">Growbal Intelligence</div>
+                                <div class="message-role assistant">Assistant</div>
                                 <div class="message-content">${{escapeHtml(assistantMsg)}}</div>
                             </div>
                         `;

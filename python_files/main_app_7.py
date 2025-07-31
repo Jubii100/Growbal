@@ -1,7 +1,7 @@
 """
 ORCHESTRATOR-ENABLED FastAPI application with DYNAMIC SUGGESTIONS
 - Uses orchestrator agent to coordinate tool selection
-- Provides service provider search with real-time streaming
+- Integrates with MCP server for service provider search
 - Shows only current step and final response (no accumulated agentic history)
 - Provides dynamic suggestions based on country, service type, and conversation history
 """
@@ -9,7 +9,6 @@ ORCHESTRATOR-ENABLED FastAPI application with DYNAMIC SUGGESTIONS
 import os
 import sys
 import asyncio
-import json
 from fastapi import FastAPI, Request, HTTPException, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +16,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from contextlib import asynccontextmanager
 import gradio as gr
 from dotenv import load_dotenv
+from mcp import StdioServerParameters
 from session_manager import session_manager
 from orchestrator_interface import create_orchestrator_chat_interface, OrchestratorAgent
 
@@ -35,6 +35,13 @@ if project_root not in sys.path:
 
 # Session manager handles all session operations with database backing
 # No longer using in-memory dictionary storage
+
+# MCP Server Configuration
+server_params = StdioServerParameters(
+    command="python",
+    args=[os.path.join(os.path.dirname(__file__), "server.py")],
+    env=None
+)
 
 # Background task to clean up old sessions
 async def cleanup_old_sessions():
@@ -325,6 +332,7 @@ async def proceed_to_chat(request: Request, country: str = Form(...), service_ty
     # Check for existing session with same country/service_type
     # This handles duplicate prevention automatically
     session_id, session_data, is_new = await session_manager.get_or_create_session(
+        session_id=request.session.get("session_id"),
         country=country,
         service_type=service_type,
         user_id=None  # Anonymous for now
@@ -343,25 +351,24 @@ async def proceed_to_chat(request: Request, country: str = Form(...), service_ty
     print(f"🚀 Redirecting to chat: Session={session_id}, Country={country}, Service Type={service_type}")
     
     # SERVER-SIDE REDIRECT using query parameters
-    redirect_url = f"/chat/?session_id={session_id}"
+    redirect_url = f"/chat/?session_id={session_id}&country={country}&service_type={service_type}"
     return RedirectResponse(url=redirect_url, status_code=303)
 
 @app.get("/chat/", response_class=HTMLResponse)
-async def chat_interface_page(request: Request, session_id: str = None):
+async def chat_interface_page(request: Request, session_id: str = None, country: str = None, service_type: str = None):
     """Serve the chat interface page with orchestrator integration"""
     
     # Get or create session in database
-    session = await session_manager.get_session(session_id)
-    if session is None:
-        # either 404 or redirect back to /country/
-        raise HTTPException(404, "Invalid session")
+    db_session_id, session_data, is_new = await session_manager.get_or_create_session(
+        session_id=session_id,
+        country=country,
+        service_type=service_type,
+        user_id=None  # Anonymous for now
+    )
     
     # Use the database session ID (in case a different one was returned due to reuse)
-    session_id = str(session.get("session_id"))
-    country = str(session.get("country"))
-    service_type = str(session.get("service_type"))
-    print(f"🚀 Chat interface loaded: Session={session_id}, Country={country}, Service Type={service_type}")
-
+    session_id = db_session_id
+    
     # Update activity timestamp
     await session_manager.update_activity(session_id)
     
@@ -369,18 +376,12 @@ async def chat_interface_page(request: Request, session_id: str = None):
     await orchestrator.update_session_history(session_id)
     print(orchestrator.session_history)
     
-    # Get session history for display
-    session_history = orchestrator.session_history if hasattr(orchestrator, 'session_history') else []
-    
     # Store in FastAPI session
     request.session["session_id"] = session_id
     request.session["country"] = country
     request.session["service_type"] = service_type
     
     print(f"✅ Chat interface loaded: Session={session_id}, Country={country}, Service Type={service_type}")
-    
-    # Format session history for JavaScript
-    history_json = json.dumps(session_history)
     
     return f"""
     <!DOCTYPE html>
@@ -432,125 +433,6 @@ async def chat_interface_page(request: Request, session_id: str = None):
                 font-size: 0.7rem;
                 margin-left: 10px;
             }}
-            
-            /* Chat History Styles */
-            .chat-history-container {{
-                background: white;
-                border-bottom: 1px solid rgba(25, 132, 132, 0.1);
-                transition: max-height 0.3s ease-in-out;
-                overflow: hidden;
-            }}
-            
-            .chat-history-header {{
-                padding: 12px 20px;
-                background: linear-gradient(135deg, #f8fffe 0%, #ffffff 100%);
-                border-bottom: 1px solid rgba(25, 132, 132, 0.1);
-                cursor: pointer;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                user-select: none;
-            }}
-            
-            .chat-history-header:hover {{
-                background: linear-gradient(135deg, #f0f9f9 0%, #f8fffe 100%);
-            }}
-            
-            .chat-history-title {{
-                font-weight: 600;
-                color: #2b5556;
-                font-size: 0.95rem;
-            }}
-            
-            .chat-history-toggle {{
-                color: #198484;
-                font-size: 1.2rem;
-                transition: transform 0.3s ease;
-            }}
-            
-            .chat-history-toggle.collapsed {{
-                transform: rotate(180deg);
-            }}
-            
-            .chat-history-content {{
-                max-height: 300px;
-                overflow-y: auto;
-                padding: 0;
-                background: #fafbfc;
-            }}
-            
-            .chat-history-content::-webkit-scrollbar {{
-                width: 8px;
-            }}
-            
-            .chat-history-content::-webkit-scrollbar-track {{
-                background: #f1f1f1;
-                border-radius: 4px;
-            }}
-            
-            .chat-history-content::-webkit-scrollbar-thumb {{
-                background: linear-gradient(135deg, #198484 0%, #16a6a6 100%);
-                border-radius: 4px;
-            }}
-            
-            .chat-history-content::-webkit-scrollbar-thumb:hover {{
-                background: linear-gradient(135deg, #16a6a6 0%, #198484 100%);
-            }}
-            
-            .chat-message {{
-                padding: 12px 20px;
-                border-bottom: 1px solid rgba(25, 132, 132, 0.05);
-            }}
-            
-            .chat-message:last-child {{
-                border-bottom: none;
-            }}
-            
-            .chat-message.user {{
-                background: linear-gradient(135deg, #f0f9f9 0%, #f8fffe 100%);
-            }}
-            
-            .chat-message.assistant {{
-                background: white;
-            }}
-            
-            .message-role {{
-                font-weight: 600;
-                font-size: 0.85rem;
-                margin-bottom: 4px;
-            }}
-            
-            .message-role.user {{
-                color: #198484;
-            }}
-            
-            .message-role.assistant {{
-                color: #2b5556;
-            }}
-            
-            .message-content {{
-                font-size: 0.9rem;
-                line-height: 1.5;
-                color: #4a5568;
-                white-space: pre-wrap;
-                word-wrap: break-word;
-            }}
-            
-            .no-history {{
-                padding: 30px;
-                text-align: center;
-                color: #718096;
-                font-size: 0.9rem;
-            }}
-            
-            /* Collapsed state */
-            .chat-history-container.collapsed {{
-                max-height: 48px;
-            }}
-            
-            .chat-history-container.expanded {{
-                max-height: 348px; /* header (48px) + content (300px) */
-            }}
         </style>
     </head>
     <body>
@@ -560,95 +442,16 @@ async def chat_interface_page(request: Request, session_id: str = None):
                 <span class="session-info-highlight">💼 Service Type:</span> {service_type}
                 <a href="/country/" style="margin-left: 20px; color: #198484; text-decoration: none;">← Back to Country Selection</a>
             </div>
-            
-            <!-- Chat History Component -->
-            <div id="chatHistoryContainer" class="chat-history-container collapsed">
-                <div class="chat-history-header" onclick="toggleChatHistory()">
-                    <span class="chat-history-title">📜 Previous Chat History</span>
-                    <span id="toggleIcon" class="chat-history-toggle collapsed">⌃</span>
-                </div>
-                <div id="chatHistoryContent" class="chat-history-content">
-                    <!-- History will be populated by JavaScript -->
-                </div>
-            </div>
-            
             <div class="gradio-container">
                 <iframe src="/chat-public/?session_id={session_id}&country={country}&service_type={service_type}" id="chatFrame" allow="camera; microphone; geolocation"></iframe>
             </div>
         </div>
         
         <script>
-            // Session history data
-            const sessionHistory = {history_json};
-            
-            // Toggle chat history visibility
-            function toggleChatHistory() {{
-                const container = document.getElementById('chatHistoryContainer');
-                const toggleIcon = document.getElementById('toggleIcon');
-                
-                if (container.classList.contains('collapsed')) {{
-                    container.classList.remove('collapsed');
-                    container.classList.add('expanded');
-                    toggleIcon.classList.remove('collapsed');
-                }} else {{
-                    container.classList.remove('expanded');
-                    container.classList.add('collapsed');
-                    toggleIcon.classList.add('collapsed');
-                }}
-            }}
-            
-            // Populate chat history
-            function populateChatHistory() {{
-                const contentDiv = document.getElementById('chatHistoryContent');
-                
-                if (!sessionHistory || sessionHistory.length === 0) {{
-                    contentDiv.innerHTML = '<div class="no-history">No previous chat history for this session</div>';
-                    return;
-                }}
-                
-                let historyHTML = '';
-                sessionHistory.forEach(([userMsg, assistantMsg]) => {{
-                    // User message
-                    if (userMsg) {{
-                        historyHTML += `
-                            <div class="chat-message user">
-                                <div class="message-role user">You</div>
-                                <div class="message-content">${{escapeHtml(userMsg)}}</div>
-                            </div>
-                        `;
-                    }}
-                    
-                    // Assistant message
-                    if (assistantMsg) {{
-                        historyHTML += `
-                            <div class="chat-message assistant">
-                                <div class="message-role assistant">Growbal Intelligence</div>
-                                <div class="message-content">${{escapeHtml(assistantMsg)}}</div>
-                            </div>
-                        `;
-                    }}
-                }});
-                
-                contentDiv.innerHTML = historyHTML;
-            }}
-            
-            // Escape HTML to prevent XSS
-            function escapeHtml(text) {{
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }}
-            
-            // Initialize on page load
-            document.addEventListener('DOMContentLoaded', function() {{
-                populateChatHistory();
-            }});
-            
             console.log('✅ Chat interface loaded with:');
             console.log('  Session ID: {session_id}');
             console.log('  Country: {country}');
             console.log('  Service Type: {service_type}');
-            console.log('  History items:', sessionHistory.length);
             console.log('  URL: ' + window.location.href);
         </script>
     </body>

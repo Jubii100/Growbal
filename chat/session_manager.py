@@ -52,6 +52,7 @@ class SessionManager:
         with transaction.atomic():
             # If session_id provided, try to retrieve it
             if session_id:
+                print(f"🔍 Attempting to retrieve session with ID: {session_id}")
                 try:
                     session = ChatSession.objects.select_for_update().get(
                         session_id=session_id
@@ -79,29 +80,6 @@ class SessionManager:
                 except ChatSession.DoesNotExist:
                     # Invalid session ID - will create new one
                     session_id = None
-            
-            # Check for existing session with same country/service_type/user
-            if country and service_type:
-                # Look for recent active session with same parameters
-                existing_session = ChatSession.objects.filter(
-                    country=country,
-                    service_type=service_type,
-                    user_id=user_id,
-                    is_active=True,
-                    last_activity__gte=timezone.now() - timezone.timedelta(hours=24)
-                ).order_by('-last_activity').first()
-                
-                if existing_session:
-                    # Reuse existing session
-                    existing_session.update_activity()
-                    return str(existing_session.session_id), {
-                        "country": existing_session.country,
-                        "service_type": existing_session.service_type,
-                        "created_at": existing_session.created_at.timestamp(),
-                        "active": existing_session.is_active,
-                        "last_activity": existing_session.last_activity.timestamp(),
-                        "user_id": existing_session.user_id
-                    }, False
             
             # Create new session
             new_session_id = str(uuid.uuid4())
@@ -137,6 +115,7 @@ class SessionManager:
         try:
             session = ChatSession.objects.get(session_id=session_id)
             return {
+                "session_id": session.session_id,
                 "country": session.country,
                 "service_type": session.service_type,
                 "created_at": session.created_at.timestamp(),
