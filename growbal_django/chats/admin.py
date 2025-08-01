@@ -21,16 +21,17 @@ class ChatSessionAdmin(admin.ModelAdmin):
     """Admin interface for ChatSession model"""
     
     list_display = (
-        'session_id_short', 'user_link', 'country', 'service_type_display',
-        'is_active', 'message_count', 'duration', 'created_at', 'last_activity'
+        'session_id_short', 'title', 'user_link', 'auth_user_id', 'authentication_method_display',
+        'is_authenticated', 'country', 'service_type_display', 'is_active',
+        'message_count', 'duration', 'created_at', 'last_activity'
     )
     list_filter = (
-        'is_active', 'service_type', 'country', 
-        'created_at', 'last_activity'
+        'is_active', 'is_authenticated', 'authentication_method', 'service_type',
+        'country', 'created_at', 'last_activity'
     )
     search_fields = (
-        'session_id', 'user__email', 'user__username', 
-        'country', 'messages__content'
+        'session_id', 'title', 'auth_user_id', 'user__email', 'user__username',
+        'country', 'messages__content', 'authentication_method'
     )
     readonly_fields = (
         'session_id', 'created_at', 'last_activity',
@@ -38,7 +39,10 @@ class ChatSessionAdmin(admin.ModelAdmin):
     )
     fieldsets = (
         ('Session Information', {
-            'fields': ('session_id', 'user', 'country', 'service_type', 'is_active')
+            'fields': (
+                'session_id', 'title', 'user', 'auth_user_id', 'is_authenticated',
+                'authentication_method', 'country', 'service_type', 'is_active'
+            )
         }),
         ('Timestamps', {
             'fields': ('created_at', 'last_activity', 'duration')
@@ -128,6 +132,11 @@ class ChatSessionAdmin(admin.ModelAdmin):
         preview_html += '</div>'
         return format_html(preview_html)
     chat_preview.short_description = 'Recent Messages'
+
+    def authentication_method_display(self, obj):
+        """Display human-readable authentication method"""
+        return obj.get_authentication_method_display()
+    authentication_method_display.short_description = 'Auth Method'
 
 
 @admin.register(ChatMessage)

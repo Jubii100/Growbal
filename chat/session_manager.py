@@ -74,7 +74,8 @@ class SessionManager:
                             "created_at": session.created_at.timestamp(),
                             "active": session.is_active,
                             "last_activity": session.last_activity.timestamp(),
-                            "user_id": session.user_id
+                            "user_id": session.auth_user_id,
+                            "title": session.title
                         }, False
                         
                 except ChatSession.DoesNotExist:
@@ -87,7 +88,9 @@ class SessionManager:
                 session_id=new_session_id,
                 country=country or "unknown",
                 service_type=service_type or "unknown",
-                user_id=user_id,
+                auth_user_id=user_id,
+                is_authenticated=bool(user_id),
+                authentication_method='form' if user_id else 'anonymous',
                 is_active=True
             )
             
@@ -97,7 +100,8 @@ class SessionManager:
                 "created_at": session.created_at.timestamp(),
                 "active": session.is_active,
                 "last_activity": session.last_activity.timestamp(),
-                "user_id": session.user_id
+                "user_id": session.auth_user_id,
+                "title": session.title
             }, True
     
     @staticmethod
@@ -121,7 +125,8 @@ class SessionManager:
                 "created_at": session.created_at.timestamp(),
                 "active": session.is_active,
                 "last_activity": session.last_activity.timestamp(),
-                "user_id": session.user_id
+                "user_id": session.auth_user_id,
+                "title": session.title
             }
         except ChatSession.DoesNotExist:
             return None
@@ -263,6 +268,90 @@ class SessionManager:
             is_active=True,
             last_activity__lt=cutoff_time
         ).update(is_active=False)
+    
+    @staticmethod
+    @sync_to_async
+    def associate_session_with_user(session_id: str, user_id: int, auth_method: str = "form") -> bool:
+        """
+        Associate an existing session with an authenticated user
+        
+        Args:
+            session_id: Session ID to update
+            user_id: Authenticated user ID from MySQL
+            auth_method: Authentication method used
+            
+        Returns:
+            True if updated successfully, False otherwise
+        """
+        try:
+            session = ChatSession.objects.get(session_id=session_id)
+            session.auth_user_id = user_id
+            session.is_authenticated = True
+            session.authentication_method = auth_method
+            session.save(update_fields=['auth_user_id', 'is_authenticated', 'authentication_method'])
+            
+            return True
+        except ChatSession.DoesNotExist:
+            return False
+
+    @staticmethod
+    @sync_to_async
+    def get_user_sessions(user_id: int, active_only: bool = True) -> list:
+        """
+        Get all sessions for a specific authenticated user
+        
+        Args:
+            user_id: User ID to search for
+            active_only: Whether to return only active sessions
+            
+        Returns:
+            List of session dictionaries
+        """
+        try:
+            sessions_query = ChatSession.objects.filter(auth_user_id=user_id)
+            
+            if active_only:
+                sessions_query = sessions_query.filter(is_active=True)
+            
+            sessions = sessions_query.order_by('-last_activity')
+            
+            return [
+                {
+                    "session_id": session.session_id,
+                    "country": session.country,
+                    "service_type": session.service_type,
+                    "created_at": session.created_at.timestamp(),
+                    "last_activity": session.last_activity.timestamp(),
+                    "is_active": session.is_active,
+                    "authentication_method": session.authentication_method,
+                    "title": session.title or f"{session.get_service_type_display()} - {session.country}"
+                }
+                for session in sessions
+            ]
+        except Exception as e:
+            print(f"Error retrieving user sessions: {e}")
+            return []
+    
+    @staticmethod
+    @sync_to_async
+    def update_session_title(session_id: str, title: str) -> bool:
+        """
+        Update the title of a session.
+        
+        Args:
+            session_id: Session ID to update
+            title: New title for the session
+            
+        Returns:
+            True if updated successfully, False otherwise
+        """
+        try:
+            session = ChatSession.objects.get(session_id=session_id)
+            session.title = title[:200]  # Ensure it fits in the field
+            session.save(update_fields=['title'])
+            return True
+        except ChatSession.DoesNotExist:
+            return False
     
     @staticmethod
     def _write_history_debug_file(session_id: str):

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Growbal Intelligence - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #f8fffe 0%, #f0f9f9 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            max-width: 400px;
+            width: 90%;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(25, 132, 132, 0.1);
+            text-align: center;
+        }
+        .logo-container {
+            margin-bottom: 30px;
+        }
+        .app-header {
+            background: linear-gradient(135deg, #2b5556 0%, #21908f 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .app-description {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .login-form {
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #2b5556;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid rgba(25, 132, 132, 0.2);
+            border-radius: 10px;
+            background: white;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        .form-input:focus {
+            border-color: #198484;
+            box-shadow: 0 0 0 3px rgba(25, 132, 132, 0.1);
+            outline: none;
+        }
+        .form-input.error {
+            border-color: #dc3545;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .checkbox-input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #198484 0%, #16a6a6 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(25, 132, 132, 0.2);
+            width: 100%;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(25, 132, 132, 0.3);
+            background: linear-gradient(135deg, #16a6a6 0%, #198484 100%);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            font-size: 0.9rem;
+        }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            font-size: 0.9rem;
+        }
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .forgot-password a {
+            color: #198484;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(25, 132, 132, 0.1);
+        }
+        .back-link a {
+            color: #198484;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        .loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #198484;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            .login-container {
+                width: 95%;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo placeholder -->
+        <div class="logo-container">
+            {{ logo_html|safe }}
+        </div>
+        
+        <div class="app-header">
+            <h1 class="app-title">Growbal Intelligence</h1>
+            <p class="app-description">Please sign in to continue</p>
+        </div>
+        
+        <!-- Error message display -->
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <!-- Success message display -->
+        {% if success %}
+        <div class="success-message">
+            {{ success }}
+        </div>
+        {% endif %}
+        
+        <form class="login-form" method="post" action="/login" id="loginForm">
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-input" 
+                    required 
+                    value="{{ email or '' }}"
+                    autocomplete="email"
+                    placeholder="Enter your email"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    required
+                    autocomplete="current-password"
+                    placeholder="Enter your password"
+                >
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember_me" name="remember_me" class="checkbox-input">
+                <label for="remember_me" class="checkbox-label">Remember me for 30 days</label>
+            </div>
+            
+            <button type="submit" class="btn-primary" id="loginButton">
+                Sign In
+            </button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <span>Signing in...</span>
+            </div>
+        </form>
+        
+        <div class="forgot-password">
+            <a href="#" onclick="alert('Contact your administrator for password reset')">
+                Forgot your password?
+            </a>
+        </div>
+        
+        <div class="back-link">
+            <a href="/">← Back to Home</a>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            const button = document.getElementById('loginButton');
+            const loading = document.getElementById('loading');
+            
+            button.style.display = 'none';
+            loading.style.display = 'flex';
+        });
+        
+        // Auto-focus email field
+        document.getElementById('email').focus();
+        
+        // Clear error styling on input
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('error');
+            });
+        });
+    </script>
+</body>
+</html>

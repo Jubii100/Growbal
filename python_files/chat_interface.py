@@ -6,38 +6,6 @@ from typing import Dict, Any, Optional, List
 import gradio as gr
 from session_manager import session_manager
 
-async def generate_session_title(assistant_response: str, api_key: str) -> str:
-    """Generate a concise title for a chat session based on assistant response"""
-    try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=api_key)
-        
-        # Minimal prompt for title generation
-        title_prompt = f"""Based on this response, create a brief yet descriptive title (max 70 chars) for the chat session, without qoutes or other formatting:
-
-Response: {assistant_response[:1000]}
-
-Title:"""
-        
-        response = client.messages.create(
-            model="claude-3-haiku-20240307",
-            max_tokens=50,
-            messages=[{"role": "user", "content": title_prompt}]
-        )
-        
-        title = response.content[0].text.strip()
-        print(f"🔍 Generated title: {title}")
-        # Ensure title is not too long
-        if len(title) > 200:
-            title = title[:197] + "..."
-        
-        return title
-        
-    except Exception as e:
-        print(f"❌ Title generation error: {e}")
-        # Return empty string on error - caller will handle
-        return ""
-
 class OrchestratorAgent:
     """Orchestrator agent for tool selection and query summarization"""
     
@@ -648,16 +616,6 @@ def create_orchestrator_chat_interface(orchestrator: OrchestratorAgent):
                 if session_id != "unknown" and final_assistant_response:
                     try:
                         await session_manager.add_message(session_id, "assistant", final_assistant_response)
-                        
-                        # Generate title if session doesn't have one
-                        session_data = await session_manager.get_session(session_id)
-                        if session_data and not session_data.get('title'):
-                            # Generate title using the assistant response
-                            title = await generate_session_title(final_assistant_response, orchestrator.api_key)
-                            if title:
-                                await session_manager.update_session_title(session_id, title)
-                                print(f"✅ Generated session title: {title}")
-                                
                     except Exception as db_error:
                         print(f"❌ Error storing assistant message: {db_error}")
                     

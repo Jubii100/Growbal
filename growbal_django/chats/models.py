@@ -29,6 +29,25 @@ class ChatSession(models.Model):
         blank=True,
         help_text="User associated with this chat session (optional)"
     )
+    auth_user_id = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="External MySQL user ID for authenticated users"
+    )
+    is_authenticated = models.BooleanField(
+        default=False,
+        help_text="Whether this session is authenticated"
+    )
+    authentication_method = models.CharField(
+        max_length=20,
+        choices=[
+            ('form', 'Form Login'),
+            ('sso', 'Single Sign-On'),
+            ('anonymous', 'Anonymous')
+        ],
+        default='anonymous',
+        help_text="Method used for authentication"
+    )
     country = models.CharField(
         max_length=100,
         help_text="Country selected for service search"
@@ -37,6 +56,11 @@ class ChatSession(models.Model):
         max_length=50,
         choices=SERVICE_TYPE_CHOICES,
         help_text="Type of service being searched"
+    )
+    title = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Optional title for the chat session"
     )
     is_active = models.BooleanField(
         default=True,
