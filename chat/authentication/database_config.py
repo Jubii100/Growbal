@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv()
+load_dotenv('1.env')
 
 class MySQLUserDatabase:
     """MySQL database connection for user authentication"""
