@@ -7,6 +7,7 @@ from typing import Optional, Dict, Any
 from contextlib import contextmanager
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine.url import URL
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -26,9 +27,18 @@ class MySQLUserDatabase:
             raise ValueError("MySQL authentication database credentials not configured")
         
         # Create SQLAlchemy engine
-        self.connection_string = f"mysql+pymysql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
+        #self.connection_string = f"mysql+pymysql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
+        connection_url = URL.create(
+            drivername='mysql+pymysql',
+            username=self.username,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+            database=self.database,
+)
         self.engine = create_engine(
-            self.connection_string,
+            #self.connection_string,
+            connection_url,
             pool_size=5,
             max_overflow=10,
             pool_pre_ping=True,
