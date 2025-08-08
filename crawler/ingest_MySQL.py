@@ -7,7 +7,7 @@ from mysql.connector.errors import IntegrityError
 import asyncio
 import string
 import random
-
+from dotenv import load_dotenv
 sys.path.insert(0, '../growbal_django')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "growbal.settings")
@@ -21,8 +21,6 @@ from accounts.models import ServiceProviderProfile
 from asgiref.sync import sync_to_async
 import shutil
 import mimetypes
-
-logos_dest_dir = '../growbal_django/media/logos_test'
 
 @sync_to_async
 def load_all_services():
@@ -309,6 +307,8 @@ def insert_media_record(absolute_logo_path, logos_dest_dir, media_collection_id,
 
 
 async def main():
+    load_dotenv("envs/1.env")
+    logos_dest_dir = os.getenv("LOGO_DEST_DIR")
     service_provider_profiles = await load_all_service_provider_profiles()
 
     cnx = mc.connect(

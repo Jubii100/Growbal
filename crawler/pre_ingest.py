@@ -9,7 +9,7 @@ from anthropic._exceptions import OverloadedError
 from langchain_core.prompts import ChatPromptTemplate
 from asgiref.sync import sync_to_async
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv("envs/1.env")
 
 sys.path.insert(0, '../growbal_django')
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "growbal.settings")
