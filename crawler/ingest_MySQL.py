@@ -8,6 +8,9 @@ import asyncio
 import string
 import random
 from dotenv import load_dotenv
+
+load_dotenv("envs/1.env")
+
 sys.path.insert(0, '../growbal_django')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "growbal.settings")
@@ -54,11 +57,11 @@ def update_service_general_descriptions(descriptions):
     )
 
 # ── DB CONFIG ──────────────────────────────────────────────────────
-HOST     = "127.0.0.1"
-PORT     = 3306
-USER     = "root"
-PASSWORD = "rootpass"
-SCHEMA   = "growbal"
+HOST     = os.getenv("MYSQL_AUTH_HOST")
+PORT     = os.getenv("MYSQL_AUTH_PORT", 3306)
+USER     = os.getenv("MYSQL_AUTH_USERNAME")
+PASSWORD = os.getenv("MYSQL_AUTH_PASSWORD")
+SCHEMA   = os.getenv("MYSQL_AUTH_DATABASE")
 
 # # ── CONNECT ────────────────────────────────────────────────────────
 # cnx = mc.connect(
@@ -307,7 +310,6 @@ def insert_media_record(absolute_logo_path, logos_dest_dir, media_collection_id,
 
 
 async def main():
-    load_dotenv("envs/1.env")
     logos_dest_dir = os.getenv("LOGO_DEST_DIR")
     service_provider_profiles = await load_all_service_provider_profiles()
 
