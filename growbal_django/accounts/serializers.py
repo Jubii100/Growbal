@@ -26,6 +26,7 @@ class ServiceProviderProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceProviderProfile
         fields = [
+            'id',
             'user',
             # 'service',
             'provider_type',

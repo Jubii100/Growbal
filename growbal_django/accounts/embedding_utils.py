@@ -81,7 +81,7 @@ class EmbeddingGenerator:
         return embedding
 
 
-def bulk_update_embeddings(profiles=None, batch_size=10):
+def bulk_update_embeddings(profiles=None): #, batch_size=10):
     """
     Update embeddings for multiple profiles.
     
@@ -100,15 +100,16 @@ def bulk_update_embeddings(profiles=None, batch_size=10):
     processed = 0
     
     # Process in batches to avoid memory issues
-    for i in range(0, total, batch_size):
-        batch = profiles[i:i+batch_size]
-        for profile in batch:
-            try:
-                generator.update_profile_embedding(profile)
-                processed += 1
-                print(f"Updated embedding for profile: {profile.name} ({processed}/{total})")
-            except Exception as e:
-                print(f"Error updating embedding for profile {profile.name}: {str(e)}")
+    # for i in range(0, total, batch_size):
+    #     batch = profiles[i:i+batch_size]
+    #     for profile in batch:
+    for profile in profiles:
+        try:
+            generator.update_profile_embedding(profile)
+            processed += 1
+            print(f"Updated embedding for profile: {profile.name} ({processed}/{total})")
+        except Exception as e:
+            print(f"Error updating embedding for profile {profile.name}: {str(e)}")
 
 
 def find_similar_profiles(profile_or_embedding, limit=10, exclude_self=True):

@@ -47,6 +47,13 @@ def load_all_service_provider_profiles():
     return serialized_profiles
 
 @sync_to_async
+def update_growbal_link(pk, growbal_link):
+    profile = ServiceProviderProfile.objects.get(pk=pk)
+    profile.growbal_link = growbal_link
+    profile.save()
+    return profile
+
+@sync_to_async
 def update_service_general_descriptions(descriptions):
     services_to_update = Service.objects.filter(
         service_description=descriptions.company_service_description
@@ -328,12 +335,15 @@ async def main():
                 continue
             try:
                 slug = generate_unique_slug(cur, 8)
+                print(f"Inserting profile: {profile.get('name')} with slug: {slug}")
                 establishment_id = insert_establishment(profile, cur, slug)
                 for service in profile["services"]:
                     service_id = insert_service(service, cur)
                     if service_id:
                         insert_establishment_service(establishment_id, service_id, cur)
-
+                # profile.growbal_link = f"https://staging.growbal.net/agent/{slug}"
+                # profile.save()
+                await update_growbal_link(profile.get('id'), f"https://staging.growbal.net/agent/{slug}")
                 inserted_count += 1
 
                 user_id = insert_user(profile, establishment_id, cur)

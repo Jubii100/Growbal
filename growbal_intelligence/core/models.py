@@ -146,11 +146,11 @@ class SummarizerAgentOutput(BaseModel):
     executive_summary: str = Field(
         description="High-level overview of the search results and key findings"
     )
-    detailed_summary: str = Field(
-        description="Comprehensive summary of all relevant service providers, their capabilities, and how they address the user's query"
-    )
+    # detailed_summary: str = Field(
+    #     description="Comprehensive summary of all relevant service providers, their capabilities, and how they address the user's query"
+    # )
     provider_recommendations: List[str] = Field(
-        description="Specific recommendations for which providers to consider, in order of preference"
+        description="Specific recommendations for which providers to consider, in order of preference. With clickable titles that are markdown links to the provider's Growbal Link in bold blue font."
     )
     key_insights: List[str] = Field(
         description="Important insights derived from analyzing the relevant profiles"

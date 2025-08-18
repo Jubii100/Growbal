@@ -186,6 +186,7 @@ class ServiceProviderProfile(models.Model):
     # logo_prod_ingested = models.BooleanField(default=False)
     # logo_img = models.ImageField(upload_to='logos/', blank=True, null=True)
     website = models.URLField(blank=True, null=True)
+    growbal_link = models.URLField(blank=True, null=True)
     linkedin = models.URLField(blank=True, null=True)
     facebook = models.URLField(blank=True, null=True)
     instagram = models.URLField(blank=True, null=True)
@@ -223,6 +224,16 @@ class ServiceProviderProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} Profile"
     
+    def save(self, *args, **kwargs):
+        """
+        Ensure `growbal_link` is populated if missing.
+        Uses a slug derived from `name` or `user.username`.
+        """
+        if not self.growbal_link:
+            base_slug = slugify(self.name or self.user.username) or "profile"
+            self.growbal_link = f"https://staging.growbal.net/agent/{base_slug}"
+        super().save(*args, **kwargs)
+    
     def get_profile_text(self):
         """
         Combine ALL profile data and associated services into a single text representation
@@ -258,6 +269,8 @@ class ServiceProviderProfile(models.Model):
         # Online Presence
         if self.website:
             text_parts.append(f"Website: {self.website}")
+        if self.growbal_link:
+            text_parts.append(f"Growbal Link: {self.growbal_link}")
         if self.linkedin:
             text_parts.append(f"LinkedIn: {self.linkedin}")
         if self.facebook:

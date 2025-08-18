@@ -39,7 +39,7 @@ def search_profiles(query: str, max_results: int = 5, minimum_similarity: float 
     
     try:
         # Get total profile count
-        total_profiles = ServiceProviderProfile.objects.count()
+        total_profiles = ServiceProviderProfile.objects.filter(growbal_link__isnull=False).count()
         
         # Perform similarity search
         similar_profiles = search_profiles_by_text(query, limit=max_results * 2)  # Get more results for filtering
@@ -120,6 +120,7 @@ def search_profiles_by_service_tags(tags: List[str], match_all: bool = False, ma
         # Get unique profiles from these services
         profile_ids = services.values_list('profile_id', flat=True).distinct()
         profiles = ServiceProviderProfile.objects.filter(id__in=profile_ids)
+        profiles = profiles.filter(growbal_link__isnull=False)
         
         # For each profile, count matching tags to create a relevance score
         profile_matches = []
@@ -154,7 +155,7 @@ def search_profiles_by_service_tags(tags: List[str], match_all: bool = False, ma
         profile_matches = profile_matches[:max_results]
         
         search_time = time.time() - start_time
-        total_profiles = ServiceProviderProfile.objects.count()
+        total_profiles = ServiceProviderProfile.objects.filter(growbal_link__isnull=False).count()
         
         return SearchAgentOutput(
             candidate_profiles=profile_matches,
@@ -248,6 +249,8 @@ def search_profiles_hybrid(query: str, tags: List[str] = None, max_results: int 
                     # This shouldn't happen, but handle it gracefully
                     try:
                         profile = ServiceProviderProfile.objects.get(id=profile_id)
+                        if profile.growbal_link is None:
+                            continue
                         profile_text = profile.get_profile_text()
                     except ServiceProviderProfile.DoesNotExist:
                         continue  # Skip this profile if it doesn't exist
@@ -266,7 +269,7 @@ def search_profiles_hybrid(query: str, tags: List[str] = None, max_results: int 
             combined_profiles = similarity_results.candidate_profiles[:max_results]
         
         search_time = time.time() - start_time
-        total_profiles = ServiceProviderProfile.objects.count()
+        total_profiles = ServiceProviderProfile.objects.filter(growbal_link__isnull=False).count()
         
         strategy = f"Hybrid search (vector similarity + tag scores combined)"
         if tags:
@@ -300,7 +303,9 @@ def get_profile_by_id(profile_id: int) -> ProfileMatch:
         ProfileMatch object or None if not found
     """
     try:
-        profile = ServiceProviderProfile.objects.get(id=profile_id)
+        profile = ServiceProviderProfile.objects.filter(growbal_link__isnull=False).get(id=profile_id)
+        if profile.growbal_link is None:
+            return None
         return ProfileMatch(
             profile_id=profile.id,
             similarity_score=1.0,  # Default score for direct retrieval
@@ -317,7 +322,7 @@ def get_all_profiles() -> List[ProfileMatch]:
     Returns:
         List of ProfileMatch objects
     """
-    profiles = ServiceProviderProfile.objects.all()
+    profiles = ServiceProviderProfile.objects.filter(growbal_link__isnull=False).all()
     return [
         ProfileMatch(
             profile_id=profile.id,
@@ -340,7 +345,9 @@ def get_profiles_by_similarity(reference_profile_id: int, limit: int = 5) -> Lis
         List of ProfileMatch objects ordered by similarity
     """
     try:
-        reference_profile = ServiceProviderProfile.objects.get(id=reference_profile_id)
+        reference_profile = ServiceProviderProfile.objects.filter(growbal_link__isnull=False).get(id=reference_profile_id)
+        if reference_profile.growbal_link is None:
+            return []
         similar_profiles = find_similar_profiles(reference_profile, limit=limit)
         
         return [

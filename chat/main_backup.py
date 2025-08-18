@@ -95,14 +95,9 @@ app.add_middleware(
 )
 
 @app.get("/", response_class=HTMLResponse)
-async def root(request: Request, current_user: dict = Depends(optional_authentication)):
-    """Root endpoint that redirects authenticated users to chat, others to login"""
-    if current_user:
-        # User is authenticated, redirect directly to chat with defaults
-        return RedirectResponse(url="/proceed-to-chat")
-    else:
-        # User not authenticated, redirect to login
-        return RedirectResponse(url="/login")
+async def root():
+    """Root endpoint that redirects to login page"""
+    return RedirectResponse(url="/login")
 
 # Authentication routes
 app.get("/login", response_class=HTMLResponse)(login_page)
@@ -350,54 +345,35 @@ async def country_selection_page(request: Request, current_user: dict = Depends(
     </html>
     """
 
-@app.get("/proceed-to-chat")
 @app.post("/proceed-to-chat")
-async def proceed_to_chat(
-    request: Request, 
-    current_user: dict = Depends(require_authentication),
-    # Query parameters for GET requests
-    country: str = None,
-    service_type: str = None,
-    session_id: str = None,
-    # Form parameters for POST requests (backwards compatibility)
-    form_country: str = Form(None),
-    form_service_type: str = Form(None)
-):
-    """Handle both GET and POST requests to proceed to chat interface"""
-    
-    # Determine country and service_type from either query params or form data
-    final_country = country or form_country or "UAE"
-    final_service_type = service_type or form_service_type or "Business Setup Services"
+async def proceed_to_chat(request: Request, country: str = Form(...), service_type: str = Form(...), current_user: dict = Depends(require_authentication)):
+    """Handle form submission and redirect to chat interface"""
+    if not country or not service_type:
+        raise HTTPException(status_code=400, detail="Country and service type are required")
     
     # Check for existing session with same country/service_type
     # This handles duplicate prevention automatically
     user_id = current_user.get('user_id') if current_user else None
-    
-    # Only use session_id if explicitly provided in URL query params
-    # Don't reuse from browser session storage to ensure new sessions when needed
-    existing_session_id = session_id
-    
-    final_session_id, session_data, is_new = await session_manager.get_or_create_session(
-        session_id=existing_session_id,
-        country=final_country,
-        service_type=final_service_type,
+    session_id, session_data, is_new = await session_manager.get_or_create_session(
+        country=country,
+        service_type=service_type,
         user_id=user_id  # Use authenticated user ID if available
     )
     
     if is_new:
-        print(f"🆕 Created new session: {final_session_id}")
+        print(f"🆕 Created new session: {session_id}")
     else:
-        print(f"♻️  Reusing existing session: {final_session_id}")
+        print(f"♻️  Reusing existing session: {session_id}")
     
     # Store in FastAPI session
-    request.session["session_id"] = final_session_id
-    request.session["country"] = final_country
-    request.session["service_type"] = final_service_type
+    request.session["session_id"] = session_id
+    request.session["country"] = country
+    request.session["service_type"] = service_type
     
-    print(f"🚀 Redirecting to chat: Session={final_session_id}, Country={final_country}, Service Type={final_service_type}")
+    print(f"🚀 Redirecting to chat: Session={session_id}, Country={country}, Service Type={service_type}")
     
     # SERVER-SIDE REDIRECT using query parameters
-    redirect_url = f"/chat/?session_id={final_session_id}"
+    redirect_url = f"/chat/?session_id={session_id}"
     return RedirectResponse(url=redirect_url, status_code=303)
 
 @app.get("/chat/", response_class=HTMLResponse)
@@ -975,7 +951,7 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
             <div class="session-info">
                 <span class="session-info-highlight">🌍 Country:</span> {country} | 
                 <span class="session-info-highlight">💼 Service Type:</span> {service_type}
-                <a href="/proceed-to-chat" style="margin-left: 20px; color: #198484; text-decoration: none;">← New Session</a>
+                <a href="/country/" style="margin-left: 20px; color: #198484; text-decoration: none;">← Back to Country Selection</a>
             </div>
             
             <div class="main-content">
@@ -1052,7 +1028,7 @@ if __name__ == "__main__":
     print("   ✅ Persistent chat history storage")
     
     uvicorn.run(
-        "main:app",
+        "main_backup:app",
         host="0.0.0.0",
         port=8000,
         reload=True,

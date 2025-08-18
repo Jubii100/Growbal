@@ -259,7 +259,6 @@ def format_streaming_update(update: Dict[str, Any]) -> str:
         result += f"""
 ### **Processing Statistics**
 - **Total Searched**: {stats.get('total_searched', 0)}
-- **Candidates Found**: {stats.get('candidates_found', 0)}
 - **Relevant Profiles**: {stats.get('relevant_found', 0)}
 """
         

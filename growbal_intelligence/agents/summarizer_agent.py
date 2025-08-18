@@ -113,17 +113,16 @@ Your task is to create comprehensive summaries that help users understand their 
 
 Summary style guidelines based on the requested style:
 - 'brief': Focus on key points, 2-3 sentences per provider, executive summary only
-- 'comprehensive': Balanced detail, include all sections with moderate depth
-- 'detailed': In-depth analysis, extensive information about each provider
+- 'comprehensive': Balanced detail, include all sections relevant to the query with moderate depth
 
 Focus on:
 1. How well each provider matches the user's query
 2. Unique strengths and specializations
 3. Geographic coverage and accessibility
 4. Service offerings relevant to the query
-5. Contact information and next steps
 
 IMPORTANT: Base all recommendations and insights strictly on the information provided in the profiles.
+             If a specific number of providers is requested, ensure that the summary includes exactly that number if possible or a number close to it from the top most relevant providers. If not, provide a default of the top 3 most relevant.
 
 Output your summary in this exact JSON format:
 {format_instructions}"""),
@@ -254,34 +253,34 @@ Create a comprehensive summary of these service providers that addresses the use
         except Exception as e:
             processing_time = time.time() - start_time
             
-            # Try to create a basic summary even if parsing fails
-            try:
-                basic_summary = self._create_basic_summary(summarizer_input)
-                yield {
-                    "type": "complete",
-                    "response": AgentResponse(
-                        success=True,
-                        agent_role=self.role,
-                        data=basic_summary,
-                        message=f"Created basic summary due to parsing error: {str(e)}",
-                        processing_time=processing_time,
-                        confidence_score=0.5,
-                        metadata={"error": str(e), "fallback": True}
-                    )
-                }
-            except:
-                yield {
-                    "type": "error",
-                    "response": AgentResponse(
-                        success=False,
-                        agent_role=self.role,
-                        data=None,
-                        message=f"Summarization failed: {str(e)}",
-                        processing_time=processing_time,
-                        confidence_score=0.0,
-                        metadata={"error": str(e)}
-                    )
-                }
+            # # Try to create a basic summary even if parsing fails
+            # try:
+            #     basic_summary = self._create_basic_summary(summarizer_input)
+            #     yield {
+            #         "type": "complete",
+            #         "response": AgentResponse(
+            #             success=True,
+            #             agent_role=self.role,
+            #             data=basic_summary,
+            #             message=f"Created basic summary due to parsing error: {str(e)}",
+            #             processing_time=processing_time,
+            #             confidence_score=0.5,
+            #             metadata={"error": str(e), "fallback": True}
+            #         )
+            #     }
+            # except:
+            yield {
+                "type": "error",
+                "response": AgentResponse(
+                    success=False,
+                    agent_role=self.role,
+                    data=None,
+                    message=f"Summarization failed: {str(e)}",
+                    processing_time=processing_time,
+                    confidence_score=0.0,
+                    metadata={"error": str(e)}
+                )
+            }
     
     async def summarize(self, summarizer_input: SummarizerAgentInput, streaming: bool = False) -> AgentResponse:
         """
@@ -366,61 +365,61 @@ Create a comprehensive summary of these service providers that addresses the use
         except Exception as e:
             processing_time = time.time() - start_time
             
-            # Try to create a basic summary even if parsing fails
-            try:
-                basic_summary = self._create_basic_summary(summarizer_input)
-                return AgentResponse(
-                    success=True,
-                    agent_role=self.role,
-                    data=basic_summary,
-                    message=f"Created basic summary due to parsing error: {str(e)}",
-                    processing_time=processing_time,
-                    confidence_score=0.5,
-                    metadata={"error": str(e), "fallback": True}
-                )
-            except:
-                return AgentResponse(
-                    success=False,
-                    agent_role=self.role,
-                    data=None,
-                    message=f"Summarization failed: {str(e)}",
-                    processing_time=processing_time,
-                    confidence_score=0.0,
-                    metadata={"error": str(e)}
-                )
+            # # Try to create a basic summary even if parsing fails
+            # try:
+            #     basic_summary = self._create_basic_summary(summarizer_input)
+            #     return AgentResponse(
+            #         success=True,
+            #         agent_role=self.role,
+            #         data=basic_summary,
+            #         message=f"Created basic summary due to parsing error: {str(e)}",
+            #         processing_time=processing_time,
+            #         confidence_score=0.5,
+            #         metadata={"error": str(e), "fallback": True}
+            #     )
+            # except:
+            return AgentResponse(
+                success=False,
+                agent_role=self.role,
+                data=None,
+                message=f"Summarization failed: {str(e)}",
+                processing_time=processing_time,
+                confidence_score=0.0,
+                metadata={"error": str(e)}
+            )
     
-    def _create_basic_summary(self, summarizer_input: SummarizerAgentInput) -> dict:
-        """
-        Create a basic summary as a fallback.
-        """
-        profiles_info = []
-        for i, profile in enumerate(summarizer_input.relevant_profiles):
-            # Extract basic info from profile text
-            lines = profile.profile_text.split('\n')
-            name = "Unknown Provider"
-            country = "Unknown"
+    # def _create_basic_summary(self, summarizer_input: SummarizerAgentInput) -> dict:
+    #     """
+    #     Create a basic summary as a fallback.
+    #     """
+    #     profiles_info = []
+    #     for i, profile in enumerate(summarizer_input.relevant_profiles):
+    #         # Extract basic info from profile text
+    #         lines = profile.profile_text.split('\n')
+    #         name = "Unknown Provider"
+    #         country = "Unknown"
             
-            for line in lines:
-                if "Company Name:" in line:
-                    name = line.split("Company Name:")[1].strip()
-                elif "Country:" in line:
-                    country = line.split("Country:")[1].strip()
+    #         for line in lines:
+    #             if "Company Name:" in line:
+    #                 name = line.split("Company Name:")[1].strip()
+    #             elif "Country:" in line:
+    #                 country = line.split("Country:")[1].strip()
             
-            profiles_info.append(f"{i+1}. {name} ({country})")
+    #         profiles_info.append(f"{i+1}. {name} ({country})")
         
-        return {
-            "executive_summary": f"Found {len(summarizer_input.relevant_profiles)} service providers matching your query: {summarizer_input.original_query}",
-            "detailed_summary": "Providers found:\n" + "\n".join(profiles_info),
-            "provider_recommendations": profiles_info[:3],
-            "key_insights": [
-                f"Total of {len(summarizer_input.relevant_profiles)} providers identified",
-                "Providers span multiple countries and service offerings",
-                "Further evaluation recommended based on specific requirements"
-            ],
-            "summary_statistics": {
-                "total_providers": len(summarizer_input.relevant_profiles)
-            }
-        }
+    #     return {
+    #         "executive_summary": f"Found {len(summarizer_input.relevant_profiles)} service providers matching your query: {summarizer_input.original_query}",
+    #         "detailed_summary": "Providers found:\n" + "\n".join(profiles_info),
+    #         "provider_recommendations": profiles_info[:3],
+    #         "key_insights": [
+    #             f"Total of {len(summarizer_input.relevant_profiles)} providers identified",
+    #             "Providers span multiple countries and service offerings",
+    #             "Further evaluation recommended based on specific requirements"
+    #         ],
+    #         "summary_statistics": {
+    #             "total_providers": len(summarizer_input.relevant_profiles)
+    #         }
+    #     }
     
     def summarize_sync(self, summarizer_input: SummarizerAgentInput, streaming: bool = False) -> AgentResponse:
         """

@@ -23,8 +23,8 @@ async def login_page(request: Request, error: str = None, success: str = None):
     
     # Check if user is already authenticated
     if request.session.get("authenticated"):
-        # Redirect to original destination or country selection
-        redirect_url = request.session.get("redirect_after_login", "/country/")
+        # Redirect to original destination or proceed to chat directly
+        redirect_url = request.session.get("redirect_after_login", "/proceed-to-chat")
         return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)
     
     # Read logo file if exists
@@ -110,8 +110,8 @@ async def process_login(
             # Log successful login
             logger.info(f"Successful login: {email} from {client_ip}")
             
-            # Redirect to original destination or country selection
-            redirect_url = request.session.get("redirect_after_login", "/country/")
+            # Redirect to original destination or proceed to chat directly
+            redirect_url = request.session.get("redirect_after_login", "/proceed-to-chat")
             request.session.pop("redirect_after_login", None)
             
             return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)
