@@ -81,10 +81,10 @@ app = FastAPI(
 )
 
 # Add middleware
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "https://staging.growbal.net,https://growbal.net").split(",")
+allowed_origins = os.getenv("ALLOWED_ORIGINS").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins if os.getenv("CORS_STRICT", "true").lower() == "true" else ["*"],
+    allow_origins=allowed_origins if os.getenv("CORS_STRICT").lower() == "true" else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -92,9 +92,9 @@ app.add_middleware(
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key=os.getenv("SESSION_SECRET_KEY", "your-secret-key-change-in-production-2024"),
-    domain=os.getenv("COOKIE_DOMAIN", ".growbal.net"),  # Parent domain with leading dot
-    same_site="none" if os.getenv("COOKIE_SAMESITE", "none").lower() == "none" else "lax",
+    secret_key=os.getenv("SESSION_SECRET_KEY"),
+    domain=os.getenv("COOKIE_DOMAIN"),  # Parent domain with leading dot
+    same_site=os.getenv("COOKIE_SAMESITE"),
     https_only=os.getenv("COOKIE_SECURE", "true").lower() == "true"
 )
 

@@ -95,9 +95,14 @@ app.add_middleware(
 )
 
 @app.get("/", response_class=HTMLResponse)
-async def root():
-    """Root endpoint that redirects to login page"""
-    return RedirectResponse(url="/login")
+async def root(request: Request, current_user: dict = Depends(optional_authentication)):
+    """Root endpoint that redirects authenticated users to chat, others to login"""
+    if current_user:
+        # User is authenticated, redirect directly to chat with defaults
+        return RedirectResponse(url="/proceed-to-chat")
+    else:
+        # User not authenticated, redirect to login
+        return RedirectResponse(url="/login")
 
 # Authentication routes
 app.get("/login", response_class=HTMLResponse)(login_page)
@@ -120,260 +125,54 @@ def generate_logo_html():
         """
     return ""
 
-@app.get("/country/", response_class=HTMLResponse)
-async def country_selection_page(request: Request, current_user: dict = Depends(require_authentication)):
-    """Serve country selection page"""
-    # Import COUNTRY_CHOICES from the utils module
-    try:
-        from growbal_django.accounts.utils import COUNTRY_CHOICES
-        print("✅ Successfully imported country choices from utils module")
-    except ImportError as e:
-        print(f"⚠️ Warning: Could not import country choices from utils: {e}")
-        # Fallback to a minimal list if import fails
-        COUNTRY_CHOICES = [
-            ('USA', 'USA'), ('UK', 'UK'), ('Canada', 'Canada'), 
-            ('Australia', 'Australia'), ('Germany', 'Germany'), ('Afghanistan', 'Afghanistan')
-        ]
-    
-    # Prepare logo HTML using shared helper
-    logo_html = generate_logo_html()
-    # (Previous inline implementation moved to helper above for maintainability)
-    
-    # Create country selection options
-    country_options = ""
-    for code, name in COUNTRY_CHOICES:
-        country_options += f'<option value="{name}">{name}</option>\n'
-    
-    # Create service type options
-    service_types = [
-        "Tax Services",
-        "Business Setup Services", 
-        "Migration/Visa Services"
-    ]
-    
-    service_type_options = ""
-    for service_type in service_types:
-        service_type_options += f'<option value="{service_type}">{service_type}</option>\n'
-    
-    # Add user info display
-    user_info_html = ""
-    if current_user:
-        user_name = current_user.get('full_name') or current_user.get('email', 'User')
-        user_info_html = f"""
-        <div style="text-align: right; padding: 15px; background: #f8f9fa; border-bottom: 1px solid #dee2e6; margin-bottom: 20px; border-radius: 10px;">
-            <span style="color: #2b5556;">Welcome, <strong>{user_name}</strong></span> | 
-            <form method="post" action="/logout" style="display: inline;">
-                <button type="submit" style="background: none; border: none; color: #198484; cursor: pointer; text-decoration: underline; font-weight: 600;">
-                    Logout
-                </button>
-            </form>
-        </div>
-        """
-    
-    return f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Growbal Intelligence - Country Selection</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body {{
-                margin: 0;
-                padding: 0;
-                font-family: 'Inter', Arial, sans-serif;
-                background: linear-gradient(135deg, #f8fffe 0%, #f0f9f9 100%);
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }}
-            .container {{
-                max-width: 800px;
-                width: 90%;
-                background: white;
-                padding: 40px;
-                border-radius: 20px;
-                box-shadow: 0 10px 50px rgba(25, 132, 132, 0.1);
-                text-align: center;
-            }}
-            .app-header {{
-                background: linear-gradient(135deg, #2b5556 0%, #21908f 100%);
-                color: white;
-                padding: 20px;
-                border-radius: 15px;
-                margin-bottom: 30px;
-            }}
-            .app-title {{
-                font-size: 1.8rem;
-                font-weight: 700;
-                margin-bottom: 8px;
-            }}
-            .app-description {{
-                font-size: 1rem;
-                opacity: 0.9;
-                color: white;
-            }}
-            .orchestrator-badge {{
-                background: #ff6b6b;
-                color: white;
-                padding: 4px 8px;
-                border-radius: 8px;
-                font-size: 0.75rem;
-                margin-left: 10px;
-            }}
-            .selection-grid {{
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-                margin: 20px 0;
-            }}
-            .selection-item {{
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-            }}
-            .selection-label {{
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: #2b5556;
-                margin-bottom: 8px;
-                text-align: left;
-            }}
-            select {{
-                width: 100%;
-                padding: 15px;
-                font-size: 16px;
-                border: 2px solid rgba(25, 132, 132, 0.2);
-                border-radius: 10px;
-                background: white;
-                transition: all 0.3s ease;
-            }}
-            select:focus {{
-                border-color: #198484;
-                box-shadow: 0 0 0 3px rgba(25, 132, 132, 0.1);
-                outline: none;
-            }}
-            .btn-primary {{
-                background: linear-gradient(135deg, #198484 0%, #16a6a6 100%);
-                border: none;
-                color: white;
-                font-weight: 600;
-                border-radius: 10px;
-                padding: 15px 30px;
-                font-size: 16px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(25, 132, 132, 0.2);
-                width: 100%;
-                margin-top: 20px;
-            }}
-            .btn-primary:hover {{
-                transform: translateY(-2px);
-                box-shadow: 0 6px 25px rgba(25, 132, 132, 0.3);
-                background: linear-gradient(135deg, #16a6a6 0%, #198484 100%);
-            }}
-            .btn-primary:disabled {{
-                opacity: 0.5;
-                cursor: not-allowed;
-                transform: none;
-            }}
-            h2 {{
-                color: #2b5556;
-                margin-bottom: 10px;
-            }}
-            p {{
-                color: #666;
-                margin-bottom: 20px;
-            }}
-            @media (max-width: 768px) {{
-                .selection-grid {{
-                    grid-template-columns: 1fr;
-                }}
-                .container {{
-                    width: 95%;
-                    padding: 20px;
-                }}
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            {user_info_html}
-            {logo_html}
-            <div class="app-header">
-                <h1 class="app-title">Growbal Intelligence</h1>
-                <p class="app-description">AI-powered service provider search</p>
-            </div>
-            
-            <h2>Please select your preferences to begin</h2>
-            <p>Choose your target country and service type for provider search</p>
-            
-            <form action="/proceed-to-chat" method="post">
-                <div class="selection-grid">
-                    <div class="selection-item">
-                        <label class="selection-label">Country</label>
-                        <select name="country" required onchange="toggleButton()">
-                            <option value="">Select a country...</option>
-                            {country_options}
-                        </select>
-                    </div>
-                    
-                    <div class="selection-item">
-                        <label class="selection-label">Service Type</label>
-                        <select name="service_type" required onchange="toggleButton()">
-                            <option value="">Select a service type...</option>
-                            {service_type_options}
-                        </select>
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn-primary" id="continueBtn" disabled>
-                    Continue to Search
-                </button>
-            </form>
-        </div>
-        
-        <script>
-            function toggleButton() {{
-                const countrySelect = document.querySelector('select[name="country"]');
-                const serviceTypeSelect = document.querySelector('select[name="service_type"]');
-                const button = document.getElementById('continueBtn');
-                button.disabled = !countrySelect.value || !serviceTypeSelect.value;
-            }}
-        </script>
-    </body>
-    </html>
-    """
-
+@app.get("/proceed-to-chat")
 @app.post("/proceed-to-chat")
-async def proceed_to_chat(request: Request, country: str = Form(...), service_type: str = Form(...), current_user: dict = Depends(require_authentication)):
-    """Handle form submission and redirect to chat interface"""
-    if not country or not service_type:
-        raise HTTPException(status_code=400, detail="Country and service type are required")
+async def proceed_to_chat(
+    request: Request, 
+    current_user: dict = Depends(require_authentication),
+    # Query parameters for GET requests
+    country: str = None,
+    service_type: str = None,
+    session_id: str = None,
+    # Form parameters for POST requests (backwards compatibility)
+    form_country: str = Form(None),
+    form_service_type: str = Form(None)
+):
+    """Handle both GET and POST requests to proceed to chat interface"""
+    
+    # Determine country and service_type from either query params or form data
+    final_country = country or form_country or "UAE"
+    final_service_type = service_type or form_service_type or "Business Setup Services"
     
     # Check for existing session with same country/service_type
     # This handles duplicate prevention automatically
     user_id = current_user.get('user_id') if current_user else None
-    session_id, session_data, is_new = await session_manager.get_or_create_session(
-        country=country,
-        service_type=service_type,
+    
+    # Only use session_id if explicitly provided in URL query params
+    # Don't reuse from browser session storage to ensure new sessions when needed
+    existing_session_id = session_id
+    
+    final_session_id, session_data, is_new = await session_manager.get_or_create_session(
+        session_id=existing_session_id,
+        country=final_country,
+        service_type=final_service_type,
         user_id=user_id  # Use authenticated user ID if available
     )
     
     if is_new:
-        print(f"🆕 Created new session: {session_id}")
+        print(f"🆕 Created new session: {final_session_id}")
     else:
-        print(f"♻️  Reusing existing session: {session_id}")
+        print(f"♻️  Reusing existing session: {final_session_id}")
     
     # Store in FastAPI session
-    request.session["session_id"] = session_id
-    request.session["country"] = country
-    request.session["service_type"] = service_type
+    request.session["session_id"] = final_session_id
+    request.session["country"] = final_country
+    request.session["service_type"] = final_service_type
     
-    print(f"🚀 Redirecting to chat: Session={session_id}, Country={country}, Service Type={service_type}")
+    print(f"🚀 Redirecting to chat: Session={final_session_id}, Country={final_country}, Service Type={final_service_type}")
     
     # SERVER-SIDE REDIRECT using query parameters
-    redirect_url = f"/chat/?session_id={session_id}"
+    redirect_url = f"/chat/?session_id={final_session_id}"
     return RedirectResponse(url=redirect_url, status_code=303)
 
 @app.get("/chat/", response_class=HTMLResponse)
@@ -394,6 +193,12 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
 
     # Update activity timestamp
     await session_manager.update_activity(session_id)
+    
+    # Get all user sessions for the sidebar
+    user_id = current_user.get('user_id') if current_user else None
+    user_sessions = []
+    if user_id:
+        user_sessions = await session_manager.get_user_sessions(user_id, active_only=True)
     
     # Update orchestrator's session history
     await orchestrator.update_session_history(session_id)
@@ -529,6 +334,50 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
     
     # (history_json and history_section prepared above, only if history exists)
     
+    # Prepare sessions list HTML
+    sessions_list_html = ""
+    if user_sessions:
+        from datetime import datetime
+        import time
+        
+        for sess in user_sessions:
+            sess_id = sess.get('session_id')
+            sess_title = sess.get('title', 'Untitled Session')
+            sess_country = sess.get('country')
+            sess_service = sess.get('service_type')
+            last_activity = sess.get('last_activity')
+            
+            # Format last activity time
+            if last_activity:
+                last_activity_dt = datetime.fromtimestamp(last_activity)
+                now = datetime.now()
+                time_diff = now - last_activity_dt
+                
+                # Format time difference
+                if time_diff.days > 0:
+                    time_str = f"{time_diff.days}d ago"
+                elif time_diff.seconds >= 3600:
+                    hours = time_diff.seconds // 3600
+                    time_str = f"{hours}h ago"
+                elif time_diff.seconds >= 60:
+                    minutes = time_diff.seconds // 60
+                    time_str = f"{minutes}m ago"
+                else:
+                    time_str = "just now"
+            else:
+                time_str = ""
+            
+            is_current = str(sess_id) == str(session_id)
+            active_class = 'active' if is_current else ''
+            sessions_list_html += f'''
+                <a href="/chat/?session_id={sess_id}" class="session-item {active_class}">
+                    <div class="session-title">{sess_title}</div>
+                    <div class="session-meta">{sess_service} • {sess_country} • {time_str}</div>
+                </a>
+            '''
+    else:
+        sessions_list_html = '<div class="no-sessions">No active sessions</div>'
+    
     return f"""
     <!DOCTYPE html>
     <html>
@@ -548,6 +397,156 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
                 height: 100vh;
                 display: flex;
                 flex-direction: column;
+            }}
+            
+            .main-content {{
+                flex: 1;
+                display: flex;
+                position: relative;
+                overflow: hidden;
+            }}
+            
+            /* Sessions Sidebar Styles */
+            .sessions-sidebar {{
+                width: 350px;
+                background: white;
+                border-right: 1px solid rgba(25, 132, 132, 0.15);
+                display: flex;
+                flex-direction: column;
+                transition: margin-left 0.3s ease;
+                position: relative;
+                z-index: 10;
+            }}
+            
+            .sessions-sidebar.collapsed {{
+                margin-left: -350px;
+            }}
+            
+            .sessions-header {{
+                padding: 20px;
+                background: linear-gradient(135deg, #f8fffe 0%, #ffffff 100%);
+                border-bottom: 1px solid rgba(25, 132, 132, 0.1);
+                position: relative;
+            }}
+            
+            .sessions-title {{
+                font-weight: 600;
+                color: #2b5556;
+                font-size: 1.1rem;
+                margin-bottom: 5px;
+            }}
+            
+            .sessions-subtitle {{
+                font-size: 0.85rem;
+                color: #718096;
+            }}
+            
+            .toggle-sidebar {{
+                position: absolute;
+                right: -40px;
+                top: 20px;
+                width: 40px;
+                height: 60px;
+                background: white;
+                border: 1px solid rgba(25, 132, 132, 0.15);
+                border-left: none;
+                border-radius: 0 8px 8px 0;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+                z-index: 15;
+            }}
+            
+            .toggle-sidebar:hover {{
+                background: linear-gradient(135deg, #f8fffe 0%, #f0f9f9 100%);
+                box-shadow: 3px 0 12px rgba(25, 132, 132, 0.1);
+                transform: translateX(5px);
+            }}
+            
+            .toggle-icon {{
+                color: #198484;
+                font-size: 1.2rem;
+                transition: transform 0.3s ease;
+            }}
+            
+            .sessions-sidebar.collapsed .toggle-icon {{
+                transform: rotate(180deg);
+            }}
+            
+            .sessions-list {{
+                flex: 1;
+                overflow-y: auto;
+                padding: 10px;
+            }}
+            
+            .session-item {{
+                display: block;
+                padding: 12px 15px;
+                margin-bottom: 8px;
+                background: #fafbfc;
+                border: 1px solid rgba(25, 132, 132, 0.1);
+                border-radius: 8px;
+                text-decoration: none;
+                transition: all 0.2s ease;
+                cursor: pointer;
+                min-height: 60px;
+            }}
+            
+            .session-item:hover {{
+                background: linear-gradient(135deg, #f0f9f9 0%, #f8fffe 100%);
+                border-color: rgba(25, 132, 132, 0.2);
+                transform: translateX(2px);
+            }}
+            
+            .session-item.active {{
+                background: linear-gradient(135deg, #198484 0%, #16a6a6 100%);
+                border-color: transparent;
+                color: white;
+            }}
+            
+            .session-title {{
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: #2b5556;
+                margin-bottom: 4px;
+                line-height: 1.3;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                word-break: break-word;
+            }}
+            
+            .session-item.active .session-title {{
+                color: white;
+            }}
+            
+            .session-meta {{
+                font-size: 0.75rem;
+                color: #718096;
+                margin-top: 2px;
+            }}
+            
+            .session-item.active .session-meta {{
+                color: rgba(255, 255, 255, 0.9);
+            }}
+            
+            .no-sessions {{
+                padding: 20px;
+                text-align: center;
+                color: #718096;
+                font-size: 0.9rem;
+            }}
+            
+            .content-area {{
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                padding-left: 20px;
             }}
             .gradio-container {{
                 flex: 1;
@@ -733,6 +732,17 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
             .chat-history-container.expanded {{
                 max-height: 348px; /* header (48px) + content (300px) */
             }}
+            
+            /* Responsive design */
+            @media (max-width: 768px) {{
+                .sessions-sidebar {{
+                    display: none;
+                }}
+                
+                .content-area {{
+                    width: 100%;
+                }}
+            }}
         </style>
     </head>
     <body>
@@ -740,15 +750,48 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
             <div class="session-info">
                 <span class="session-info-highlight">🌍 Country:</span> {country} | 
                 <span class="session-info-highlight">💼 Service Type:</span> {service_type}
-                <a href="/country/" style="margin-left: 20px; color: #198484; text-decoration: none;">← Back to Country Selection</a>
+                <a href="/proceed-to-chat" style="margin-left: 20px; color: #198484; text-decoration: none;">← New Session</a>
             </div>
             
-            {history_section}
-            
-            <div class="gradio-container">
-                <iframe src="/chat-public/?session_id={session_id}&country={country}&service_type={service_type}" id="chatFrame" allow="camera; microphone; geolocation"></iframe>
+            <div class="main-content">
+                <div class="sessions-sidebar" id="sessionsSidebar">
+                    <div class="sessions-header">
+                        <div class="sessions-title">Your Sessions</div>
+                        <div class="sessions-subtitle">Click to switch between chats</div>
+                        <button class="toggle-sidebar" onclick="toggleSidebar()">
+                            <span class="toggle-icon">‹</span>
+                        </button>
+                    </div>
+                    <div class="sessions-list">
+                        {sessions_list_html}
+                    </div>
+                </div>
+                
+                <div class="content-area">
+                    {history_section}
+                    
+                    <div class="gradio-container">
+                        <iframe src="/chat-public/?session_id={session_id}&country={country}&service_type={service_type}" id="chatFrame" allow="camera; microphone; geolocation"></iframe>
+                    </div>
+                </div>
             </div>
         </div>
+        
+        <script>
+            // Toggle sessions sidebar
+            function toggleSidebar() {{
+                const sidebar = document.getElementById('sessionsSidebar');
+                sidebar.classList.toggle('collapsed');
+            }}
+            
+            // Optional: Add keyboard shortcut (Ctrl/Cmd + B) to toggle sidebar
+            document.addEventListener('keydown', (e) => {{
+                if ((e.ctrlKey || e.metaKey) && e.key === 'b') {{
+                    e.preventDefault();
+                    toggleSidebar();
+                }}
+            }});
+        </script>
     </body>
     </html>
     """
@@ -763,57 +806,15 @@ app = gr.mount_gradio_app(
 )
 print("✅ Chat app mounted at /chat-public")
 
-# # Health check and debug endpoints
-# @app.get("/health")
-# async def health_check():
-#     """Health check endpoint"""
-#     return {
-#         "status": "healthy", 
-#         "service": "growbal-intelligence-orchestrator-dynamic",
-#         "version": "7.0.0",
-#         "features": ["orchestrator", "dynamic_suggestions", "clean_streaming", "tool_routing"],
-#         "active_sessions": await session_manager.get_active_sessions_count()
-#     }
-
-# @app.get("/debug/sessions")
-# async def debug_sessions():
-#     """Debug endpoint to show active sessions count"""
-#     active_count = await session_manager.get_active_sessions_count()
-#     return {
-#         "total_active_sessions": active_count,
-#         "note": "Session details are now stored in database for security"
-#     }
-
-# @app.get("/debug/suggestions")
-# async def debug_suggestions(country: str = "USA", service_type: str = "Tax Services"):
-#     """Debug endpoint to test suggestion generation"""
-#     try:
-#         suggestions = await orchestrator.generate_suggestions(country, service_type, None)
-#         return {
-#             "country": country,
-#             "service_type": service_type,
-#             "suggestions": suggestions
-#         }
-#     except Exception as e:
-#         return {
-#             "error": str(e),
-#             "country": country,
-#             "service_type": service_type
-#         }
-
 if __name__ == "__main__":
     import uvicorn
     
     print("🚀 Starting Growbal Intelligence FastAPI application...")
     print("📍 Available endpoints:")
-    print("   - / → Root (redirects to country selection)")
-    print("   - /country/ → Country selection page")
+    print("   - / → Root (redirects to login)")
     print("   - /proceed-to-chat → Form submission handler")
     print("   - /chat/ → Chat interface with orchestrator")
     print("   - /chat-public/ → Public chat interface (free tier)")
-    # print("   - /health → Health check")
-    # print("   - /debug/sessions → Debug session information")
-    # print("   - /debug/suggestions → Debug suggestion generation")
     print()
     print("🧠 Features:")
     print("   ✅ Database-backed session management with duplicate prevention")
