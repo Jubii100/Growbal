@@ -29,22 +29,22 @@ try:
     from growbal_intelligence.agents.search_agent import SearchAgent
     from growbal_intelligence.agents.adjudicator_agent import AdjudicatorAgent
     from growbal_intelligence.agents.summarizer_agent import SummarizerAgent
-    print("✅ Successfully imported Growbal Intelligence system")
+    print("Successfully imported Growbal Intelligence system")
 except ImportError as e:
-    print(f"❌ Error importing Growbal Intelligence: {e}")
+    print(f"Error importing Growbal Intelligence: {e}")
     sys.exit(1)
 
 # Get API key from environment
 api_key = os.getenv('ANTHROPIC_API_KEY')
 if not api_key:
-    print("⚠️  WARNING: ANTHROPIC_API_KEY not found in environment!")
+    print("WARNING: ANTHROPIC_API_KEY not found in environment!")
     sys.exit(1)
 
 # Initialize agents
 search_agent = SearchAgent(api_key=api_key)
 adjudicator_agent = AdjudicatorAgent(api_key=api_key)
 summarizer_agent = SummarizerAgent(api_key=api_key)
-print("✅ Growbal Intelligence agents initialized")
+print("Growbal Intelligence agents initialized")
 
 # Global state for tracking
 app_state = {
@@ -424,7 +424,7 @@ async def enhanced_workflow_streaming(query: str, max_results: int = 7) -> Async
         
         # Check cancellation flag before summarization
         if app_state["cancellation_flag"]:
-            yield "❌ **Process Cancelled** - Process was interrupted."
+            yield "Process Cancelled - Process was interrupted."
             return
         
         # Check if we have relevant profiles
@@ -817,7 +817,7 @@ def create_chat_interface_app(session_id: str = None, country: str = None):
             }
         </script>
         <div style="text-align: center; padding: 20px; color: #198484;">
-            <h3>🔙 Returning to country selection...</h3>
+            <h3>Returning to country selection...</h3>
         </div>
         """)
     
@@ -828,17 +828,17 @@ def create_chat_interface_app(session_id: str = None, country: str = None):
         title=f"{logo_html}<div class='app-header'><h1 class='app-title'>Growbal Intelligence</h1><p class='app-description'>AI-powered service provider search</p></div>",
         description=session_info,
         examples=[
-            "🏢 I need immigration services for business migration to UAE",
-            "💼 Find accounting firms in Dubai for tech startups", 
-            "💻 Looking for IT consulting with cloud expertise",
-            "⚖️ Need legal services for fintech company setup",
-            "📈 Find B2B marketing agencies with AI experience"
+            "I need immigration services for business migration to UAE",
+            "Find accounting firms in Dubai for tech startups", 
+            "Looking for IT consulting with cloud expertise",
+            "Need legal services for fintech company setup",
+            "Find B2B marketing agencies with AI experience"
         ],
         cache_examples=False,
         theme=custom_theme,
         css=css,
         textbox=gr.Textbox(
-            placeholder="🔍 Ask me about service providers and watch the AI reasoning...",
+            placeholder="Ask me about service providers and watch the AI reasoning...",
             container=False,
             scale=7,
             lines=1
@@ -846,7 +846,7 @@ def create_chat_interface_app(session_id: str = None, country: str = None):
         submit_btn=gr.Button("Search Providers", variant="primary"),
         retry_btn=None,
         undo_btn=None,
-        clear_btn=gr.Button("🗑️ Clear Chat", variant="stop"),
+        clear_btn=gr.Button("Clear Chat", variant="stop"),
         additional_inputs=[],
         multimodal=False,
         concurrency_limit=3,
@@ -907,7 +907,7 @@ def main():
         "favicon_path": None
     }
     
-    print(f"🚀 Launching Chat Interface App on port {port}")
+    print(f"Launching Chat Interface App on port {port}")
     print(f"   Session: {session_id or 'Generated'}")
     print(f"   Country: {country or 'Not specified'}")
     

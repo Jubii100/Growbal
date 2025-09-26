@@ -52,7 +52,7 @@ class SessionManager:
         with transaction.atomic():
             # If session_id provided, try to retrieve it
             if session_id:
-                print(f"🔍 Attempting to retrieve session with ID: {session_id}")
+                print(f"Attempting to retrieve session with ID: {session_id}")
                 try:
                     session = ChatSession.objects.select_for_update().get(
                         session_id=session_id
@@ -400,7 +400,7 @@ class SessionManager:
                 
         except Exception as e:
             # Don't fail the main operation if debug writing fails
-            print(f"⚠️  Debug file write error: {e}")
+            print(f"Debug file write error: {e}")
 
 
 # Create global instance

@@ -26,7 +26,7 @@ Title:"""
         )
         
         title = response.content[0].text.strip()
-        print(f"🔍 Generated title: {title}")
+        print(f"Generated title: {title}")
         # Ensure title is not too long
         if len(title) > 200:
             title = title[:197] + "..."
@@ -34,7 +34,7 @@ Title:"""
         return title
         
     except Exception as e:
-        print(f"❌ Title generation error: {e}")
+        print(f"Title generation error: {e}")
         # Return empty string on error - caller will handle
         return ""
 
@@ -133,7 +133,7 @@ Guidelines:
             return result
             
         except Exception as e:
-            print(f"❌ Orchestrator error: {e}")
+            print(f"Orchestrator error: {e}")
             # Fallback - check message pattern to decide which tool
             message_lower = message.lower()
             
@@ -211,7 +211,7 @@ Guidelines:
             
             # Get the response text
             response_text = response.content[0].text.strip()
-            print(f"🔍 Raw suggestions response: {response_text}")
+            print(f"Raw suggestions response: {response_text}")
             
             # Try to extract JSON from response
             try:
@@ -231,12 +231,12 @@ Guidelines:
                     raise ValueError("Invalid suggestions format")
                     
             except (json.JSONDecodeError, ValueError) as json_error:
-                print(f"❌ JSON parsing error: {json_error}")
-                print(f"❌ Response text: {response_text}")
+                print(f"JSON parsing error: {json_error}")
+                print(f"Response text: {response_text}")
                 raise json_error
                 
         except Exception as e:
-            print(f"❌ Suggestions generation error: {e}")
+            print(f"Suggestions generation error: {e}")
             # Fallback suggestions based on service type
             fallback_suggestions = {
                 "Tax Services": [
@@ -331,7 +331,7 @@ async def search_agent_call(message: str, system_prompt: str):
                 yield ("status", chunk)
                 
     except Exception as e:
-        print(f"❌ Search agent error: {e}")
+        print(f"Search agent error: {e}")
         import traceback
         traceback.print_exc()
         yield ("error", f"Search agent error: {str(e)}")
@@ -373,7 +373,7 @@ Response:"""
         return response.content[0].text.strip()
         
     except Exception as e:
-        print(f"❌ Conversational agent error: {e}")
+        print(f"Conversational agent error: {e}")
         import traceback
         traceback.print_exc()
         
@@ -427,7 +427,7 @@ async def call_tool_streaming(tool_name: str, message: str, system_prompt: str, 
                 return
                         
             except Exception as e:
-                print(f"❌ Conversational agent error: {e}")
+                print(f"Conversational agent error: {e}")
                 yield ("error", str(e))
             
         elif tool_name == "search_service_providers":
@@ -440,7 +440,7 @@ async def call_tool_streaming(tool_name: str, message: str, system_prompt: str, 
             yield ("error", f"Unknown tool name: {tool_name}")
             
     except Exception as e:
-        print(f"❌ Tool call error: {e}")
+        print(f"Tool call error: {e}")
         import traceback
         traceback.print_exc()
         yield ("error", f"Error calling {tool_name} tool: {str(e)}")
@@ -457,7 +457,7 @@ def create_orchestrator_chat_interface(orchestrator: OrchestratorAgent):
     #         suggestions = await orchestrator.generate_suggestions(country, service_type, session_id)
     #         return suggestions
     #     except Exception as e:
-    #         print(f"❌ Error generating suggestions: {e}")
+    #         print(f"Error generating suggestions: {e}")
     #         # Fallback suggestions
     #         return [
     #             f"Find providers in {country}",
@@ -487,7 +487,7 @@ def create_orchestrator_chat_interface(orchestrator: OrchestratorAgent):
                     country = fastapi_request.session.get('country', country)
                     service_type = fastapi_request.session.get('service_type', service_type)
             except Exception as e:
-                print(f"❌ [FastAPI Session] Error: {e}")
+                print(f"[FastAPI Session] Error: {e}")
         
         # Run async function to get session data and history with proper event loop handling
         def run_async_safely(coro):
@@ -541,7 +541,7 @@ def create_orchestrator_chat_interface(orchestrator: OrchestratorAgent):
             "history": session_history
         }
         
-        print(f"🎯 Final parameters: Session={session_id}, Country={country}, Service Type={service_type}, History items={len(session_history)}")
+        print(f"Final parameters: Session={session_id}, Country={country}, Service Type={service_type}, History items={len(session_history)}")
         
         # Orchestrator coordination with clean streaming
         async def orchestrator_response(message: str):
@@ -553,7 +553,7 @@ def create_orchestrator_chat_interface(orchestrator: OrchestratorAgent):
                     try:
                         await session_manager.add_message(session_id, "user", message)
                     except Exception as db_error:
-                        print(f"❌ Error storing user message: {db_error}")
+                        print(f"Error storing user message: {db_error}")
                 
                 # Analyze message and determine routing with session history
                 analysis = await orchestrator.analyze_and_route(message, session_id, country, service_type)
@@ -656,14 +656,14 @@ def create_orchestrator_chat_interface(orchestrator: OrchestratorAgent):
                             title = await generate_session_title(final_assistant_response, orchestrator.api_key)
                             if title:
                                 await session_manager.update_session_title(session_id, title)
-                                print(f"✅ Generated session title: {title}")
+                                print(f"Generated session title: {title}")
                                 
                     except Exception as db_error:
-                        print(f"❌ Error storing assistant message: {db_error}")
+                        print(f"Error storing assistant message: {db_error}")
                     
             except Exception as e:
-                error_msg = f"❌ Error: {str(e)}"
-                print(f"❌ Orchestrator error: {e}")
+                error_msg = f"Error: {str(e)}"
+                print(f"Orchestrator error: {e}")
                 yield error_msg
                 
                 # Store error message as assistant response
@@ -671,7 +671,7 @@ def create_orchestrator_chat_interface(orchestrator: OrchestratorAgent):
                     try:
                         await session_manager.add_message(session_id, "assistant", error_msg)
                     except Exception as db_error:
-                        print(f"❌ Error storing error message: {db_error}")
+                        print(f"Error storing error message: {db_error}")
         
         # Run orchestrator with clean streaming using safe async pattern
         gen = orchestrator_response(message)

@@ -46,11 +46,11 @@ async def cleanup_old_sessions():
             # Deactivate sessions older than 7 days (168 hours)
             deactivated = await session_manager.deactivate_old_sessions(hours=168)
             if deactivated > 0:
-                print(f"🧹 Weekly cleanup: Deactivated {deactivated} old sessions")
+                print(f"Weekly cleanup: Deactivated {deactivated} old sessions")
             else:
-                print(f"🧹 Weekly cleanup: No old sessions to deactivate")
+                print(f"Weekly cleanup: No old sessions to deactivate")
         except Exception as e:
-            print(f"❌ Error during weekly session cleanup: {e}")
+            print(f"Error during weekly session cleanup: {e}")
         
         # Run every week (7 days = 604800 seconds)
         await asyncio.sleep(604800)
@@ -60,7 +60,7 @@ async def lifespan(app: FastAPI):
     """Manage application lifecycle"""
     # Startup
     cleanup_task = asyncio.create_task(cleanup_old_sessions())
-    print("✅ Started weekly session cleanup task")
+    print("Started weekly session cleanup task")
     
     yield
     
@@ -70,7 +70,7 @@ async def lifespan(app: FastAPI):
         await cleanup_task
     except asyncio.CancelledError:
         pass
-    print("🛑 Stopped session cleanup task")
+    print("Stopped session cleanup task")
 
 # Create FastAPI app
 app = FastAPI(
@@ -164,16 +164,16 @@ async def proceed_to_chat(
     )
     
     if is_new:
-        print(f"🆕 Created new session: {final_session_id}")
+        print(f"Created new session: {final_session_id}")
     else:
-        print(f"♻️  Reusing existing session: {final_session_id}")
+        print(f"Reusing existing session: {final_session_id}")
     
     # Store in FastAPI session
     request.session["session_id"] = final_session_id
     request.session["country"] = final_country
     request.session["service_type"] = final_service_type
     
-    print(f"🚀 Redirecting to chat: Session={final_session_id}, Country={final_country}, Service Type={final_service_type}")
+    print(f"Redirecting to chat: Session={final_session_id}, Country={final_country}, Service Type={final_service_type}")
     
     # SERVER-SIDE REDIRECT using query parameters
     redirect_url = f"/chat/?session_id={final_session_id}"
@@ -193,7 +193,7 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
     session_id = str(session.get("session_id"))
     country = str(session.get("country"))
     service_type = str(session.get("service_type"))
-    print(f"🚀 Chat interface loaded: Session={session_id}, Country={country}, Service Type={service_type}")
+    print(f"Chat interface loaded: Session={session_id}, Country={country}, Service Type={service_type}")
 
     # Update activity timestamp
     await session_manager.update_activity(session_id)
@@ -226,7 +226,7 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
             <div id=\"chatHistoryContainer\" class=\"chat-history-container collapsed\">
                 <div class=\"chat-history-header\" onclick=\"toggleChatHistory()\">
                     <span class=\"chat-history-title\">
-                        <span id=\"toggleIcon\" class=\"chat-history-toggle collapsed\">⌃</span>
+                        <span id=\"toggleIcon\" class=\"chat-history-toggle collapsed\">^</span>
                         Previous Chat History
                     </span>
                 </div>
@@ -317,7 +317,7 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
                 }});
                 
                 // Debug output
-                console.log('✅ Chat interface loaded with:');
+                console.log('Chat interface loaded with:');
                 console.log('  Session ID: {session_id}');
                 console.log('  Country: {country}');
                 console.log('  Service Type: {service_type}');
@@ -334,7 +334,7 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
     request.session["country"] = country
     request.session["service_type"] = service_type
     
-    print(f"✅ Chat interface loaded: Session={session_id}, Country={country}, Service Type={service_type}")
+    print(f"Chat interface loaded: Session={session_id}, Country={country}, Service Type={service_type}")
     
     # (history_json and history_section prepared above, only if history exists)
     
@@ -752,8 +752,8 @@ async def chat_interface_page(request: Request, session_id: str = None, current_
     <body>
         <div class="container">
             <div class="session-info">
-                <span class="session-info-highlight">🌍 Country:</span> {country} | 
-                <span class="session-info-highlight">💼 Service Type:</span> {service_type}
+                <span class="session-info-highlight">Country:</span> {country} | 
+                <span class="session-info-highlight">Service Type:</span> {service_type}
                 <a href="/proceed-to-chat" style="margin-left: 20px; color: #198484; text-decoration: none;">← New Session</a>
             </div>
             
@@ -808,26 +808,26 @@ app = gr.mount_gradio_app(
     orchestrator_chat_app,
     path="/chat-public"
 )
-print("✅ Chat app mounted at /chat-public")
+print("Chat app mounted at /chat-public")
 
 if __name__ == "__main__":
     import uvicorn
     
-    print("🚀 Starting Growbal Intelligence FastAPI application...")
-    print("📍 Available endpoints:")
+    print("Starting Growbal Intelligence FastAPI application...")
+    print("Available endpoints:")
     print("   - / → Root (redirects to login)")
     print("   - /proceed-to-chat → Form submission handler")
     print("   - /chat/ → Chat interface with orchestrator")
     print("   - /chat-public/ → Public chat interface (free tier)")
     print()
     print("🧠 Features:")
-    print("   ✅ Database-backed session management with duplicate prevention")
-    print("   ✅ Intelligent tool routing based on message analysis")
-    print("   ✅ Dynamic suggestions generated by orchestrator")
-    print("   ✅ Context-aware suggestions (country + service + history)")
-    print("   ✅ Clean streaming: shows only current step + final result")
-    print("   ✅ Weekly automatic cleanup of old sessions (>7 days)")
-    print("   ✅ Persistent chat history storage")
+    print("   Database-backed session management with duplicate prevention")
+    print("   Intelligent tool routing based on message analysis")
+    print("   Dynamic suggestions generated by orchestrator")
+    print("   Context-aware suggestions (country + service + history)")
+    print("   Clean streaming: shows only current step + final result")
+    print("   Weekly automatic cleanup of old sessions (>7 days)")
+    print("   Persistent chat history storage")
     
     uvicorn.run(
         "main:app",

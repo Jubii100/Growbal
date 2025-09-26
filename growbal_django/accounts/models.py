@@ -332,6 +332,72 @@ class ServiceProviderProfile(models.Model):
         
         return "\n".join(text_parts)
 
+    def get_onboarding_profile_text(self):
+        """
+        Combine ALL profile data and associated services into a single text representation
+        for embedding generation.
+        """
+        text_parts = []
+        
+        # Add ALL profile information
+        text_parts.append(f"=== SERVICE PROVIDER PROFILE ===")
+        
+        # Basic Information
+        if self.name:
+            text_parts.append(f"Company Name: {self.name}")
+        if self.country:
+            text_parts.append(f"Country: {self.country}")
+        
+        # Contact Information
+        if self.emails:
+            text_parts.append(f"Email Addresses: {', '.join(self.emails)}")
+        if self.telephones:
+            text_parts.append(f"Telephone Numbers: {', '.join(self.telephones)}")
+        if self.mobiles:
+            text_parts.append(f"Mobile Numbers: {', '.join(self.mobiles)}")
+        
+        # Online Presence
+        if self.website:
+            text_parts.append(f"Website: {self.website}")
+        
+        # Location and People
+        if self.office_locations:
+            text_parts.append(f"Office Locations: {self.office_locations}")
+        if self.key_individuals:
+            text_parts.append(f"Key Individuals: {self.key_individuals}")
+        
+        # Add ALL services information with complete details
+        services = self.services.all()
+        if services:
+            text_parts.append("\n=== SERVICES OFFERED ===")
+            for i, service in enumerate(services, 1):
+                text_parts.append(f"\n--- Service {i} ---")
+                text_parts.append(f"Title: {service.service_title}")
+                
+                if service.service_description:
+                    text_parts.append(f"Description: {service.service_description}")
+                
+                # if service.general_service_description:
+                #     text_parts.append(f"General Description: {service.general_service_description}")
+                
+                # Include tags
+                tags = service.service_tags.all()
+                if tags:
+                    tag_names = [tag.name for tag in tags]
+                    text_parts.append(f"Tags: {', '.join(tag_names)}")
+                
+                if service.rating_score:
+                    text_parts.append(f"Rating Score: {service.rating_score}/5")
+                
+                if service.rating_description:
+                    text_parts.append(f"Rating Description: {service.rating_description}")
+                
+                if service.pricing:
+                    text_parts.append(f"Pricing: {service.pricing}")
+        
+        return "\n".join(text_parts)
+
+
 
 class ServiceProviderMemberProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='member_profile')

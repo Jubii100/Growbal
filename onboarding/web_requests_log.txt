@@ -1,0 +1,13 @@
+# Web Requests Log
+# Workflow: generate_initial_checklist
+# Started: 2025-09-03T09:58:51.723148Z
+
+2025-09-03T09:59:10.120155Z | SCRAPINGFISH key_present=yes
+2025-09-03T09:59:10.120178Z | SEARCH q='Smart Ezone Corporate Services Provider LLC Dubai LinkedIn'
+2025-09-03T09:59:20.299491Z | RERANK fallback lexical scoring for query='Smart Ezone Corporate Services Provider LLC Dubai LinkedIn' results=3
+2025-09-03T09:59:20.299565Z | FETCH url='https://www.smartezone.ae/contact-us/' render_js=True timeout=45
+2025-09-03T09:59:29.616942Z | PARSED url='https://www.smartezone.ae/contact-us/' content_len=1121
+2025-09-03T09:59:29.616991Z | FETCH url='https://bestthings.ae/dubai/smart-ezone-corporate-services-provider/86441' render_js=True timeout=45
+2025-09-03T09:59:34.467036Z | PARSED url='https://bestthings.ae/dubai/smart-ezone-corporate-services-provider/86441' content_len=799
+2025-09-03T09:59:34.467059Z | SEARCH q='Smart Ezone Corporate Services Provider LLC Dubai Google Maps'
+2025-09-03T09:59:42.982701Z | WARNING: No search results for query: Smart Ezone Corporate Services Provider LLC Dubai Google Maps

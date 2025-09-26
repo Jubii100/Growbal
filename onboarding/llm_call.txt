@@ -1,0 +1,360 @@
+# LLM Error Log
+# Workflow: generate_initial_checklist
+# Started: 2025-09-03T09:58:51.723546Z
+
+## generate_profile_summary ERROR @ 2025-09-03T10:04:19.726570Z
+model=gpt-5
+error_type=Exception
+error_message=Profile summary generation timed out after 60 seconds
+--- CONTEXT ---
+[human]
+You are an expert business analyst creating comprehensive provider profiles for a platform that connects clients with service providers. Your task is to generate a detailed, professional summary of the service provider based on their completed onboarding checklist and initial profile information.
+
+Context:
+- Platform: We facilitate clear, efficient collaboration between clients and providers by creating detailed profiles that enable strong matching and set proper expectations.
+- This summary will be used to help potential clients understand the provider's capabilities, services, and business approach.
+
+Provider Profile Information:
+=== SERVICE PROVIDER PROFILE ===
+Company Name: Smart Ezone Corporate Services Provider LLC
+Country: UAE
+Email Addresses: karen@e.zone
+Website: https://www.smartezone.ae
+Office Locations: Dubai, UAE
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Corporate Services Provider in Dubai
+Description: Smart Ezone Corporate Services Provider LLC is a leading company in Dubai providing premium services for business setup, corporate banking, and business management consulting services.
+Tags: Business Setup, Corporate Banking, Business Management Consulting, Corporate Services
+
+Completed Onboarding Checklist:
+1. Your site advertises an “All Inclusive License & Visa for only AED 13,500.” Please specify exactly what is included and excluded (jurisdiction/free zone or mainland, license type and number of activities, visa quota, establishment card/e-channel/immigration file, medical/Emirates ID/typing, office/desk or lease requirements, bank-account assistance), whether all government fees are included, total payable in Year 1 vs renewal in Year 2, any conditional or hidden costs, eligibility limits, expected timelines, and the promotion’s validity/refund terms.
+   Answer: yes
+
+2. To help us match you with the right clients, please outline your core service scope and ideal client profiles for UAE company setup: which jurisdictions/emirates/free zones you support, types of setups (free zone/mainland/offshore) and industries you focus on, your standard engagement process and required documents (residents vs non-residents, individual vs corporate shareholders), typical timelines to license issuance/visa stamping and to open bank accounts, partner banks and minimum balance expectations, languages supported, post-setup services offered (VAT/accounting/ESR-UBO/compliance/PRO), and any service-level commitments (response times, case updates).
+   Answer: yes
+
+
+
+Instructions:
+- Synthesize all available information into a comprehensive, well-structured provider profile summary
+- Highlight key services, capabilities, and unique value propositions
+- Include relevant operational details (pricing models, target clients, jurisdictions, etc.)
+- Emphasize credibility indicators (certifications, experience, notable clients, etc.)
+- Maintain a professional, informative tone that builds confidence
+- Organize information logically for easy scanning by potential clients
+- Focus on details that would influence client matching and project scoping decisions
+
+Requirements:
+- Create a detailed summary that captures the provider's full business profile
+- Include specific details from the onboarding responses where relevant
+- Structure the content for clarity and professional presentation
+- Ensure the summary is comprehensive enough to support client matching decisions
+
+Return structured output matching the expected schema with a detailed summary field.
+
+--- TRACEBACK ---
+Traceback (most recent call last):
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 500, in wait_for
+    return fut.result()
+           ^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 198, in result
+    raise exc
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 277, in __step
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/runnables/base.py", line 3091, in ainvoke
+    input_ = await coro_with_context(part(), context, create_task=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 349, in __wakeup
+    future.result()
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 198, in result
+    raise exc
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 279, in __step
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/runnables/base.py", line 5454, in ainvoke
+    return await self.bound.ainvoke(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 405, in ainvoke
+    llm_result = await self.agenerate_prompt(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 1017, in agenerate_prompt
+    return await self.agenerate(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 937, in agenerate
+    results = await asyncio.gather(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 349, in __wakeup
+    future.result()
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 277, in __step
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 1145, in _agenerate_with_cache
+    result = await self._agenerate(
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_openai/chat_models/base.py", line 1422, in _agenerate
+    raw_response = await self.async_client.with_raw_response.create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/openai/_legacy_response.py", line 381, in wrapped
+    return cast(LegacyAPIResponse[R], await func(*args, **kwargs))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/openai/resources/chat/completions/completions.py", line 2583, in create
+    return await self._post(
+           ^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/openai/_base_client.py", line 1794, in post
+    return await self.request(cast_to, opts, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/openai/_base_client.py", line 1529, in request
+    response = await self._client.send(
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/http11.py", line 136, in handle_async_request
+    raise exc
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/http11.py", line 217, in _receive_event
+    data = await self._network_stream.read(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_backends/anyio.py", line 35, in read
+    return await self._stream.receive(max_bytes=max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/anyio/streams/tls.py", line 237, in receive
+    data = await self._call_sslobject_method(self._ssl_object.read, max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/anyio/streams/tls.py", line 180, in _call_sslobject_method
+    data = await self.transport_stream.receive()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 1254, in receive
+    await self._protocol.read_event.wait()
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/locks.py", line 213, in wait
+    await fut
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 349, in __wakeup
+    future.result()
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mohammed/Desktop/tech_projects/growbal/onboarding/llm_wrapper.py", line 724, in generate_profile_summary
+    result_model = await asyncio.wait_for(
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 502, in wait_for
+    raise exceptions.TimeoutError() from exc
+TimeoutError
+
+
+## generate_profile_summary ERROR @ 2025-09-03T10:05:19.792460Z
+model=gpt-5
+error_type=Exception
+error_message=Profile summary generation timed out after 60 seconds
+--- CONTEXT ---
+[human]
+You are an expert business analyst creating comprehensive provider profiles for a platform that connects clients with service providers. Your task is to generate a detailed, professional summary of the service provider based on their completed onboarding checklist and initial profile information.
+
+Context:
+- Platform: We facilitate clear, efficient collaboration between clients and providers by creating detailed profiles that enable strong matching and set proper expectations.
+- This summary will be used to help potential clients understand the provider's capabilities, services, and business approach.
+
+Provider Profile Information:
+=== SERVICE PROVIDER PROFILE ===
+Company Name: Smart Ezone Corporate Services Provider LLC
+Country: UAE
+Email Addresses: karen@e.zone
+Website: https://www.smartezone.ae
+Office Locations: Dubai, UAE
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Corporate Services Provider in Dubai
+Description: Smart Ezone Corporate Services Provider LLC is a leading company in Dubai providing premium services for business setup, corporate banking, and business management consulting services.
+Tags: Business Setup, Corporate Banking, Business Management Consulting, Corporate Services
+
+Completed Onboarding Checklist:
+1. Your site advertises an “All Inclusive License & Visa for only AED 13,500.” Please specify exactly what is included and excluded (jurisdiction/free zone or mainland, license type and number of activities, visa quota, establishment card/e-channel/immigration file, medical/Emirates ID/typing, office/desk or lease requirements, bank-account assistance), whether all government fees are included, total payable in Year 1 vs renewal in Year 2, any conditional or hidden costs, eligibility limits, expected timelines, and the promotion’s validity/refund terms.
+   Answer: yes
+
+2. To help us match you with the right clients, please outline your core service scope and ideal client profiles for UAE company setup: which jurisdictions/emirates/free zones you support, types of setups (free zone/mainland/offshore) and industries you focus on, your standard engagement process and required documents (residents vs non-residents, individual vs corporate shareholders), typical timelines to license issuance/visa stamping and to open bank accounts, partner banks and minimum balance expectations, languages supported, post-setup services offered (VAT/accounting/ESR-UBO/compliance/PRO), and any service-level commitments (response times, case updates).
+   Answer: yes
+
+
+
+Instructions:
+- Synthesize all available information into a comprehensive, well-structured provider profile summary
+- Highlight key services, capabilities, and unique value propositions
+- Include relevant operational details (pricing models, target clients, jurisdictions, etc.)
+- Emphasize credibility indicators (certifications, experience, notable clients, etc.)
+- Maintain a professional, informative tone that builds confidence
+- Organize information logically for easy scanning by potential clients
+- Focus on details that would influence client matching and project scoping decisions
+
+Requirements:
+- Create a detailed summary that captures the provider's full business profile
+- Include specific details from the onboarding responses where relevant
+- Structure the content for clarity and professional presentation
+- Ensure the summary is comprehensive enough to support client matching decisions
+
+Return structured output matching the expected schema with a detailed summary field.
+
+--- TRACEBACK ---
+Traceback (most recent call last):
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 500, in wait_for
+    return fut.result()
+           ^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 198, in result
+    raise exc
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 277, in __step
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/runnables/base.py", line 3091, in ainvoke
+    input_ = await coro_with_context(part(), context, create_task=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 349, in __wakeup
+    future.result()
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 198, in result
+    raise exc
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 279, in __step
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/runnables/base.py", line 5454, in ainvoke
+    return await self.bound.ainvoke(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 405, in ainvoke
+    llm_result = await self.agenerate_prompt(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 1017, in agenerate_prompt
+    return await self.agenerate(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 937, in agenerate
+    results = await asyncio.gather(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 349, in __wakeup
+    future.result()
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 277, in __step
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 1145, in _agenerate_with_cache
+    result = await self._agenerate(
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/langchain_openai/chat_models/base.py", line 1422, in _agenerate
+    raw_response = await self.async_client.with_raw_response.create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/openai/_legacy_response.py", line 381, in wrapped
+    return cast(LegacyAPIResponse[R], await func(*args, **kwargs))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/openai/resources/chat/completions/completions.py", line 2583, in create
+    return await self._post(
+           ^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/openai/_base_client.py", line 1794, in post
+    return await self.request(cast_to, opts, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/openai/_base_client.py", line 1529, in request
+    response = await self._client.send(
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/http11.py", line 136, in handle_async_request
+    raise exc
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_async/http11.py", line 217, in _receive_event
+    data = await self._network_stream.read(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/httpcore/_backends/anyio.py", line 35, in read
+    return await self._stream.receive(max_bytes=max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/anyio/streams/tls.py", line 237, in receive
+    data = await self._call_sslobject_method(self._ssl_object.read, max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/anyio/streams/tls.py", line 180, in _call_sslobject_method
+    data = await self.transport_stream.receive()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 1254, in receive
+    await self._protocol.read_event.wait()
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/locks.py", line 213, in wait
+    await fut
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 349, in __wakeup
+    future.result()
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mohammed/Desktop/tech_projects/growbal/onboarding/llm_wrapper.py", line 724, in generate_profile_summary
+    result_model = await asyncio.wait_for(
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohammed/anaconda3/envs/onboarding/lib/python3.11/asyncio/tasks.py", line 502, in wait_for
+    raise exceptions.TimeoutError() from exc
+TimeoutError
+
+

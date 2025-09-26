@@ -20,9 +20,9 @@ if project_root not in sys.path:
 # Import COUNTRY_CHOICES from the utils module
 try:
     from growbal_django.accounts.utils import COUNTRY_CHOICES
-    print("✅ Successfully imported country choices from utils module")
+    print("Successfully imported country choices from utils module")
 except ImportError as e:
-    print(f"⚠️ Warning: Could not import country choices from utils: {e}")
+    print(f"Warning: Could not import country choices from utils: {e}")
     # Fallback to a minimal list if import fails
     COUNTRY_CHOICES = [
         ('USA', 'USA'), ('UK', 'UK'), ('Canada', 'Canada'), 
@@ -145,7 +145,7 @@ def create_country_selection_app():
         
         # Country selection section
         with gr.Column(elem_classes="country-section"):
-            gr.Markdown("## 🌍 Please select a country to begin")
+            gr.Markdown("## Please select a country to begin")
             gr.Markdown("Choose your target country for service provider search")
             
             country_dropdown = gr.Dropdown(
@@ -201,7 +201,7 @@ def create_country_selection_app():
                 }}
             </script>
             <div style="text-align: center; padding: 20px; color: #198484;">
-                <h3>🚀 Redirecting to chat interface...</h3>
+                <h3>Redirecting to chat interface...</h3>
                 <p><strong>Session:</strong> {session_id}</p>
                 <p><strong>Country:</strong> {country}</p>
                 <p><em>If redirect doesn't work, you can manually navigate to the chat interface.</em></p>
@@ -247,7 +247,7 @@ def main():
         "favicon_path": None
     }
     
-    print(f"🚀 Launching Country Selection App on port {port}")
+    print(f"Launching Country Selection App on port {port}")
     interface.launch(**launch_config)
 
 

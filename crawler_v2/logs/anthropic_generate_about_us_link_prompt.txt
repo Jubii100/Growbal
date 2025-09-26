@@ -1,0 +1,19 @@
+MODEL: claude-3-5-sonnet-20241022
+TEMPERATURE: 0
+--- FORMATTED PROMPT ---
+messages=[SystemMessage(content="# Role\n\nYou are an accurate and experienced data engineer.\n\n# Task\n\nYou will receive a list of links under one base_url for an official company website. Extract the links if they adhere to the following categories: (Note that the order of the categories is important so preserve the order of the categories in the generated output)\n\n- links for info about the company (eg. about us page)\n- links for contact info page (eg. contact us page)\n- links for offered services page (eg. our services page)\n- links for staff page (eg. our team page)\n- links for service/product pricing page (eg. pricing)\n- links for rating/review page (eg. reviews, testimonials)\n\nThe filtered links should follow those criteria:\n- Make sure that the final filtered links are absolute links (very important), and belong to one of the above four categories.\n- If the provided links are relative, convert them to absolute links. Here's the base URL: https://abstractauditing.com/.\n- The number of links should be 12 or less most fitting links to the above four categories.\n\n# Output\n\nA JSON object containing only 12 or less links in the given schema.\n\n# Input\n\nLink suggestions:\n\nAbout Us: https://abstractauditing.com/about-us/\nVAT Services: https://abstractauditing.com/vat-services/\nTax Services: https://abstractauditing.com/tax-services/\nCorporate Finance Services: https://abstractauditing.com/corporate-finance-services/\ngoAML compliance services: https://abstractauditing.com/goaml-compliance-services/\nCash Flow & Forecasting Services: https://abstractauditing.com/cash-flow-forecasting-services/\nAudit & Assurance: https://abstractauditing.com/audit-assurance-services/\nBusiness Valuation Services: https://abstractauditing.com/business-valuation-services/\nCompany Formation Services: https://abstractauditing.com/company-formation-services/\nContact Us: https://abstractauditing.com/contact-us/\n\n", additional_kwargs={}, response_metadata={}), HumanMessage(content='Filter "about us" page, contact us page, services page, team page, or any similar page.', additional_kwargs={}, response_metadata={})]
+--- ANTHROPIC RESPONSE (2.79s) ---
+{
+  "about_us_link": [
+    "https://abstractauditing.com/about-us/",
+    "https://abstractauditing.com/contact-us/",
+    "https://abstractauditing.com/vat-services/",
+    "https://abstractauditing.com/tax-services/",
+    "https://abstractauditing.com/corporate-finance-services/",
+    "https://abstractauditing.com/goaml-compliance-services/",
+    "https://abstractauditing.com/cash-flow-forecasting-services/",
+    "https://abstractauditing.com/audit-assurance-services/",
+    "https://abstractauditing.com/business-valuation-services/",
+    "https://abstractauditing.com/company-formation-services/"
+  ]
+}

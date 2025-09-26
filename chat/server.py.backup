@@ -81,7 +81,7 @@ Response:"""
         return response.content[0].text.strip()
         
     except Exception as e:
-        print(f"❌ Conversational agent error: {e}")
+        print(f"Conversational agent error: {e}")
         import traceback
         traceback.print_exc()
         

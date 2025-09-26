@@ -265,7 +265,7 @@ Service ←N:1→ Scrape
 4. **Password Management**: Django's built-in password hashing
 
 ### Security Considerations
-⚠️ **Development Settings Detected:**
+**Development Settings Detected:**
 - `DEBUG = True` - Must be set to False in production
 - `SECRET_KEY` is hardcoded - Must use environment variables
 - `ALLOWED_HOSTS = []` - Must specify allowed domains

@@ -1,0 +1,72 @@
+[
+  {
+    "title": "Professional Accounting & Bookkeeping Services in Dubai, UAE",
+    "link": "https://abstractauditing.com/",
+    "snippet": "Abstract Accounting and Auditing is an ISO 9001-2015 certified firm of experienced chartered accountants, auditors and specialist service teams providing ...",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 1
+  },
+  {
+    "title": "Abstract Accounting & Auditing",
+    "link": "https://www.linkedin.com/company/abstract-auditing/",
+    "snippet": "Abstract Accounting & Auditing Services is a professional services firm based in the UAE that specializes in providing auditing, accounting, taxation, ...",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 2
+  },
+  {
+    "title": "Abstract Accounting & Auditing, UAE",
+    "link": "https://www.auditfirms.ae/company/abstract-accounting-auditing",
+    "snippet": "Contact · +97145897073 · Office No.1301/1302.Opal Tower, Burj Khalifa Street Business Bay Dubai,UAE · info@abstractauditing.com · https://abstractauditing.com/.",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 3
+  },
+  {
+    "title": "Abstract Auditing & Bookkeeping | Dubai",
+    "link": "https://www.facebook.com/absractauditing/",
+    "snippet": "Abstract Auditing provides certified expertise before Dubai and Federal Courts, giving you peace of mind and reliable representation. May be a graphic of text ...",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 4
+  },
+  {
+    "title": "Audit and Bookkeeping Services in Dubai",
+    "link": "https://abstractauditing.com/audit-and-bookkeeping/",
+    "snippet": "Abstract Audit and Bookkeeping Services provides quality services with most experienced Staff. Abstract is an approved tax agent.",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 5
+  },
+  {
+    "title": "Abstract Accounting & Auditing",
+    "link": "https://www.hidubai.com/businesses/abstract-accounting-auditing-finance-legal-accounting-services-business-bay-dubai",
+    "snippet": "Abstract Accounting & Auditing located at Zaabeel,Business Bay is one of the Top Accounting Services in Dubai. Get Abstract Accounting & Auditing reviews, ...",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 6
+  },
+  {
+    "title": "Abstract Auditing and Bookkeeping Services",
+    "link": "https://ae.linkedin.com/company/abstract-auditing-and-bookkeeping-services",
+    "snippet": "ABSTRACT Auditing and Book Keeping is an ISO 9001-2015 certified firm of experienced chartered accountants, auditors and specialist service teams providing ...",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 7
+  },
+  {
+    "title": "Abstract Auditing - Dubai UAE",
+    "link": "https://about.me/abstractauditing",
+    "snippet": "Abstract Accounting & Auditing certified firm of experienced Chartered Accountants, auditors and specialist service teams offering a wide range of services ...",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 8
+  },
+  {
+    "title": "At Abstract Accounting and Auditing Services, we ...",
+    "link": "https://www.instagram.com/p/C_-GEeAThtP/?hl=en",
+    "snippet": "Your trusted accounting partner in Dubai! From startups to corporations, we deliver accurate, compliant, and professional financial solutions.",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 9
+  },
+  {
+    "title": "Abstract Auditing Bookkeeping and Accounting",
+    "link": "https://www.tradersfind.com/seller/abstract-auditing-bookkeeping-and-accounting",
+    "snippet": "Abstract Auditing Bookkeeping and Accounting is your trusted partner in the world of financial management and compliance in the United Arab Emirates.",
+    "search_term": "abstract accounting auditing dubai",
+    "id": 10
+  }
+]

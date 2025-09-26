@@ -1,0 +1,441 @@
+# Onboarding LLM Prompt Log
+# Model: gpt-5
+# Started: 2025-09-03T09:58:50.333997Z
+
+## generate_search_queries @ 2025-09-03T09:59:10.109390Z
+--- PROMPT ---
+[human]
+You are generating focused web search queries to find service provider pages and profiles.
+
+Constraints:
+- Keep queries short and practical for web search.
+- Prefer official sources (Google Business, LinkedIn, directories) and informational pages that reveal services, coverage, pricing, contact. Avoid the service provider's official website, target thier other online presence.
+
+Context:
+- profile_text: === SERVICE PROVIDER PROFILE ===
+Company Name: Smart Ezone Corporate Services Provider LLC
+Country: UAE
+Email Addresses: karen@e.zone
+Website: https://www.smartezone.ae
+Office Locations: Dubai, UAE
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Corporate Services Provider in Dubai
+Description: Smart Ezone Corporate Services Provider LLC is a leading company in Dubai providing premium services for business setup, corporate banking, and business management consulting services.
+Tags: Business Setup, Corporate Banking, Business Management Consulting, Corporate Services
+
+Instructions:
+- Read the profile_text. Infer the likely service type, location, and key identifiers (e.g., business name, domain) from it.
+- Propose 2–4 high-signal queries that would help discover the provider's official site and authoritative listings.
+- Keep queries fairly concise.
+- Avoid duplicates and overly broad terms.
+
+Return structured output matching the expected schema for queries.
+
+
+
+--- RESPONSE ---
+{"queries": [{"text": "Smart Ezone Corporate Services Provider LLC Dubai LinkedIn", "intent": "provider_discovery"}, {"text": "Smart Ezone Corporate Services Provider LLC Dubai Google Maps", "intent": "provider_discovery"}, {"text": "Smart Ezone Corporate Services Provider LLC site:dnb.com", "intent": "provider_discovery"}, {"text": "Smart Ezone Dubai site:yellowpages-uae.com", "intent": "provider_discovery"}]}
+
+==============================
+
+## generate_initial_checklist @ 2025-09-03T10:00:28.189052Z
+--- PROMPT ---
+[human]
+You are an expert onboarding analyst for a platform that connects motivated clients with service providers. Your task is to produce an initial onboarding checklist tailored to the business based on the provided profile text. The checklist will be used to ask the business representative for answers and will be marked as items are fullfilled, answered, evaded later in the workflow.
+
+Constraints:
+- Do not ask for information you already have under the context Business profile text section.
+- Cover detailed understanding of services, scope of business, pricing, target market/clients, operations, credibility and more.
+- Keep prompts insightful, clear, inquisitive and user-friendly. Make the user feel you did your due diligence on producing the checklist.
+
+Context:
+- Platform: We facilitate clear, efficient collaboration between clients and providers to set expectations, collect required info, and enable strong matching.
+- Business profile text (may be incomplete or noisy):
+=== SERVICE PROVIDER PROFILE ===
+Company Name: Smart Ezone Corporate Services Provider LLC
+Country: UAE
+Email Addresses: karen@e.zone
+Website: https://www.smartezone.ae
+Office Locations: Dubai, UAE
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Corporate Services Provider in Dubai
+Description: Smart Ezone Corporate Services Provider LLC is a leading company in Dubai providing premium services for business setup, corporate banking, and business management consulting services.
+Tags: Business Setup, Corporate Banking, Business Management Consulting, Corporate Services
+
+- Parsed research content from the provider's likely web presence (headings and paragraphs only; may be partial or noisy). Use it to form yet more inquisitve and detailed questions about the provider.
+Contact Us - Smart Ezone Corporate Services Provider LLC
+Contact
+
+Get in Touch To Get Related Information Now!
+
+Office
+
+Phone
+
+Email
+
+Links
+
+Contact Us
+
+Links
+
+Contact Us
+
+Contact Us
+
+ALL INCLUSIVE LICENSE & VISA FOR ONLY AED 13,500
+
+Thank You!
+
+Don’t know the business setup procedure in the UAE?
+
+Avail the chance of having a free consultation meeting with our experts, ask related questions and discuss your business needs.
+
+Please fill the form below and let’s get started
+
+Pick a Service Free Zone Mainland Promotion
+
+Establish Your Business Across UAE Today
+
+Smart Ezone is your destination partner to establish and make business successful across the United Arab Emirates. We provide different business set-up services, knowledge and support to achieve your goals. Let’s start your journey.
+
+Supporting Your Global Goals with Smart Ezone
+
+At Smart Ezone, we are committed to helping your organization achieve its global aspirations. With our in-depth knowledge of the domestic business environment and regulatory framework of the United Arab Emirates (UAE), we offer comprehensive services to support your journey.
+
+One of our Business Setup Advisor will contact you soon
+
+---
+
+Smart Ezone Corporate Services Provider - Business management consultant - Dubai | BestThings.AE
+Smart Ezone Corporate Services Provider
+
+Smart Ezone Corporate Services Provider is a business management consultant and bus stop located in Dubai, United Arab Emirates. The average rating of this business is 4.90 out of 5 stars based on 7 reviews. The street address of this business is Concord Tower - Al Sufouh - Dubai Media City - Dubai - United Arab Emirates. Smart Ezone Corporate Services Provider is closed on Saturday and Sunday, and other days it is open from 08:30am to 05:30pm.
+
+OmniClouds Computer Systems & Communication Equipment Software Design LLC
+
+BestThings.ae is a local business and places directory that contain informations like reviews and images of places & local businesses in UAE.
+
+© BestThings.AE Local business directory all rights reserved. Made with ♥ by resalat.dev .
+
+Return structured output matching the expected checklist schema.
+
+Design guidance:
+- Prioritize an experience of decisive yet insightful question and seamless transition to the next steps.
+- Balance atomic items and compound questions when it improves validation.
+- Include questions that typically influence client matching and scoping.
+- All items must have a pending status
+
+Important:
+- Return 2 items, tuned to the business context.
+- Use consistent, readable keys (e.g., "primary_contact_email", "service_areas", "pricing_model").
+- Do not include any commentary or fields outside the schema.
+
+Strictness:
+- You MUST produce valid structured output for the checklist.
+
+
+
+--- RESPONSE ---
+{"checklist": [{"key": "flagship_package_pricing_and_terms", "prompt": "Your site advertises an “All Inclusive License & Visa for only AED 13,500.” Please specify exactly what is included and excluded (jurisdiction/free zone or mainland, license type and number of activities, visa quota, establishment card/e-channel/immigration file, medical/Emirates ID/typing, office/desk or lease requirements, bank-account assistance), whether all government fees are included, total payable in Year 1 vs renewal in Year 2, any conditional or hidden costs, eligibility limits, expected timelines, and the promotion’s validity/refund terms.", "required": true, "status": "PENDING", "value": null}, {"key": "service_scope_clients_process_and_timelines", "prompt": "To help us match you with the right clients, please outline your core service scope and ideal client profiles for UAE company setup: which jurisdictions/emirates/free zones you support, types of setups (free zone/mainland/offshore) and industries you focus on, your standard engagement process and required documents (residents vs non-residents, individual vs corporate shareholders), typical timelines to license issuance/visa stamping and to open bank accounts, partner banks and minimum balance expectations, languages supported, post-setup services offered (VAT/accounting/ESR-UBO/compliance/PRO), and any service-level commitments (response times, case updates).", "required": true, "status": "PENDING", "value": null}]}
+
+==============================
+
+## generate_search_queries @ 2025-09-03T10:00:44.710084Z
+--- PROMPT ---
+[human]
+You are generating focused web search queries to find service provider pages and profiles.
+
+Constraints:
+- Keep queries short and practical for web search.
+- Prefer official sources (Google Business, LinkedIn, directories) and informational pages that reveal services, coverage, pricing, contact. Avoid the service provider's official website, target thier other online presence.
+
+Context:
+- profile_text: === SERVICE PROVIDER PROFILE ===
+Company Name: Smart Ezone Corporate Services Provider LLC
+Country: UAE
+Email Addresses: karen@e.zone
+Website: https://www.smartezone.ae
+Office Locations: Dubai, UAE
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Corporate Services Provider in Dubai
+Description: Smart Ezone Corporate Services Provider LLC is a leading company in Dubai providing premium services for business setup, corporate banking, and business management consulting services.
+Tags: Business Setup, Corporate Banking, Business Management Consulting, Corporate Services
+
+Instructions:
+- Read the profile_text. Infer the likely service type, location, and key identifiers (e.g., business name, domain) from it.
+- Propose 2–4 high-signal queries that would help discover the provider's official site and authoritative listings.
+- Keep queries fairly concise.
+- Avoid duplicates and overly broad terms.
+
+Return structured output matching the expected schema for queries.
+
+
+
+--- RESPONSE ---
+{"queries": [{"text": "Smart Ezone Corporate Services Provider LLC LinkedIn", "intent": "provider_discovery"}, {"text": "Smart Ezone Corporate Services Provider LLC Google Maps Dubai", "intent": "provider_discovery"}, {"text": "Smart Ezone Corporate Services Provider LLC OpenCorporates", "intent": "provider_discovery"}, {"text": "Smart Ezone Corporate Services Provider LLC Dun & Bradstreet", "intent": "provider_discovery"}]}
+
+==============================
+
+## extract_answer_from_content @ 2025-09-03T10:01:21.439393Z
+--- PROMPT ---
+[human]
+Extract a direct answer to the question from the business content.
+Question: Your site advertises an “All Inclusive License & Visa for only AED 13,500.” Please specify exactly what is included and excluded (jurisdiction/free zone or mainland, license type and number of activities, visa quota, establishment card/e-channel/immigration file, medical/Emirates ID/typing, office/desk or lease requirements, bank-account assistance), whether all government fees are included, total payable in Year 1 vs renewal in Year 2, any conditional or hidden costs, eligibility limits, expected timelines, and the promotion’s validity/refund terms.
+
+Business content (may be truncated):
+Contact Us - Smart Ezone Corporate Services Provider LLC
+Contact
+
+Get in Touch To Get Related Information Now!
+
+Office
+
+Phone
+
+Email
+
+Links
+
+Contact Us
+
+Links
+
+Contact Us
+
+Contact Us
+
+ALL INCLUSIVE LICENSE & VISA FOR ONLY AED 13,500
+
+Thank You!
+
+Don’t know the business setup procedure in the UAE?
+
+Avail the chance of having a free consultation meeting with our experts, ask related questions and discuss your business needs.
+
+Please fill the form below and let’s get started
+
+Pick a Service Free Zone Mainland Promotion
+
+Establish Your Business Across UAE Today
+
+Smart Ezone is your destination partner to establish and make business successful across the United Arab Emirates. We provide different business set-up services, knowledge and support to achieve your goals. Let’s start your journey.
+
+Supporting Your Global Goals with Smart Ezone
+
+At Smart Ezone, we are committed to helping your organization achieve its global aspirations. With our in-depth knowledge of the domestic business environment and regulatory framework of the United Arab Emirates (UAE), we offer comprehensive services to support your journey.
+
+One of our Business Setup Advisor will contact you soon
+
+---
+
+Smart Ezone Corporate Services Provider - Business management consultant - Dubai | BestThings.AE
+Smart Ezone Corporate Services Provider
+
+Smart Ezone Corporate Services Provider is a business management consultant and bus stop located in Dubai, United Arab Emirates. The average rating of this business is 4.90 out of 5 stars based on 7 reviews. The street address of this business is Concord Tower - Al Sufouh - Dubai Media City - Dubai - United Arab Emirates. Smart Ezone Corporate Services Provider is closed on Saturday and Sunday, and other days it is open from 08:30am to 05:30pm.
+
+OmniClouds Computer Systems & Communication Equipment Software Design LLC
+
+BestThings.ae is a local business and places directory that contain informations like reviews and images of places & local businesses in UAE.
+
+© BestThi
+
+
+
+--- RESPONSE ---
+{"value": "Not specified in the provided content. The page only displays the headline “ALL INCLUSIVE LICENSE & VISA FOR ONLY AED 13,500” without any details on jurisdiction (free zone vs mainland), license type or number of activities, visa quota, establishment card/e-channel/immigration file, medical/Emirates ID/typing, office/lease requirements, bank-account assistance, whether all government fees are included, Year 1 total vs Year 2 renewal, conditional/hidden costs, eligibility limits, timelines, or promotion validity/refund terms.", "confidence": 0.09, "source": "Contact Us - Smart Ezone Corporate Services Provider LLC; Smart Ezone Corporate Services Provider listing on BestThings.ae", "evidence": "The content includes only: “ALL INCLUSIVE LICENSE & VISA FOR ONLY AED 13,500” and general contact/consultation prompts. No itemized inclusions/exclusions or pricing breakdowns are shown."}
+
+==============================
+
+## extract_answer_from_content @ 2025-09-03T10:01:33.261786Z
+--- PROMPT ---
+[human]
+Extract a direct answer to the question from the business content.
+Question: To help us match you with the right clients, please outline your core service scope and ideal client profiles for UAE company setup: which jurisdictions/emirates/free zones you support, types of setups (free zone/mainland/offshore) and industries you focus on, your standard engagement process and required documents (residents vs non-residents, individual vs corporate shareholders), typical timelines to license issuance/visa stamping and to open bank accounts, partner banks and minimum balance expectations, languages supported, post-setup services offered (VAT/accounting/ESR-UBO/compliance/PRO), and any service-level commitments (response times, case updates).
+
+Business content (may be truncated):
+Contact Us - Smart Ezone Corporate Services Provider LLC
+Contact
+
+Get in Touch To Get Related Information Now!
+
+Office
+
+Phone
+
+Email
+
+Links
+
+Contact Us
+
+Links
+
+Contact Us
+
+Contact Us
+
+ALL INCLUSIVE LICENSE & VISA FOR ONLY AED 13,500
+
+Thank You!
+
+Don’t know the business setup procedure in the UAE?
+
+Avail the chance of having a free consultation meeting with our experts, ask related questions and discuss your business needs.
+
+Please fill the form below and let’s get started
+
+Pick a Service Free Zone Mainland Promotion
+
+Establish Your Business Across UAE Today
+
+Smart Ezone is your destination partner to establish and make business successful across the United Arab Emirates. We provide different business set-up services, knowledge and support to achieve your goals. Let’s start your journey.
+
+Supporting Your Global Goals with Smart Ezone
+
+At Smart Ezone, we are committed to helping your organization achieve its global aspirations. With our in-depth knowledge of the domestic business environment and regulatory framework of the United Arab Emirates (UAE), we offer comprehensive services to support your journey.
+
+One of our Business Setup Advisor will contact you soon
+
+---
+
+Smart Ezone Corporate Services Provider - Business management consultant - Dubai | BestThings.AE
+Smart Ezone Corporate Services Provider
+
+Smart Ezone Corporate Services Provider is a business management consultant and bus stop located in Dubai, United Arab Emirates. The average rating of this business is 4.90 out of 5 stars based on 7 reviews. The street address of this business is Concord Tower - Al Sufouh - Dubai Media City - Dubai - United Arab Emirates. Smart Ezone Corporate Services Provider is closed on Saturday and Sunday, and other days it is open from 08:30am to 05:30pm.
+
+OmniClouds Computer Systems & Communication Equipment Software Design LLC
+
+BestThings.ae is a local business and places directory that contain informations like reviews and images of places & local businesses in UAE.
+
+© BestThi
+
+
+
+--- RESPONSE ---
+{"value": "The provided business content does not specify jurisdictions/emirates/free zones, setup types, industries, engagement process, required documents, timelines to license/visa or bank account opening, partner banks/minimum balances, languages, post-setup services, or service-level commitments. It only indicates Smart Ezone offers UAE business setup support, a free consultation, and an “all inclusive license & visa for AED 13,500.”", "confidence": 0.19, "source": "Contact Us - Smart Ezone Corporate Services Provider LLC; Smart Ezone Corporate Services Provider - BestThings.AE listing", "evidence": "Mentions: “Establish Your Business Across UAE Today,” “free consultation,” and “ALL INCLUSIVE LICENSE & VISA FOR ONLY AED 13,500.” No details provided on jurisdictions, processes, documents, timelines, banks, languages, post-setup services, or SLAs."}
+
+==============================
+
+## generate_clarifying_question @ 2025-09-03T10:01:45.241470Z
+--- PROMPT ---
+[human]
+You are crafting a brief, polite clarifying question to collect onboarding info.
+Original question: Your site advertises an “All Inclusive License & Visa for only AED 13,500.” Please specify exactly what is included and excluded (jurisdiction/free zone or mainland, license type and number of activities, visa quota, establishment card/e-channel/immigration file, medical/Emirates ID/typing, office/desk or lease requirements, bank-account assistance), whether all government fees are included, total payable in Year 1 vs renewal in Year 2, any conditional or hidden costs, eligibility limits, expected timelines, and the promotion’s validity/refund terms.
+Business details: === SERVICE PROVIDER PROFILE ===
+Company Name: Smart Ezone Corporate Services Provider LLC
+Country: UAE
+Email Addresses: karen@e.zone
+Website: https://www.smartezone.ae
+Office Locations: Dubai, UAE
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Corporate Services Provider in Dubai
+Description: Smart Ezone Corporate Services Provider LLC is a leading company in Dubai providing premium services for business setup, corporate banking, and business management consulting services.
+Tags: Business Setup, Corporate Banking, Business Management Consulting, Corporate Services
+Checklist status (brief): total=2, completed=0, asked=0, pending=2, pending_keys=['flagship_package_pricing_and_terms', 'service_scope_clients_process_and_timelines']
+Research findings (may be partial): N/A
+
+Write one engaging, inquisitive, conversational question that asks for the information clearly. If research suggests an answer, acknowledge it briefly and ask the user to confirm or provide the precise details needed. Keep it to one sentence.
+
+--- RESPONSE ---
+"Could you please confirm exactly what your “All Inclusive License & Visa for AED 13,500” includes and excludes—free zone or mainland (which jurisdiction), license type and number of activities, visa quota, inclusion of establishment card/e-channel/immigration file, medicals/Emirates ID/typing, office/desk or lease requirements, bank-account assistance, whether all government fees are included, total payable in Year 1 vs Year 2 renewal, any conditional or hidden costs and eligibility limits, expected timelines, and the promotion’s validity and refund terms?"
+
+==============================
+
+## generate_clarifying_question @ 2025-09-03T10:02:27.131627Z
+--- PROMPT ---
+[human]
+You are crafting a brief, polite clarifying question to collect onboarding info.
+Original question: To help us match you with the right clients, please outline your core service scope and ideal client profiles for UAE company setup: which jurisdictions/emirates/free zones you support, types of setups (free zone/mainland/offshore) and industries you focus on, your standard engagement process and required documents (residents vs non-residents, individual vs corporate shareholders), typical timelines to license issuance/visa stamping and to open bank accounts, partner banks and minimum balance expectations, languages supported, post-setup services offered (VAT/accounting/ESR-UBO/compliance/PRO), and any service-level commitments (response times, case updates).
+Business details: === SERVICE PROVIDER PROFILE ===
+Company Name: Smart Ezone Corporate Services Provider LLC
+Country: UAE
+Email Addresses: karen@e.zone
+Website: https://www.smartezone.ae
+Office Locations: Dubai, UAE
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Corporate Services Provider in Dubai
+Description: Smart Ezone Corporate Services Provider LLC is a leading company in Dubai providing premium services for business setup, corporate banking, and business management consulting services.
+Tags: Business Setup, Corporate Banking, Business Management Consulting, Corporate Services
+Checklist status (brief): total=2, completed=1, asked=0, pending=1, pending_keys=['service_scope_clients_process_and_timelines']
+Research findings (may be partial): N/A
+
+Write one engaging, inquisitive, conversational question that asks for the information clearly. If research suggests an answer, acknowledge it briefly and ask the user to confirm or provide the precise details needed. Keep it to one sentence.
+
+--- RESPONSE ---
+"Thanks, Smart Ezone team—based on your Dubai profile offering business setup, corporate banking, and management consulting, could you please confirm your full UAE service scope and ideal client profiles (emirates/free zones supported; setup types: free zone/mainland/offshore; industries), outline your standard engagement process and required documents (residents vs non‑residents, individual vs corporate shareholders), typical timelines to license issuance/visa stamping and to open bank accounts (partner banks and minimum balance expectations), languages supported, post‑setup services (VAT/accounting/ESR‑UBO/compliance/PRO), and any service‑level commitments (response times and case‑update cadence)?"
+
+==============================
+
+## generate_profile_summary @ 2025-09-03T10:05:19.796861Z
+--- PROMPT ---
+[human]
+You are an expert business analyst creating comprehensive provider profiles for a platform that connects clients with service providers. Your task is to generate a detailed, professional summary of the service provider based on their completed onboarding checklist and initial profile information.
+
+Context:
+- Platform: We facilitate clear, efficient collaboration between clients and providers by creating detailed profiles that enable strong matching and set proper expectations.
+- This summary will be used to help potential clients understand the provider's capabilities, services, and business approach.
+
+Provider Profile Information:
+=== SERVICE PROVIDER PROFILE ===
+Company Name: Smart Ezone Corporate Services Provider LLC
+Country: UAE
+Email Addresses: karen@e.zone
+Website: https://www.smartezone.ae
+Office Locations: Dubai, UAE
+
+=== SERVICES OFFERED ===
+
+--- Service 1 ---
+Title: Corporate Services Provider in Dubai
+Description: Smart Ezone Corporate Services Provider LLC is a leading company in Dubai providing premium services for business setup, corporate banking, and business management consulting services.
+Tags: Business Setup, Corporate Banking, Business Management Consulting, Corporate Services
+
+Completed Onboarding Checklist:
+1. Your site advertises an “All Inclusive License & Visa for only AED 13,500.” Please specify exactly what is included and excluded (jurisdiction/free zone or mainland, license type and number of activities, visa quota, establishment card/e-channel/immigration file, medical/Emirates ID/typing, office/desk or lease requirements, bank-account assistance), whether all government fees are included, total payable in Year 1 vs renewal in Year 2, any conditional or hidden costs, eligibility limits, expected timelines, and the promotion’s validity/refund terms.
+   Answer: yes
+
+2. To help us match you with the right clients, please outline your core service scope and ideal client profiles for UAE company setup: which jurisdictions/emirates/free zones you support, types of setups (free zone/mainland/offshore) and industries you focus on, your standard engagement process and required documents (residents vs non-residents, individual vs corporate shareholders), typical timelines to license issuance/visa stamping and to open bank accounts, partner banks and minimum balance expectations, languages supported, post-setup services offered (VAT/accounting/ESR-UBO/compliance/PRO), and any service-level commitments (response times, case updates).
+   Answer: yes
+
+
+
+Instructions:
+- Synthesize all available information into a comprehensive, well-structured provider profile summary
+- Highlight key services, capabilities, and unique value propositions
+- Include relevant operational details (pricing models, target clients, jurisdictions, etc.)
+- Emphasize credibility indicators (certifications, experience, notable clients, etc.)
+- Maintain a professional, informative tone that builds confidence
+- Organize information logically for easy scanning by potential clients
+- Focus on details that would influence client matching and project scoping decisions
+
+Requirements:
+- Create a detailed summary that captures the provider's full business profile
+- Include specific details from the onboarding responses where relevant
+- Structure the content for clarity and professional presentation
+- Ensure the summary is comprehensive enough to support client matching decisions
+
+Return structured output matching the expected schema with a detailed summary field.
+
+
+--- RESPONSE ---
+"Profile Summary: Service provider with 2 completed onboarding items. Please contact the provider directly for detailed information about their services and capabilities."
+
+==============================
+
