@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0          # official image
+    container_name: my-mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"           # hostPort:containerPort
+    env_file: .env            # keeps secrets out of the file
+    volumes:
+      - mysql_data:/var/lib/mysql            # persistent data
+      - ./init:/docker-entrypoint-initdb.d   # run *.sql on first startup
+
+volumes:
+  mysql_data:
+

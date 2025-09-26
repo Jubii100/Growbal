@@ -1,0 +1,119 @@
+##########Remove Existing MySQL############
+sudo systemctl stop mysql
+sudo apt purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-* -y
+sudo apt autoremove -y
+sudo apt autoclean
+# Remove any residual configurations and databases:
+sudo rm -rf /etc/mysql /var/lib/mysql /var/log/mysql
+
+##########1 · Install the server package##########
+sudo apt update
+sudo apt install mysql-server
+
+##########2 · Start and enable the service##########
+sudo systemctl enable --now mysql
+
+##########Verify it’s running###########
+systemctl status mysql --no-pager
+
+##########Secure the MySQL installation###########
+sudo mysql_secure_installation
+
+Choose these options when prompted:
+
+Validate password component: No
+
+Set root password: No (we'll set it manually later)
+
+Remove anonymous users: Yes
+
+Disallow root login remotely: No
+
+Remove test database: Yes
+
+Reload privilege tables: Yes
+
+##########launch mysql##########
+sudo mysql
+
+##########Create Root User###########
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'rootpass';
+
+#########Update root privileges######
+ALTER USER 'root'@'localhost'
+       IDENTIFIED WITH mysql_native_password BY 'rootpass';
+FLUSH PRIVILEGES;
+
+#########explicitly grant remote access to all addresses##########
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
+#########Exit SQL########
+EXIT;
+
+##########launch mysql with password this time##########
+sudo mysql -u root -p
+
+##########Create the schema you’ll dump later##########
+mysql -h 127.0.0.1 -P 3306 -u root -p \
+      -e "CREATE DATABASE IF NOT EXISTS growbal DEFAULT CHARACTER SET utf8mb4;"
+      
+#########Show all databases##########
+mysql -h 127.0.0.1 -P 3306 -u root -p \
+      -e "SHOW DATABASES;"
+      
+#########Dump Database###########
+mysql -h127.0.0.1 -P3306 -uroot -p growbal \
+      < /home/mohammed/Desktop/tech_projects/growbal/mysql_dump/GrowbalDB_Staging.sql
+      
+      
+      
+      
+#########Acess Denied resolution##########
+
+##########Stop MySQL and start in Safe Mode##########
+sudo systemctl stop mysql
+
+##########Confirm MySQL has stopped and no residual processes are running###########
+ps aux | grep mysqld
+
+#########Ensure runtime directory exists#########
+sudo mkdir -p /var/run/mysqld
+
+#########Then#########
+sudo chown mysql:mysql /var/run/mysqld
+sudo chmod 755 /var/run/mysqld
+
+#########Start MySQL in safe mode with a properly specified socket path##########
+sudo mysqld_safe --skip-grant-tables --skip-networking --socket=/var/run/mysqld/mysqld.sock &
+
+
+##########IN ANOTHER WINDOW##########
+##########Confirm it's running###########
+ps aux | grep mysqld
+
+##########Connect without Password and reset auth##########
+sudo mysql -u root
+
+FLUSH PRIVILEGES;
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'rootpass';
+
+CREATE USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'rootpass';
+
+-- Grant privileges explicitly:
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
+EXIT;
+
+
+###########Restart MySQL normally###########
+sudo killall mysqld_safe mysqld
+sudo systemctl start mysql
+sudo systemctl status mysql
+
+##########Verify##########
+sudo mysql -u root -p
+

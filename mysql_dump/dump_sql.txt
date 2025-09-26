@@ -1,0 +1,55 @@
+######Destroy all Docker state (irreversible)#######
+# Stop & delete every container
+docker stop $(docker ps -aq) 2>/dev/null || true
+docker rm   $(docker ps -aq) 2>/dev/null || true
+
+# Delete every image layer
+docker rmi -f $(docker images -aq) 2>/dev/null || true
+
+# Remove **all** named volumes (kills DB files)
+docker volume prune -f
+
+# Remove dangling networks & build cache
+docker network prune -f
+docker system   prune -af
+
+
+######Start a pristine MySQL 8 container######
+docker run --name my-mysql \
+  -e MYSQL_ROOT_PASSWORD=rootpass \
+  -e MYSQL_DATABASE=growbal_db \
+  -p 3306:3306 \
+  -d mysql:8.0
+
+
+######Create the power user with all privileges######
+docker exec -i my-mysql mysql -uroot -prootpass <<'EOSQL'
+CREATE USER 'sql'@'%' IDENTIFIED BY '1234';
+
+-- Full rights on every schema the dump touches
+GRANT ALL PRIVILEGES ON growbal_db.* TO 'sql'@'%';
+GRANT ALL PRIVILEGES ON mysql.*      TO 'sql'@'%';
+GRANT ALL PRIVILEGES ON growbal.*    TO 'sql'@'%';
+
+-- Global privilege needed for SET GLOBAL … lines
+GRANT SYSTEM_VARIABLES_ADMIN ON *.* TO 'sql'@'%';
+
+FLUSH PRIVILEGES;
+EOSQL
+
+
+######Import your dump (root—fastest & safest)######
+mysql -h127.0.0.1 -P3306 -uroot -prootpass growbal_db \
+      < /home/mohammed/Desktop/tech_projects/growbal/mysql_dump/GrowbalDB_Staging.sql
+
+######If you prefer progress feedback and have pv installed:######
+pv /home/mohammed/Desktop/tech_projects/growbal/mysql_dump/GrowbalDB_Staging.sql \
+  | mysql -h127.0.0.1 -P3306 -uroot -prootpass growbal_db
+
+######Smoke-test######
+mysql -h127.0.0.1 -P3306 -uroot -prootpass -e "
+  SHOW TABLES IN growbal;
+  SELECT COUNT(*) AS rows_in_first_table
+  FROM   growbal_db.\`$(mysql -h127.0.0.1 -P3306 -uroot -prootpass -N -e \
+          'SHOW TABLES IN growbal_db LIMIT 1;')\`;
+"

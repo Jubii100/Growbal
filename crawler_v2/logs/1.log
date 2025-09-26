@@ -1,0 +1,67 @@
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 1/632 Organization: A & A Financial Solutions
+Processing Entry 2/632 Organization: A G L FINANCIAL CONSULTANCIES EST.
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 2/632 Organization: A G L FINANCIAL CONSULTANCIES EST.
+Processing Entry 3/632 Organization: A K A Management Consultancy L.L.C
+Successful processed entries 3/632 Organization: A K A Management Consultancy L.L.C
+Processing Entry 4/632 Organization: A L I F ACCOUNTING AND TAX CONSULTANTS L.L.C
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 4/632 Organization: A L I F ACCOUNTING AND TAX CONSULTANTS L.L.C
+Processing Entry 5/632 Organization: A M A ACCOUNTING & BOOKKEEPING
+Successful processed entries 5/632 Organization: A M A ACCOUNTING & BOOKKEEPING
+Processing Entry 6/632 Organization: A M J TAX CONSULTANCY AND BOOKS KEEPING - L.L.C -  ...
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 6/632 Organization: A M J TAX CONSULTANCY AND BOOKS KEEPING - L.L.C -  ...
+Processing Entry 7/632 Organization: A R A Associates Accountants And Consultants
+Successful processed entries 7/632 Organization: A R A Associates Accountants And Consultants
+Processing Entry 8/632 Organization: A T C TAX CONSULTANTS
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 8/632 Organization: A T C TAX CONSULTANTS
+Processing Entry 9/632 Organization: A T H Accounting & Bookkeeping
+Successful processed entries 9/632 Organization: A T H Accounting & Bookkeeping
+Processing Entry 10/632 Organization: A T N-MAC ACCOUNTING & BOOK KEEPING
+Successful processed entries 10/632 Organization: A T N-MAC ACCOUNTING & BOOK KEEPING
+Processing Entry 11/632 Organization: A T T consultancy LLC
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 11/632 Organization: A T T consultancy LLC
+Processing Entry 12/632 Organization: A T W A ACCOUNTING AND TAXATION L.L.C
+Error processing base page: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'messages.0: all messages must have non-empty content except for the optional final assistant message'}, 'request_id': 'req_011CTHdujVJZsTDceoMG84CG'}
+Successful processed entries 12/632 Organization: A T W A ACCOUNTING AND TAXATION L.L.C
+Processing Entry 13/632 Organization: A&S TAX CONSULTANT (FZE)
+Error profile does not exist!
+Successful processed entries 13/632 Organization: A&S TAX CONSULTANT (FZE)
+Processing Entry 14/632 Organization: AB CAPITAL SERVICES  FZE
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 14/632 Organization: AB CAPITAL SERVICES  FZE
+Processing Entry 15/632 Organization: AB Tax and Accounting LLC
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 15/632 Organization: AB Tax and Accounting LLC
+Processing Entry 16/632 Organization: ABACUS ACCOUNTING LLC
+Error processing base page: 500 Server Error: Internal Server Error for url: https://scraping.narf.ai/api/v1/?api_key=AlVaU0Htv6s2osyMMZrZCBkG8X62ewQcYDyPA9B76ZXyBgFw1kXmgUx8JwLJMWpIQ1KGmWnOr1UQY3DK8s&url=http%3A%2F%2Fwww.abacusvat.com%2F&js_scenario=%7B%22steps%22%3A+%5B%7B%22wait%22%3A+1500%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22scroll%22%3A+2500%7D%2C+%7B%22wait%22%3A+1200%7D%2C+%7B%22wait%22%3A+800%7D%5D%7D&trial_timeout_ms=45000&total_timeout_ms=60000&render_js=true
+Successful processed entries 16/632 Organization: ABACUS ACCOUNTING LLC
+Processing Entry 17/632 Organization: ABDUL MAJEED AL MARZOOQY AUDITING OFFICE - SOLE PR ...
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 17/632 Organization: ABDUL MAJEED AL MARZOOQY AUDITING OFFICE - SOLE PR ...
+Processing Entry 18/632 Organization: ABDULAZIZ PANIS AND SHAH ASSOCIATES CHARTERED ACCO ...
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 18/632 Organization: ABDULAZIZ PANIS AND SHAH ASSOCIATES CHARTERED ACCO ...
+Processing Entry 19/632 Organization: ABDULRAHMAN KARMUSTAJI CHARTERED ACCOUNTANTS
+Error getting profile from website: ServiceProviderProfile matching query does not exist.
+Error profile does not exist!
+Successful processed entries 19/632 Organization: ABDULRAHMAN KARMUSTAJI CHARTERED ACCOUNTANTS
+Processing Entry 20/632 Organization: ABSTRACT ACCOUNTING & AUDITING
+Error processing https://abstractauditing.com/about-us/: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CTHfR5voBGhKS4XmSYdzZ'}
+Error processing https://abstractauditing.com/: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CTHfR7nv6qmwRu4QcXrAe'}
+Successful processed entries 20/632 Organization: ABSTRACT ACCOUNTING & AUDITING
+Processing Entry 21/632 Organization: ACCESS TAXACCOUNTING TAX CONSULTANT

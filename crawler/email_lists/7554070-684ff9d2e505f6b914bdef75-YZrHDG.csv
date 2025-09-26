@@ -1,0 +1,266 @@
+CONTACT ID;EMAIL;sib_contact_owner;sib_next_task;LASTNAME;FIRSTNAME;SMS;WHATSAPP;LANDLINE_NUMBER;DESIGNATION;ORGANIZATION;INDUSTRY;WEBSITE;COUNTRY;DOUBLE_OPT-IN;OPT_IN;LINKEDIN;CITY;EXT_ID;CONTACT_TIMEZONE;ADDRESS;REGION;GENDER;DESCRIPTION;BIRTHDAY;TWITTER;COUNTRY_CODE;FOUNDED;JOB_TITLE;ADDED_TIME;MODIFIED_TIME
+
+546;info@theaccountant.ae;;;;;;;;;The Accountant;Accounting;theaccountant.ae;;;;;;;;;;;;;;;;;06-21-2024;11-07-2024
+547;neilh@xara.com;;;Howe;Neil;;;;Chief Technology Officer;Xara;Accounting;xara.com;;;;https://www.linkedin.com/in/neil-howe;;;;;;;;;;;;;06-21-2024;11-07-2024
+548;mick@xara.com;;;Robinson;Mick;;;;;Xara;Accounting;xara.com;;;;;;;;;;;;;;;;;06-21-2024;08-29-2024
+549;sales@xara.com;;;;;;;;;Xara;Accounting;xara.com;;;;;;;;;;;;;;;;;06-21-2024;11-07-2024
+671;anwer@farahatco.com;;;;;;;;;Farahat & Co. Auditing Firm, Vat Consultants;Accounting;farahatco.com;;;;;;;;;;;;;;;;;06-28-2024;08-29-2024
+672;deepthi@farahatco.com;;;Raj;Deepthi;;;;SEO Specialist;Farahat & Co. Auditing Firm, Vat Consultants;Accounting;farahatco.com;;;;https://www.linkedin.com/in/deepthi-raj-36b1b713b;;;;;;;;;;;;;06-28-2024;11-07-2024
+673;partner@farahatco.com;;;;;;;;;Farahat & Co. Auditing Firm, Vat Consultants;Accounting;farahatco.com;;;;;;;;;;;;;;;;;06-28-2024;11-07-2024
+674;sales@farahatco.com;;;;;;;;;Farahat & Co. Auditing Firm, Vat Consultants;Accounting;farahatco.com;;;;;;;;;;;;;;;;;06-28-2024;11-08-2024
+675;sales@erpgulf.com;;;;;;;;;ERPGulf;Accounting;erpgulf.com;;;;;;;;;;;;;;;;;06-28-2024;11-07-2024
+676;info@erpgulf.com;;;;;;;;;ERPGulf;Accounting;erpgulf.com;;;;;;;;;;;;;;;;;06-28-2024;11-07-2024
+677;info@businessbox.me;;;;;;;;;BusinessBOX!;Accounting;businessbox.me;;;;;;;;;;;;;;;;;06-28-2024;11-07-2024
+678;jonathan@mazars.om;;;Stearns;Jonathan;;;;Managing Partner;Mazars;Accounting;mazars.om;;;;;;;;;;;;;;;;;06-28-2024;11-07-2024
+679;marine@hadihammam.com;;;Uae;Marine;;;;;Hadi H Al Hammam Est;Accounting;hadihammam.com;;;;;;;;;;;;;;;;;06-28-2024;11-07-2024
+680;amr.kamal@hadihammam.com;;;Kamal;Amr;;;;Dry Dock Manager;Hadi H Al Hammam Est;Accounting;hadihammam.com;;;;https://www.linkedin.com/in/amr-kamal-b1169052;;;;;;;;;;;;;06-28-2024;11-07-2024
+681;salman@bakertillyjfc.com;;;Sajid;Salman;;;;Executive Director;Baker Tilly Middle East;Accounting;bakertillyjfc.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+682;aakriti@bakertillyjfc.com;;;Mago;Aakriti;;;;Assurance Services;Baker Tilly Middle East;Accounting;bakertillyjfc.com;;;;https://www.linkedin.com/in/aakriti-mago-a5845540;;;;;;;;;;;;;06-29-2024;11-07-2024
+683;mago@bakertillyjfc.com;;;;;;;;;Baker Tilly Middle East;Accounting;bakertillyjfc.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+684;neil@bakertillyjfc.com;;;;;;;;;Baker Tilly Middle East;Accounting;bakertillyjfc.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+685;surya@bakertillyjfc.com;;;;;;;;;Baker Tilly Middle East;Accounting;bakertillyjfc.com;;;;;;;;;;;;;;;;;06-29-2024;11-09-2024
+686;baltamimi@bakertillyjfc.com;;;Altamimi;Bader;;;;CPA;Baker Tilly Middle East;Accounting;bakertillyjfc.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+687;marketing@vatbox.com;;;;;;;;;VATBox;Accounting;vatbox.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+688;isaac@vatbox.com;;;;;;;;;VATBox;Accounting;vatbox.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+689;support@kgrnaudit.com;;;;;;;;;KGRN;Accounting;kgrnaudit.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+690;vijay@hlbhamt.com;;;Anand;Vijay;;;;CEO;HLB HAMT - Audit;Accounting;hlbhamt.com;;;;https://www.linkedin.com/in/vijay-anand-56336425;;;;;;;;;;;;;06-29-2024;11-08-2024
+691;gireesh@hlbhamt.com;;;Kumar;Gireesh;;;;Management Accountant;HLB HAMT - Audit;Accounting;hlbhamt.com;;;;https://www.linkedin.com/in/gireeshkumarpadmini;;;;;;;;;;;;;06-29-2024;11-08-2024
+692;john@hlbhamt.com;;;Varghese;John;;;;Managing Partner;HLB HAMT - Audit;Accounting;hlbhamt.com;;;;https://www.linkedin.com/in/john-varghese-b8032025;;;;;;;;;;;;;06-29-2024;11-09-2024
+693;vimal@hlbhamt.com;;;Kutty;Vimal;;;;Director Accounts;HLB HAMT - Audit;Accounting;hlbhamt.com;;;;https://www.linkedin.com/in/vimal-kutty-18094228;;;;;;;;;;;;;06-29-2024;11-08-2024
+694;binny.broono@hlbhamt.com;;;Broono;Binny;;;;Recruitment Consultant;HLB HAMT - Audit;Accounting;hlbhamt.com;;;;https://www.linkedin.com/in/binny-broono-75407b32;;;;;;;;;;;;;06-29-2024;11-08-2024
+695;nithin.nambiar@hlbhamt.com;;;Nambiar;Nithin;;;;Audit Manager;HLB HAMT - Audit;Accounting;hlbhamt.com;;;;https://www.linkedin.com/in/nithin-nambiar-89b92219;;;;;;;;;;;;;06-29-2024;11-08-2024
+696;vimalr@hlbhamt.com;;;;;;;;;HLB HAMT - Audit;Accounting;hlbhamt.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+697;piyush@intuitconsultancy.com;;;Bhandari;Piyush;;;;Media Contact;IMC Group;Accounting;intuitconsultancy.com;;;;https://www.linkedin.com/in/piyush-bhandari-7700879a;;;;;;;;;;;;;06-29-2024;11-07-2024
+698;pankaj@intuitconsultancy.com;;;Kumar;Pankaj;;;;Business Valuation;IMC Group;Accounting;intuitconsultancy.com;;;;https://www.linkedin.com/in/pankajkumar9;;;;;;;;;;;;;06-29-2024;11-07-2024
+699;contact@fact.ae;;;;;;;;;Fact;Accounting;fact.ae;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+700;inquiries@acuvat.com;;;;;;;;;Acuvat;Accounting;acuvat.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+701;info@alterfservices.com;;;;;;;;;Alterf Services;Accounting;alterfservices.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+702;shajijoseph@pkfuae.com;;;Joseph;Shaji;;;;Associate Partner;PKF UAE;Accounting;pkfuae.com;;;;https://www.linkedin.com/in/shaji-joseph-396a0925/;;;;;;;;;;;;;06-29-2024;11-08-2024
+703;vinodjoshi@pkfuae.com;;;Joshi;Vinod;;;;Associate Partner;PKF UAE;Accounting;pkfuae.com;;;;https://www.linkedin.com/in/vinod-joshi-fca-000a7645/;;;;;;;;;;;;;06-29-2024;11-08-2024
+704;prawal@pkfuae.com;;;Rawal;Parteek;;;;Senior Manager;PKF UAE;Accounting;pkfuae.com;;;;https://www.linkedin.com/in/parteek-rawal-370003a3;;;;;;;;;;;;;06-29-2024;11-08-2024
+705;hala.rashed@mazars.com.eg;;;Rashed;Hala;;;;;Mazars in Egypt;Accounting;mazars.com.eg;;;;;;;;;;;;;;;;;06-29-2024;11-10-2024
+706;info@ebs.ae;;;;;;;;;Ebs;Accounting;ebs.ae;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+707;tax@vatboxuae.com;;;;;;;;;VATBOX UAE;Accounting;vatboxuae.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+708;info@vatboxuae.com;;;;;;;;;VATBOX UAE;Accounting;vatboxuae.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+709;pankaj@rvguae.com;;;Handson;Pankaj;;;;Corporate Services;RVG Chartered Accountants;Accounting;rvguae.com;;;;;;;;;;;;;;;;;06-29-2024;11-09-2024
+710;bharat@rvguae.com;;;Ramchandani;Bharat;;;;Founder;RVG Chartered Accountants;Accounting;rvguae.com;;;;https://www.linkedin.com/in/bharat-ramchandani-a5991a52/;;;;;;;;;;;;;06-29-2024;11-08-2024
+711;james@uhy-ae.com;;;Mathew;James;;;;Management Consultant;UHY James;Accounting;uhy-ae.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+712;unnikrishnan.s@uhy-ae.com;;;Sukumaran;Unnikrishnan;;;;Partner - Audit & Advisory;UHY James - Audit l Tax l Advisory l Risk l Technology;Accounting;uhy-ae.com;United Arab Emirates;;;https://www.linkedin.com/in/unnikrishnan-sukumaran-8705a832;;;;;;;;;;;;;06-29-2024;11-07-2024
+713;office.jamesmathew@uhy-ae.com;;;;;;;;;UHY James;Accounting;uhy-ae.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+714;info@vat-centric.com;;;;;;;;;Vat Centric;Accounting;vat-centric.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+715;sajigeorge@sgyca.com;;;George;Saji;;;;;Sgyca - Chartered Accountants;Accounting;sgyca.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+716;sharjah@sgyca.com;;;;;;;;;Sgyca - Chartered Accountants;Accounting;sgyca.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+717;info@emeraldsoftwares.com;;;;;;;;;Emerald Softwares;Accounting;emeraldsoftwares.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+718;info@skgy.in;;;;;;;;;SKGY;Accounting;skgy.in;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+719;tejasvora@bdo.in;;;Vora;Tejas;;;;Associate Partner;BDO in India;Accounting;bdo.in;;;;https://www.linkedin.com/in/tejas-vora-4719ab19;;;;;;;;;;;;;06-29-2024;11-08-2024
+720;amitmitra@bdo.in;;;Mitra;Amit;;;;Partner;BDO in India;Accounting;bdo.in;;;;https://www.linkedin.com/in/amit-mitra-98a46012b;;;;;;;;;;;;;06-29-2024;11-07-2024
+721;pranaybhatia@bdo.in;;;Bhatia;Pranay;;;;Corporate Counsel;BDO in India;Accounting;bdo.in;;;;https://www.linkedin.com/in/pranay-bhatia-1b3aa29b;;;;;;;;;;;;;06-29-2024;11-08-2024
+888;incorporate@nrdoshi.ae;;;;;;;;;N R DOSHI & PARTNERS;Accounting;nrdoshi.ae;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+889;shyla@nrdoshi.ae;;;;;;;;;N R DOSHI & PARTNERS;Accounting;nrdoshi.ae;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+890;enquiries@nrdoshi.ae;;;;;;;;;N R DOSHI & PARTNERS;Accounting;nrdoshi.ae;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+891;rajan@nrdoshi.ae;;;;;;;;;N R DOSHI & PARTNERS;Accounting;nrdoshi.ae;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+892;team@profitsplus.ae;;;;;;;;;Profits Plus;Accounting;profitsplus.ae;;;;;;;;;;;;;;;;;06-29-2024;11-09-2024
+893;khurram@btc-me.com;;;;;;;;;BUSINESS TECHNOLOGY CONSULTING (www.btc-me.com);Accounting;btc-me.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+894;jahangir.mahmood@escrowconsultinggroup.com;;;Mahmood;Jahangir;;;;Manager;Escrow Consulting Group;Accounting;escrowconsultinggroup.com;;;;https://www.linkedin.com/in/jahangirmahmood;;;;;;;;;;;;;06-29-2024;11-07-2024
+895;info@escrowconsultinggroup.com;;;;;;;;;Escrow Consulting Group;Accounting;escrowconsultinggroup.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+896;info@shuraatax.com;;;;;;;;;Shuraa Tax;Accounting;shuraatax.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+897;info@virtualaccountants.ae;;;;;;;;;Virtual Accountants;Accounting;virtualaccountants.ae;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+898;cit@virtualaccountants.ae;;;;;;;;;Virtual Accountants;Accounting;virtualaccountants.ae;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+899;sales@virtualaccountants.ae;;;;;;;;;Virtual Accountants;Accounting;virtualaccountants.ae;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+900;sharadbhandari@ardentadvisory.com;;;Bhandari;Sharad;;;;COO;Ardent Advisory Accounting;Accounting;ardentadvisory.com;;;;https://www.linkedin.com/in/sharad-bhandari-a9b03a63;;;;;;;;;;;;;06-29-2024;11-07-2024
+901;csoni@ardentadvisory.com;;;Soni;Chetan;;;;Director Risk;Ardent Advisory Accounting;Accounting;ardentadvisory.com;;;;https://www.linkedin.com/in/chetan-soni-8682376a;;;;;;;;;;;;;06-29-2024;11-07-2024
+902;ssarkar@ardentadvisory.com;;;Sarkar;Satyaki;;;;IT Advisory Manager;Ardent Advisory Accounting;Accounting;ardentadvisory.com;;;;https://www.linkedin.com/in/satyaki-sarkar-pmo;;;;;;;;;;;;;06-29-2024;11-07-2024
+903;akumar@ardentadvisory.com;;;Kumar;Arvind;;;;Associate Director;Ardent Advisory Accounting;Accounting;ardentadvisory.com;;;;https://www.linkedin.com/in/arvind-kumar-aab30332;;;;;;;;;;;;;06-29-2024;11-07-2024
+904;pjain@ardentadvisory.com;;;Jain;Palash;;;;Senior Consultant;Ardent Advisory Accounting;Accounting;ardentadvisory.com;;;;https://www.linkedin.com/in/palash-jain-cfa;;;;;;;;;;;;;06-29-2024;11-07-2024
+905;nvaidya@ardentadvisory.com;;;Vaidya;Nirbhay;;;;Tax and Risk Advisory Partner;Ardent Advisory Accounting;Accounting;ardentadvisory.com;;;;https://www.linkedin.com/in/nirbhay-vaidya-5485013;;;;;;;;;;;;;06-29-2024;11-07-2024
+906;upendra@ardentadvisory.com;;;;;;;;;Ardent Advisory Accounting;Accounting;ardentadvisory.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+907;shareek@nadauditing.com;;;Ahamed;Shareek;;;;Director;NAD Auditing & Consulting;Accounting;nadauditing.com;;;;https://www.linkedin.com/in/mtsahamed;;;;;;;;;;;;;06-29-2024;11-07-2024
+908;nova@xara.com;;;;;;;;;Xara;Accounting;xara.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+909;jobs@xara.com;;;;;;;;;Xara;Accounting;xara.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+910;info@nexia.com;;;;;;;;;Nexia;Accounting;nexia.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+911;marketing@nexia.com;;;;;;;;;Nexia;Accounting;nexia.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+912;emel.mehmet@nexia.com;;;Mehmet;Emel;;;;;Nexia;Accounting;nexia.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+913;kristin.kim@nexia.com;;;Kim;Kristin;;;;;Nexia;Accounting;nexia.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+914;paul.ginman@nexia.com;;;Ginman;Paul;;;;Chief Operating Officer;Nexia;Accounting;nexia.com;;;;https://www.linkedin.com/in/paul-ginman-3348418;;;;;;;;;;;;;06-29-2024;11-08-2024
+915;support@four-acres.com;;;;;;;;;Four Acres Ltd;Accounting;four-acres.com;;;;;;;;;;;;;;;;;06-29-2024;11-07-2024
+920;mike.jones@saffery.com;;;Jones;Mike;;;;;Saffery;Accounting;saffery.com;;;;;;;;;;;;;;;;;06-29-2024;11-08-2024
+921;shane.long@saffery.com;;;Long;Shane;;;;Outsourcing Manager;Saffery;Accounting;saffery.com;;;;https://www.linkedin.com/in/shane-long-5736a6a9;;;;;;;;;;;;;06-29-2024;11-08-2024
+922;charlotte.radcliffe@saffery.com;;;Radcliffe;Charlotte;;;;Director;Saffery;Accounting;saffery.com;;;;https://www.linkedin.com/in/charlotte-radcliffe-93145193;;;;;;;;;;;;;06-29-2024;11-11-2024
+923;leanne@360accountants.co.uk;;;Steele;Leanne;;;;Human Resources Director;360 Chartered Accountants;Accounting;360accountants.co.uk;;;;https://www.linkedin.com/in/leanne-steele-293a2996;;;;;;;;;;;;;06-29-2024;11-08-2024
+924;andy@360accountants.co.uk;;;Steele;Andy;;;;Managing Director;360 Chartered Accountants;Accounting;360accountants.co.uk;;;;https://www.linkedin.com/in/andrewmarksteele;;;;;;;;;;;;;06-29-2024;11-09-2024
+925;andrew@360accountants.co.uk;;;Jordan;Andrew;;;;Specialist;360 Chartered Accountants;Accounting;360accountants.co.uk;;;;;;;;;;;;;;;;;06-29-2024;11-10-2024
+926;sophie@360accountants.co.uk;;;Holmes;Sophie;;;;Director Accounts;360 Chartered Accountants;Accounting;360accountants.co.uk;;;;https://www.linkedin.com/in/sophieholmes;;;;;;;;;;;;;06-29-2024;11-10-2024
+934;pritish.sahoo@taxbuddy.com;;;Sahoo;Pritish;;;;Assistant Manager;TaxBuddy.com;Accounting;taxbuddy.com;;;;https://www.linkedin.com/in/pritish-sahoo-39a7679a;;;;;;;;;;;;;06-29-2024;11-07-2024
+935;shalu.kedia@nangia.com;;;Kedia;Shalu;;;;Director;Nangia & Co;Accounting;nangia.com;;;;https://www.linkedin.com/in/shalu-kedia-2a471a4b;;;;;;;;;;;;;06-29-2024;11-07-2024
+936;neha.malhotra@nangia.com;;;Malhotra;Neha;;;;Executive Director;Nangia & Co;Accounting;nangia.com;;;;;;;;;;;;;;;;;06-29-2024;08-29-2024
+1423;clientsuccess@kbame.com;;;;;;;;;KBA Accounting Services in Dubai;Accounting;kbame.com;;;;;;;;;;;;;;;;;06-30-2024;11-07-2024
+1424;info@kbame.com;;;;;;;;;KBA Accounting Services in Dubai;Accounting;kbame.com;;;;;;;;;;;;;;;;;06-30-2024;11-07-2024
+1425;sudhakar@kgrnaudit.com;;;Varadharajan;Sudhakar;;;;Business Development Manager;KGRN;Accounting;kgrnaudit.com;;;;https://www.linkedin.com/in/sudhakar-varadharajan-305292231;;;;;;;;;;;;;06-30-2024;11-08-2024
+1426;info@kgrnaudit.com;;;;;;;;;KGRN;Accounting;kgrnaudit.com;;;;;;;;;;;;;;;;;06-30-2024;11-08-2024
+1427;gopi@kgrnaudit.com;;;;;;;;;KGRN;Accounting;kgrnaudit.com;;;;;;;;;;;;;;;;;06-30-2024;11-08-2024
+1428;tanmay@affiniax.com;;;;;;;;;Affiniax Partners;Accounting;affiniax.com;;;;;;;;;;;;;;;;;06-30-2024;11-08-2024
+1429;yvonne@affiniax.com;;;Spiller;Yvonne;;;;Director Of Risk;Affiniax Partners;Accounting;affiniax.com;;;;https://www.linkedin.com/in/yvonnedspiller;;;;;;;;;;;;;06-30-2024;11-08-2024
+1430;nihar@affiniax.com;;;;;;;;;Affiniax Partners;Accounting;affiniax.com;;;;;;;;;;;;;;;;;06-30-2024;11-08-2024
+1431;abeer@affiniax.com;;;;;;;;;Affiniax Partners;Accounting;affiniax.com;;;;;;;;;;;;;;;;;06-30-2024;11-08-2024
+1432;catherine@affiniax.com;;;;;;;;;Affiniax Partners;Accounting;affiniax.com;;;;;;;;;;;;;;;;;06-30-2024;11-08-2024
+1433;info@dawnconsultancy.com;;;;;;;;;Dawn Consultancy;Accounting;dawnconsultancy.com;;;;;;;;;;;;;;;;;06-30-2024;11-07-2024
+1434;info@mazca.ae;;;;Mashal Abdulla Abdulaziz Alzarooni;;;;;Mashal Alzarooni Chartered Accountant;Accounting;N/A;;;;;Dubai;;;;;;;;;;;;06-30-2024;11-07-2024
+1435;expert@mazca.ae;;;;;;;;;MAZ;Accounting;mazca.ae;;;;;;;;;;;;;;;;;06-30-2024;11-07-2024
+1436;sales@mazca.ae;;;;;;;;;MAZ;Accounting;mazca.ae;;;;;;;;;;;;;;;;;06-30-2024;11-07-2024
+1437;info@blackstonetax.com;;;;;;;;;Black Stone TAX®;Accounting;blackstonetax.com;;;;;;;;;;;;;;;;;06-30-2024;11-07-2024
+1438;mariam@tggtax.com;;;Wehbe;Mariam;;;;Co-Founder;The Golden Gavel;Accounting;tggtax.com;;;;https://www.linkedin.com/in/mariam-wehbe-1266657b;;;;;;;;;;;;;06-30-2024;11-08-2024
+1440;contact@taxhelp.ae;;;;;;;;;TaxHelp.ae;Accounting;taxhelp.ae;;;;;;;;;;;;;;;;;06-30-2024;11-07-2024
+1441;solutions@bigbracketuae.com;;;;;;;;;Big Bracket UAE;Accounting;bigbracketuae.com;;;;;;;;;;;;;;;;;06-30-2024;11-07-2024
+1929;support@gainme.com;;;;;;;;;By Gainme;Financial Services;gainme.com;;;;;;;;;;;;;;;;;07-10-2024;11-07-2024
+1930;naresh@nksdcpa.com;;;;;;;;;Nksdcpa.com;Accounting;nksdcpa.com;;;;;;;;;;;;;;;;;07-10-2024;08-29-2024
+1931;kevin@nksdcpa.com;;;;;;;;;Nksdcpa.com;Accounting;nksdcpa.com;;;;;;;;;;;;;;;;;07-10-2024;11-07-2024
+1932;support@arka.com;;;;;;;;;Arka;Accounting;arka.com;;;;;;;;;;;;;;;;;07-10-2024;11-08-2024
+1933;phillip@arka.com;;;;;;;;;Arka;Accounting;arka.com;;;;;;;;;;;;;;;;;07-10-2024;11-08-2024
+1934;hello@arka.com;;;;;;;;;Arka;Accounting;arka.com;;;;;;;;;;;;;;;;;07-10-2024;08-29-2024
+1935;kavit@vjmglobal.com;;;;;;;;;V J M & Associates;Accounting;vjmglobal.com;;;;;;;;;;;;;;;;;07-10-2024;11-07-2024
+1936;info@vjmglobal.com;;;;;;;;;V J M & Associates;Accounting;vjmglobal.com;;;;;;;;;;;;;;;;;07-10-2024;11-07-2024
+1937;sachin@vjmglobal.com;;;Jindal;Sachin;;;;;V J M & Associates;Accounting;vjmglobal.com;;;;;;;;;;;;;;;;;07-10-2024;11-07-2024
+1938;customize@tallyservices.com;;;;;;;;;Tally Services;Accounting;tallyservices.com;;;;;;;;;;;;;;;;;07-10-2024;11-07-2024
+1939;support@tallyservices.com;;;;;;;;;Tally Services;Accounting;tallyservices.com;;;;;;;;;;;;;;;;;07-10-2024;11-07-2024
+1940;info@alchemistconsultants.com;;;;;;;;;Alchemist Consultants;Accounting;alchemistconsultants.com;;;;;;;;;;;;;;;;;07-10-2024;08-29-2024
+1941;jhundelt@muellerprost.com;;;Hundelt;Joel;;;;CPA;Mueller Prost;Accounting;muellerprost.com;;;;http://www.linkedin.com/in/joel-hundelt-cpa-4677539;;;;;;;;;;;;;07-10-2024;11-08-2024
+1942;mdevereux@muellerprost.com;;;Devereux;Michael;;;;CPA;Mueller Prost;Accounting;muellerprost.com;;;;https://www.linkedin.com/in/michaeldevereuxii;;;;;;;;;;;;;07-10-2024;11-07-2024
+1943;tkarlin@muellerprost.com;;;Karlin;Tiffany;;;;Tax Services;Mueller Prost;Accounting;muellerprost.com;;;;https://www.linkedin.com/in/tiffany-karlin-b2942b/;;;;;;;;;;;;;07-10-2024;11-08-2024
+1944;amit@akmglobal.com;;;Maheshwari;Amit;;;;Transfer Pricing;AKM Global;Accounting;akmglobal.com;;;;https://www.linkedin.com/in/amit-maheshwari-a187267/;;;;;;;;;;;;;07-10-2024;11-08-2024
+1945;sandeep.sehgal@akmglobal.com;;;Sehgal;Sandeep;;;;Tax Partner;AKM Global;Accounting;akmglobal.com;;;;https://www.linkedin.com/in/sandeep-sehgal-7a89021a;;;;;;;;;;;;;07-10-2024;11-08-2024
+1946;tanu.arora@akmglobal.com;;;Arora;Tanu;;;;;AKM Global;Accounting;akmglobal.com;;;;;;;;;;;;;;;;;07-10-2024;11-08-2024
+1947;neeraj@neerajbhagat.com;;;Bhagat;Neeraj;;;;Founder;Neeraj Bhagat & Co.;Accounting;neerajbhagat.com;;;;;;;;;;;;;;;;;07-10-2024;11-07-2024
+2032;elizabeth@askewcpafirm.com;;;;;;;;;Askew CPA Consulting Firm, LLC;;askewcpafirm.com;;;;;;;;;;;;;;;;;07-29-2024;11-07-2024
+2057;info@spsassociates.org;;;;;;;;;SPS Associates;Business Consulting and Services;spsassociates.org;;;;;;;;;;;;;;;;;07-29-2024;11-12-2024
+2109;irfan@taxmagic.tax;;;Muhammad;Irfan;;;;CEO;Tax Magic;Accounting;taxmagic.tax;;;;;;;;;;;;;;;;;07-29-2024;11-07-2024
+2110;osama@taxmagic.tax;;;Muhammad;Osama;;;;Technical Lead;Tax Magic;Accounting;taxmagic.tax;;;;;;;;;;;;;;;;;07-29-2024;11-07-2024
+2111;info@taxmagic.tax;;;;;;;;;Tax Magic;Accounting;taxmagic.tax;;;;;;;;;;;;;;;;;07-29-2024;11-07-2024
+2112;fjarrar@cpaaustralia.com.au;;;Jarrar;Farid;;;;Chief Information Officer;CPA Australia;Accounting;cpaaustralia.com.au;;;;https://www.linkedin.com/in/farid-jarrar-8216503;;;;;;;;;;;;;07-29-2024;11-07-2024
+2113;nga.quach@cpaaustralia.com.au;;;Quach;Nga;;;;;CPA Australia;Accounting;cpaaustralia.com.au;;;;;;;;;;;;;;;;;07-29-2024;11-07-2024
+2114;tiffany.tan@cpaaustralia.com.au;;;Tan;Tiffany;;;;Interim External Reporting Manager;CPA Australia;Accounting;cpaaustralia.com.au;;;;https://www.linkedin.com/in/tiffanytancpa;;;;;;;;;;;;;07-29-2024;11-07-2024
+2115;simon.downes@cpaaustralia.com.au;;;Downes;Simon;;;;Director of External Affairs;CPA Australia;Accounting;cpaaustralia.com.au;;;;https://www.linkedin.com/in/simon-downes-17725a95;;;;;;;;;;;;;07-29-2024;11-08-2024
+2116;gary.pflugrath@cpaaustralia.com.au;;;Pflugrath;Gary;;;;;CPA Australia;Accounting;cpaaustralia.com.au;;;;;;;;;;;;;;;;;07-29-2024;11-07-2024
+2117;jane.rennie@cpaaustralia.com.au;;;Rennie;Jane;;;;;CPA Australia;Accounting;cpaaustralia.com.au;;;;;;;;;;;;;;;;;07-29-2024;11-07-2024
+3185;z.shahid@bdoalamri.com;;;Shahid;Zeeshan;;;;;BDO Dr. Mohamed Al-Amri & Co.;Accounting;bdoalamri.com;;;;https://www.linkedin.com/in/zeeshan80;;;;;;;;;;;;;08-15-2024;11-08-2024
+3186;g.alamri@bdoalamri.com;;;;;;;;;BDO Dr. Mohamed Al-Amri & Co.;Accounting;bdoalamri.com;;;;;;;;;;;;;;;;;08-15-2024;11-08-2024
+3187;a.aljumah@bdoalamri.com;;;;;;;;;BDO Dr. Mohamed Al-Amri & Co.;Accounting;bdoalamri.com;;;;;;;;;;;;;;;;;08-15-2024;11-08-2024
+3188;m.madbouly@bdoalamri.com;;;Madbouly;Mohammed;;;;VAT Manager;BDO Dr. Mohamed Al-Amri & Co.;Accounting;bdoalamri.com;;;;https://www.linkedin.com/in/mohammed-madbouly-7ab04796;;;;;;;;;;;;;08-15-2024;11-08-2024
+3189;aldayelabdullah@qoyod.com;;;AlDayel;Abdullah;;;;Founder & CEO;Qoyod - قيود;Accounting;qoyod.com;;;;https://www.linkedin.com/in/abdullah-aldayel-dba;;;;;;;;;;;;;08-15-2024;11-07-2024
+3190;otain@iacct.sa;;;;;;;;;HLB SAUDI ARABIA;Accounting;iacct.sa;;;;;;;;;;;;;;;;;08-15-2024;11-07-2024
+3191;ia@iacct.sa;;;;;;;;;HLB SAUDI ARABIA;Accounting;iacct.sa;;;;;;;;;;;;;;;;;08-15-2024;11-07-2024
+3192;info@piflow.net;;;;;;;;;Pi Flow;Accounting;piflow.net;;;;;;;;;;;;;;;;;08-15-2024;11-07-2024
+3193;diya.alsaeed@alsudaiscpa.com;;;Alsaeed;Diya;;;;;Al Sudais CPA;Accounting;alsudaiscpa.com;;;;;;;;;;;;;;;;;08-15-2024;11-07-2024
+3194;osamah.alsudais@alsudaiscpa.com;;;Alsudais, CPA, SOCPA, CMA;Osamah;;;;Managing Partner;Al Sudais CPA;Accounting;alsudaiscpa.com;;;;https://www.linkedin.com/in/osamah-alsudais-cpa-socpa-cma-38a39619;;;;;;;;;;;;;08-15-2024;12-01-2024
+3195;ar@kaudit.com;;;ALTHUBYANI;REEMA;;;;Marketing Specialist;Kaudit;Accounting;kaudit.com;;;;https://www.linkedin.com/in/reema-abdulellah-a14374212;;;;;;;;;;;;;08-15-2024;11-07-2024
+3196;w.almalki@ans-cpa.com;;;Almalki;Walaa;;;;Partner;مكتب علي الناصر;Accounting;ans-cpa.com;;;;https://www.linkedin.com/in/walaa-almalki-a7b088156;;;;;;;;;;;;;08-15-2024;11-07-2024
+3197;i.ahmed@ans-cpa.com;;;ismail;ahmed;;;;Senior Tax Advisor;مكتب علي الناصر;Accounting;ans-cpa.com;;;;https://www.linkedin.com/in/ahmed-ismail-9292a3114;;;;;;;;;;;;;08-15-2024;11-10-2024
+3322;solutions@tallyservices.com;;;;;;;;;Tally Services;Accounting;tallyservices.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3323;office@anbacadvisors.com;;;;;;;;;Anbac Advisors;Accounting;anbacadvisors.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3324;meredith.berger@muellerprost.com;;;Berger;Meredith;;;;Director Of Marketing;Mueller Prost;Accounting;muellerprost.com;;;;https://www.linkedin.com/in/meredith-berger-4b79636/;;;;;;;;;;;;;08-29-2024;11-08-2024
+3325;divya.goel@neerajbhagat.com;;;Goel;Divya;;;;Company Secretary;Neeraj Bhagat & Co.;Accounting;neerajbhagat.com;;;;https://www.linkedin.com/in/divya-goel-6977951aa;;;;;;;;;;;;;08-29-2024;08-29-2024
+3326;shambhu.thakur@neerajbhagat.com;;;Thakur;Shambhu;;;;Compliance Manager;Neeraj Bhagat & Co.;Accounting;neerajbhagat.com;;;;https://www.linkedin.com/in/shambhu-thakur-8b8a49128;;;;;;;;;;;;;08-29-2024;11-07-2024
+3327;ruchika@neerajbhagat.com;;;;;;;;;Neeraj Bhagat & Co.;Accounting;neerajbhagat.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3328;info@neerajbhagat.com;;;;;;;;;Neeraj Bhagat & Co.;Accounting;neerajbhagat.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3329;info@patronaccounting.com;;;;;;;;;Patron Accounting;Accounting;patronaccounting.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3330;fandy@frconsultantindonesia.com;;;Rasyid;Fandy;;;;Owner;FR Consultant Indonesia;Accounting;frconsultantindonesia.com;;;;https://www.linkedin.com/in/fandy-rasyid;;;;;;;;;;;;;08-29-2024;11-08-2024
+3331;pawan.pareek@bhutashah.com;;;Pareek;Pawan;;;;;Bhuta Shah & Co;Accounting;bhutashah.com;;;;;;;;;;;;;;;;;08-29-2024;11-09-2024
+3332;harsh@bhutashah.com;;;Bhuta;Harsh;;;;Partner;Bhuta Shah & Co;Accounting;bhutashah.com;;;;https://www.linkedin.com/in/harsh-bhuta-0545852a;;;;;;;;;;;;;08-29-2024;11-07-2024
+3333;atul.gala@bhutashah.com;;;Gala;Atul;;;;Partner;Bhuta Shah & Co;Accounting;bhutashah.com;;;;https://www.linkedin.com/in/atul-gala-2b02b0162;;;;;;;;;;;;;08-29-2024;11-07-2024
+3334;info@lsbca.com;;;;;;;;;London School of Business & Certified Accountants;Accounting;lsbca.com;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3335;anilgoyal@akgassociates.com;;;Goyal;Anil;;;;;Anil K. Goyal & Associates;Accounting;akgassociates.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3336;sonika@akgassociates.com;;;;;;;;;Anil K. Goyal & Associates;Accounting;akgassociates.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3337;kr@sbsandco.com;;;Kallepalli;Rajesh;;;;Consultant;SBS and;Accounting;sbsandco.com;;;;https://www.linkedin.com/in/rajesh-kallepalli-051060131;;;;;;;;;;;;;08-29-2024;11-07-2024
+3338;suresh@sbsandco.com;;;;;;;;;SBS and;Accounting;sbsandco.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3339;info@dancingnumbers.com;;;;;;;;;Dancing Numbers;Accounting;dancingnumbers.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3340;qcauser@bdo.com.pk;;;Causer;Qasim;;;;Chairman;BDO Pakistan;Accounting;bdo.com.pk;;;;https://www.linkedin.com/in/qasim-causer-879b2428;;;;;;;;;;;;;08-29-2024;11-08-2024
+3341;zcauser@bdo.com.pk;;;;;;;;;BDO Pakistan;Accounting;bdo.com.pk;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3342;aqadeer@bdo.com.pk;;;Qadeer;Abdul;;;;Senior Partner;BDO Pakistan;Accounting;bdo.com.pk;;;;https://www.linkedin.com/in/abdul-qadeer-13459132;;;;;;;;;;;;;08-29-2024;11-07-2024
+3343;sshah@bdo.com.pk;;;Shah;Saad;;;;Senior Auditor;BDO Pakistan;Accounting;bdo.com.pk;;;;https://www.linkedin.com/in/saad-shah-235684158;;;;;;;;;;;;;08-29-2024;08-29-2024
+3344;iali@bdo.com.pk;;;Ali;Iftikhar;;;;Director of Business Services and Outsourcing;BDO Pakistan;Accounting;bdo.com.pk;;;;https://www.linkedin.com/in/iftikhar-ali-fcca-87694716;;;;;;;;;;;;;08-29-2024;11-07-2024
+3345;wahmed@bdo.com.pk;;;Ahmed;Wahid;;;;Executive Director;BDO Pakistan;Accounting;bdo.com.pk;;;;https://www.linkedin.com/in/wahid-ahmed-3a03834;;;;;;;;;;;;;08-29-2024;11-08-2024
+3346;qamarrashid@bakertilly.pk;;;Rashid;Qamar;;;;Business Advisory Services;Baker Tilly Pakistan;Accounting;bakertilly.pk;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3347;rehansiddiqui@bakertilly.pk;;;Siddiqui;Rehan;;;;Advisory Services;Baker Tilly Pakistan;Accounting;bakertilly.pk;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3348;tariqrafique@bakertilly.pk;;;Rafique;Tariq;;;;Partner Business;Baker Tilly Pakistan;Accounting;bakertilly.pk;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3349;salmankhattak@bakertilly.pk;;;Khattak;Salman;;;;Director Business;Baker Tilly Pakistan;Accounting;bakertilly.pk;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3350;hira@accountingdrive.com;;;;;;;;;Accounting Drive;Accounting;accountingdrive.com;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3351;sghazi@yousufadil.com;;;Ghazi;Shoaib;;;;CEO;Yousuf Adil;Accounting;yousufadil.com;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3352;msufyan@yousufadil.com;;;Sufyan;Muhammad;;;;Audit Partner;Yousuf Adil;Accounting;yousufadil.com;;;;https://www.linkedin.com/in/muhammad-sufyan-51443a3b;;;;;;;;;;;;;08-29-2024;11-08-2024
+3353;shahzad@yousufadil.com;;;;;;;;;Yousuf Adil;Accounting;yousufadil.com;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3354;amufassir@yousufadil.com;;;Mufassir;Atif;;;;Partner;Yousuf Adil;Accounting;yousufadil.com;;;;https://www.linkedin.com/in/atif-mufassir-549b924;;;;;;;;;;;;;08-29-2024;11-07-2024
+3355;info@yousufadil.com;;;;;;;;;Yousuf Adil;Accounting;yousufadil.com;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3356;humancapital@yousufadil.com;;;;;;;;;Yousuf Adil;Accounting;yousufadil.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3357;shahana.ali@rasgco.com;;;Ali;Shahana;;;;;Riaz Ahmad, Saqib, Gohar & Co. Chartered Accountants;Accounting;rasgco.com;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3358;hr@jsa.com.pk;;;Raza;Hasan;;;;Tax Manager;Junaidy Shoaib Asad;Accounting;jsa.com.pk;;;;https://www.linkedin.com/in/hasan-raza-99390573;;;;;;;;;;;;;08-29-2024;11-07-2024
+3359;info@jsa.com.pk;;;;;;;;;Junaidy Shoaib Asad;Accounting;jsa.com.pk;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3360;hammad@ktanco.com;;;;;;;;;Khawaja Tanveer & Co. Chartered Accountants;Accounting;ktanco.com;;;;;;;;;;;;;;;;;08-29-2024;11-09-2024
+3361;tanveer@ktanco.com;;;;;;;;;Khawaja Tanveer & Co. Chartered Accountants;Accounting;ktanco.com;;;;;;;;;;;;;;;;;08-29-2024;11-12-2024
+3362;shruti@asagarwal.in;;;;;;;;;A S Agarwal & Co., Chartered Accountants;Accounting;asagarwal.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3363;ravi@rrhca.com;;;;;;;;;R R H & Associates . Chartered Accountants;Accounting;rrhca.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3364;fahad@fahmedandco.com;;;Ahmed Khan, ACA,;Fahad;;;;Founder;Fahad Ahmed & Co;Accounting;fahmedandco.com;;;;https://www.linkedin.com/in/realhfak;;;;;;;;;;;;;08-29-2024;11-07-2024
+3365;info@zafconsultants.com;;;;;;;;;ZAF CONSULTANTS LLP;Accounting;zafconsultants.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3366;info@labdhieassociates.com;;;;;;;;;Labdhie Associates;Accounting;labdhieassociates.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3367;info@aaconsultant.com.pk;;;;;;;;;AA Consultant;Accounting;aaconsultant.com.pk;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3368;info@vacsolution.com;;;;;;;;;Virtual Accountants & Consultants;Accounting;vacsolution.com;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3369;info@harrisgroupcpa.com;;;;;;;;;Harris Group CPAs;Accounting;harrisgroupcpa.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3370;kottayam@vrc.co.in;;;;;;;;;Vishnu Rajendran & Co;Accounting;vrc.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3371;sachin@cfoangle.com;;;;;;;;;CFOAngle;Accounting;cfoangle.com;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3372;shariff@gurujana.com;;;;;;;;;Guru & Jana;Accounting;gurujana.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3373;guru@gurujana.com;;;;;;;;;Guru & Jana;Accounting;gurujana.com;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3374;support@setmycompany.com;;;;;;;;;SetMyCompany;Accounting;setmycompany.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3375;info@bbnc.in;;;;;;;;;BBNC;Accounting;bbnc.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3376;dinesh@bcshettyco.com;;;;;;;;;BC Shetty & Co;Accounting;bcshettyco.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3377;nikhil@mojca.in;;;Shah, CA,;Nikhil;;;;Partner;M O J & Associates;Accounting;mojca.in;;;;https://www.linkedin.com/in/nikhil-s-shah-ifrs-usgaap;;;;;;;;;;;;;08-29-2024;11-08-2024
+3378;vikrammehta@mojca.in;;;Mehta;Vikram;;;;Partner;M O J & Associates;Accounting;mojca.in;;;;https://www.linkedin.com/in/vikram-mehta-b9924916;;;;;;;;;;;;;08-29-2024;11-09-2024
+3379;khushboo@mojca.in;;;Aggarwal;Khushboo;;;;Accountant;M O J & Associates;Accounting;mojca.in;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3380;ritesh.chowdhury@firstnotch.co.in;;;Chowdhury;Ritesh;;;;;First Notch;Accounting;firstnotch.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3381;somnath.majumdar@firstnotch.co.in;;;Majumdar;Somnath;;;;;First Notch;Accounting;firstnotch.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-12-2024
+3382;amit.majhi@firstnotch.co.in;;;Majhi;Amit;;;;;First Notch;Accounting;firstnotch.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3383;pratul.dutta@firstnotch.co.in;;;Dutta;Pratul;;;;Administration Manager;First Notch;Accounting;firstnotch.co.in;;;;https://www.linkedin.com/in/pratul-dutta-6b0837136;;;;;;;;;;;;;08-29-2024;11-07-2024
+3384;sundeep@finadvantage.com;;;;;;;;;Finadvantage;Accounting;finadvantage.com;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3385;sales@finadvantage.com;;;;;;;;;Finadvantage;Accounting;finadvantage.com;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3386;kraghuandco@kraghu.com;;;;;;;;;KRaghu & Co;Accounting;kraghu.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3387;cakraghu@kraghu.com;;;;;;;;;KRaghu & Co;Accounting;kraghu.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3388;info@xlfo.com;;;;;;;;;XL Financials;Accounting;xlfo.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3389;triveniharish@vsharish.com;;;;;;;;;V S Harish & Co, Chartered Accountants;Accounting;vsharish.com;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3390;mahesh@mnbk.co.in;;;Bhat;Mahesh;;;;Partner;MNBK & Associates - Chartered Accountants;Accounting;mnbk.co.in;;;;https://www.linkedin.com/in/mahesh-bhat-b24850105;;;;;;;;;;;;;08-29-2024;11-27-2024
+3391;anil@proeliteconsultants.com;;;KUMAR;ANIL;;;;;ProElite Consultants Pvt;Accounting;proeliteconsultants.com;;;;https://www.linkedin.com/in/anil-kumar-b-6a2640173;;;;;;;;;;;;;08-29-2024;11-07-2024
+3392;suseela@sos.co.in;;;MAHESH;SUSEELA;;;;Founder;Secured Outsourcing Solutions Private Limited;Accounting;sos.co.in;;;;https://www.linkedin.com/in/suseela-mahesh-60917b6;;;;;;;;;;;;;08-29-2024;11-07-2024
+3393;cs@aktassociates.com;;;;;;;;;AKT Associates;Accounting;aktassociates.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3394;kavita.tiwari@aktassociates.com;;;Tiwari;Kavita;;;;;AKT Associates;Accounting;aktassociates.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3395;tax@aktassociates.com;;;;;;;;;AKT Associates;Accounting;aktassociates.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3396;support@aktassociates.com;;;;;;;;;AKT Associates;Accounting;aktassociates.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3397;yash@vispitpatel.com;;;Rajpurohit;Yash;;;;;Vispi T. Patel and Associates;Accounting;vispitpatel.com;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3398;amol@vispitpatel.com;;;Mahajan;Amol;;;;Associate Consultant;Vispi T. Patel and Associates;Accounting;vispitpatel.com;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3399;kejal@vispitpatel.com;;;Savla;Kejal;;;;;Vispi T. Patel and Associates;Accounting;vispitpatel.com;;;;https://www.linkedin.com/in/kejalvisharia;;;;;;;;;;;;;08-29-2024;11-07-2024
+3400;hiteshshah@shr.co.in;;;;;;;;;SHR & CO;Accounting;shr.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3401;deepshroff@shr.co.in;;;;;;;;;SHR & CO;Accounting;shr.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3402;trupti@shr.co.in;;;;;;;;;SHR & CO;Accounting;shr.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3403;incometax@shr.co.in;;;;;;;;;SHR & CO;Accounting;shr.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3404;tejas@gandhi-associates.com;;;Kulkarni;Tejas;;;;Partner;GANDHI & ASSOCIATES;Accounting;gandhi-associates.com;;;;https://www.linkedin.com/in/tejaspkulkarni;;;;;;;;;;;;;08-29-2024;11-11-2024
+3405;jigar@gandhi-associates.com;;;SHAH;JIGAR;;;;Partner;GANDHI & ASSOCIATES;Accounting;gandhi-associates.com;;;;https://www.linkedin.com/in/jigar-shah-4304bb35;;;;;;;;;;;;;08-29-2024;11-07-2024
+3406;nehashah@gandhi-associates.com;;;;;;;;;GANDHI & ASSOCIATES;Accounting;gandhi-associates.com;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3407;rahul@rpac.in;;;Agrawal;Rahul;;;;Advisory Services;RPAC;Accounting;rpac.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3408;pramod@rpac.in;;;Agrawal;Pramod;;;;Founder;RPAC;Accounting;rpac.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3409;savita@rpac.in;;;Agrawal;Savita;;;;Investment Advisor;RPAC;Accounting;rpac.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3410;nilesh@taxwize.in;;;Patel;Nilesh;;;;Model;TAXWIZE;Accounting;taxwize.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3411;raja@studycafe.in;;;MEHTA;RAJA;;;;Account Manager;Studycafe;Accounting;studycafe.in;;;;https://www.linkedin.com/in/raja-mehta-91741a1a3;;;;;;;;;;;;;08-29-2024;11-07-2024
+3412;pratibha@studycafe.in;;;Goyal;Pratibha;;;;Content Manager;Studycafe;Accounting;studycafe.in;;;;https://www.linkedin.com/in/pratibha-goyal-269b27186;;;;;;;;;;;;;08-29-2024;11-07-2024
+3413;info@3ecpa.co.in;;;;;;;;;3E Accounting India;Accounting;3ecpa.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3414;support@professionalutilities.com;;;;;;;;;Professional Utilities;Accounting;professionalutilities.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3415;ankit.garg@gargashokca.com;;;Garg;Ankit;;;;;Garg Ashok & Co;Accounting;gargashokca.com;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3416;incometax@agarwaltaxcon.com;;;;;;;;;Agarwal Taxcon Pvt.Ltd.;Accounting;agarwaltaxcon.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3417;company@agarwaltaxcon.com;;;;;;;;;Agarwal Taxcon Pvt.Ltd.;Accounting;agarwaltaxcon.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3418;prakash@psc.co.in;;;Sinha;Prakash;;;;Accountant;PSC & Co;Accounting;psc.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-08-2024
+3419;sachin@psc.co.in;;;SINHA;SACHIN;;;;Managing Partner;PSC & Co;Accounting;psc.co.in;;;;https://www.linkedin.com/in/sachin-sinha-72100b55;;;;;;;;;;;;;08-29-2024;11-07-2024
+3420;gajendra.mishra@psc.co.in;;;Mishra;Gajendra;;;;;PSC & Co;Accounting;psc.co.in;;;;;;;;;;;;;;;;;08-29-2024;08-29-2024
+3421;info@rupeeforadian.com;;;;;;;;;Rupee Foradian;Accounting;rupeeforadian.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3422;sanchit@rupeeforadian.com;;;Mathur;Sanchit;;;;Partner;Rupee Foradian;Accounting;rupeeforadian.com;;;;https://www.linkedin.com/in/mathursanchit;;;;;;;;;;;;;08-29-2024;11-07-2024
+3423;ashish@rupeeforadian.com;;;Arora;Ashish;;;;Partner;Rupee Foradian;Accounting;rupeeforadian.com;;;;https://www.linkedin.com/in/caashisharora;;;;;;;;;;;;;08-29-2024;11-07-2024
+3424;taranpreet@tassadvisors.com;;;Singh;Taranpreet;;;;Tax Partner;Tass Advisors;Accounting;tassadvisors.com;;;;https://www.linkedin.com/in/taranpreet-singh-32330018;;;;;;;;;;;;;08-29-2024;11-08-2024
+3425;info@credencecorpsolutions.com;;;;;;;;;Credence Corporate Solutions;Accounting;credencecorpsolutions.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3426;ankurkumar@paay.co.in;;;;;;;;;PAAY & Co;Accounting;paay.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3427;nazish@growthsecret.in;;;Khan;Nazish;;;;Founder & CEO;Growth Secret;Accounting;growthsecret.in;;;;https://www.linkedin.com/in/nazishkhan;;;;;;;;;;;;;08-29-2024;11-07-2024
+3428;sanjay@sraca.co.in;;;Rastogi;Sanjay;;;;Company Managing Director;Sanjay Rastogi & Associates;Accounting;sraca.co.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3429;hello@growthsecret.in;;;;;;;;;Growth Secret;Accounting;growthsecret.in;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+3430;asa@asalwan.com;;;;;;;;;Asalwan;Accounting;asalwan.com;;;;;;;;;;;;;;;;;08-29-2024;11-07-2024
+
