@@ -1,0 +1,45 @@
+chmod 600 /home/mohammed/Downloads/growbal-gpu_Hyperstack.txt
+ssh -vvv -o IdentitiesOnly=yes -o ConnectTimeout=8 \
+  -i /home/mohammed/Downloads/growbal-gpu_Hyperstack.txt \
+  ubuntu@69.19.137.175
+
+sudo apt-get update -y && sudo apt-get install -y curl ca-certificates && curl -fsSL https://ollama.com/install.sh | sh && sudo systemctl enable --now ollama && ollama pull gpt-oss:120b
+
+export CUDA_VISIBLE_DEVICES=0,1
+echo "$CUDA_VISIBLE_DEVICES"
+
+sudo mkdir -p /etc/systemd/system/ollama.service.d
+sudo tee /etc/systemd/system/ollama.service.d/override.conf >/dev/null <<'EOF'
+[Service]
+Environment=CUDA_VISIBLE_DEVICES=0,1
+Environment=OLLAMA_FLASH_ATTENTION=1
+Environment=OLLAMA_NUM_PARALLEL=1
+Environment=OLLAMA_MAX_LOADED_MODELS=1
+Environment=OLLAMA_GPU_OVERHEAD=3221225472
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl restart ollama
+systemctl show -p Environment --value ollama.service | tr ' ' '\n'
+
+
+
+sudo mkdir -p /etc/systemd/system/ollama.service.d
+sudo tee /etc/systemd/system/ollama.service.d/override.conf >/dev/null <<'EOF'
+[Service]
+Environment=OLLAMA_HOST=0.0.0.0:11434
+
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl restart ollama
+sudo systemctl enable ollama
+
+sudo ss -ltnp | grep 11434 || sudo netstat -ltnp | grep 11434
+curl -sS http://127.0.0.1:11434/api/version
+curl -sS http://127.0.0.1:11434/api/tags
+
+
+watch -n 0.5 nvidia-smi
+
+

@@ -1,0 +1,386 @@
+DJANGO MODELS FIELD BREAKDOWN
+=====================================
+Generated for integration work with team members
+=====================================
+
+===========================================================
+1. CustomUser (accounts/models.py)
+===========================================================
+Django Admin Display Name: "Custom users"
+Table Name: accounts_customuser (inherits from AbstractUser)
+
+FIELDS:
+-------
+• username (CharField)
+  - Type: CharField(max_length=200, unique=True)
+  - Admin Display: "Username"
+  - Required: Yes
+  - Description: Unique username for authentication
+
+• name (CharField)  
+  - Type: CharField(max_length=200)
+  - Admin Display: "Name"
+  - Required: Yes
+  - Description: User's full name
+
+• email (EmailField)
+  - Type: EmailField(blank=True, null=True, unique=True)
+  - Admin Display: "Email address"
+  - Required: No (optional)
+  - Description: User's email address, must be unique if provided
+
+INHERITED FIELDS FROM AbstractUser:
+------------------------------------
+• password (CharField) - Admin Display: "Password"
+• last_login (DateTimeField) - Admin Display: "Last login"
+• is_superuser (BooleanField) - Admin Display: "Superuser status"
+• first_name (CharField) - Admin Display: "First name"
+• last_name (CharField) - Admin Display: "Last name"
+• is_staff (BooleanField) - Admin Display: "Staff status"
+• is_active (BooleanField) - Admin Display: "Active"
+• date_joined (DateTimeField) - Admin Display: "Date joined"
+• groups (ManyToManyField) - Admin Display: "Groups"
+• user_permissions (ManyToManyField) - Admin Display: "User permissions"
+
+===========================================================
+2. ServiceProviderProfile (accounts/models.py)
+===========================================================
+Django Admin Display Name: "Service provider profiles"
+Table Name: accounts_serviceproviderprofile
+
+FIELDS:
+-------
+• user (OneToOneField)
+  - Type: OneToOneField(CustomUser, on_delete=CASCADE)
+  - Admin Display: "User"
+  - Required: Yes
+  - Description: One-to-one link to CustomUser account
+
+• provider_type (CharField)
+  - Type: CharField(max_length=50, choices=PROVIDER_TYPES, default='Company')
+  - Admin Display: "Provider type"
+  - Choices: 'Company', 'Agent'
+  - Default: 'Company'
+  - Description: Type of service provider
+
+• country (CharField)
+  - Type: CharField(max_length=100, blank=True, null=True, choices=COUNTRY_CHOICES)
+  - Admin Display: "Country"
+  - Required: No
+  - Description: Country location (dropdown with 195 countries)
+
+• session_status (CharField)
+  - Type: CharField(max_length=8, choices=STATUS_CHOICES, default='inactive')
+  - Admin Display: "Session status"
+  - Choices: 'active', 'inactive'
+  - Default: 'inactive'
+  - Description: Current session/activity status
+
+• name (CharField)
+  - Type: CharField(max_length=255, blank=True)
+  - Admin Display: "Name"
+  - Required: No
+  - Description: Company or agent name
+
+• vision (TextField)
+  - Type: TextField(blank=True, null=True)
+  - Admin Display: "Vision"
+  - Required: No
+  - Description: Company vision statement
+
+• logo (TextField)
+  - Type: TextField(blank=True, null=True)
+  - Admin Display: "Logo"
+  - Required: No
+  - Description: Logo data (stored as text/base64)
+
+• website (URLField)
+  - Type: URLField(blank=True, null=True)
+  - Admin Display: "Website"
+  - Required: No
+  - Description: Company website URL
+
+• growbal_link (URLField)
+  - Type: URLField(blank=True, null=True)
+  - Admin Display: "Growbal link"
+  - Required: No
+  - Description: Auto-generated Growbal platform profile URL
+
+• linkedin (URLField)
+  - Type: URLField(blank=True, null=True)
+  - Admin Display: "Linkedin"
+  - Required: No
+  - Description: LinkedIn profile URL
+
+• facebook (URLField)
+  - Type: URLField(blank=True, null=True)
+  - Admin Display: "Facebook"
+  - Required: No
+  - Description: Facebook page URL
+
+• instagram (URLField)
+  - Type: URLField(blank=True, null=True)
+  - Admin Display: "Instagram"
+  - Required: No
+  - Description: Instagram profile URL
+
+• telephones (ArrayField)
+  - Type: ArrayField(base_field=CharField(max_length=30))
+  - Admin Display: "Telephones"
+  - Required: No (defaults to empty list)
+  - Description: Array of telephone numbers
+
+• mobiles (ArrayField)
+  - Type: ArrayField(base_field=CharField(max_length=30))
+  - Admin Display: "Mobiles"
+  - Required: No (defaults to empty list)
+  - Description: Array of mobile numbers
+
+• emails (ArrayField)
+  - Type: ArrayField(base_field=EmailField(max_length=320))
+  - Admin Display: "Emails"
+  - Required: No (defaults to empty list)
+  - Description: Array of contact email addresses
+
+• office_locations (TextField)
+  - Type: TextField(blank=True, null=True)
+  - Admin Display: "Office locations"
+  - Required: No
+  - Description: Office addresses/locations
+
+• key_individuals (TextField)
+  - Type: TextField(blank=True, null=True)
+  - Admin Display: "Key individuals"
+  - Required: No
+  - Description: Names and details of key people
+
+• representatives (TextField)
+  - Type: TextField(blank=True, null=True)
+  - Admin Display: "Representatives"
+  - Required: No
+  - Description: Company representatives information
+
+• date_modified (DateTimeField)
+  - Type: DateTimeField(auto_now=True)
+  - Admin Display: "Date modified"
+  - Auto-updated: Yes
+  - Description: Last modification timestamp
+
+• date_created (DateTimeField)
+  - Type: DateTimeField(auto_now_add=True)
+  - Admin Display: "Date created"
+  - Auto-set: Yes (on creation)
+  - Description: Creation timestamp
+
+• profile_embedding (VectorField)
+  - Type: VectorField(dimensions=1536, blank=True, null=True)
+  - Admin Display: "Profile embedding"
+  - Required: No
+  - Description: Vector embedding for similarity search (1536 dimensions for OpenAI)
+
+===========================================================
+3. ServiceProviderMemberProfile (accounts/models.py)
+===========================================================
+Django Admin Display Name: "Service provider member profiles"
+Table Name: accounts_serviceprovidermemberprofile
+
+FIELDS:
+-------
+• user (OneToOneField)
+  - Type: OneToOneField(CustomUser, on_delete=CASCADE)
+  - Admin Display: "User"
+  - Required: Yes
+  - Description: One-to-one link to CustomUser account
+
+• name (CharField)
+  - Type: CharField(max_length=255, blank=False, null=False)
+  - Admin Display: "Name"
+  - Required: Yes
+  - Description: Member's full name
+
+• company (ForeignKey)
+  - Type: ForeignKey(ServiceProviderProfile, on_delete=CASCADE)
+  - Admin Display: "Company"
+  - Required: Yes
+  - Description: Link to parent company (must have provider_type='Company')
+
+• role_description (CharField)
+  - Type: CharField(max_length=255, blank=True, null=True)
+  - Admin Display: "Role description"
+  - Required: No
+  - Description: Member's role in the company
+
+• telephone (CharField)
+  - Type: CharField(max_length=30, blank=True, null=True)
+  - Admin Display: "Telephone"
+  - Required: No
+  - Description: Member's telephone number
+
+• mobile (CharField)
+  - Type: CharField(max_length=30, blank=True, null=True)
+  - Admin Display: "Mobile"
+  - Required: No
+  - Description: Member's mobile number
+
+• email (EmailField)
+  - Type: EmailField(blank=True, null=True)
+  - Admin Display: "Email address"
+  - Required: No
+  - Description: Member's email address
+
+• linkedin (URLField)
+  - Type: URLField(blank=True, null=True)
+  - Admin Display: "Linkedin"
+  - Required: No
+  - Description: Member's LinkedIn profile URL
+
+• facebook (URLField)
+  - Type: URLField(blank=True, null=True)
+  - Admin Display: "Facebook"
+  - Required: No
+  - Description: Member's Facebook profile URL
+
+• instagram (URLField)
+  - Type: URLField(blank=True, null=True)
+  - Admin Display: "Instagram"
+  - Required: No
+  - Description: Member's Instagram profile URL
+
+• twitter (URLField)
+  - Type: URLField(blank=True, null=True)
+  - Admin Display: "Twitter"
+  - Required: No
+  - Description: Member's Twitter/X profile URL
+
+• additional_info (TextField)
+  - Type: TextField(blank=True, null=True)
+  - Admin Display: "Additional info"
+  - Required: No
+  - Description: Any additional member information
+
+• date_modified (DateTimeField)
+  - Type: DateTimeField(auto_now=True)
+  - Admin Display: "Date modified"
+  - Auto-updated: Yes
+  - Description: Last modification timestamp
+
+• date_created (DateTimeField)
+  - Type: DateTimeField(auto_now_add=True)
+  - Admin Display: "Date created"
+  - Auto-set: Yes (on creation)
+  - Description: Creation timestamp
+
+===========================================================
+4. Service (services/models.py)
+===========================================================
+Django Admin Display Name: "Services"
+Table Name: services_service
+
+FIELDS:
+-------
+• profile (ForeignKey)
+  - Type: ForeignKey(ServiceProviderProfile, on_delete=CASCADE)
+  - Admin Display: "Profile"
+  - Required: No (null=True, blank=True)
+  - Description: Link to service provider offering this service
+
+• service_title (CharField)
+  - Type: CharField(max_length=255, blank=True, null=True, default=None)
+  - Admin Display: "Service title"
+  - Required: No
+  - Description: Title/name of the service
+
+• service_description (TextField)
+  - Type: TextField(blank=True, null=True, default=None)
+  - Admin Display: "Service description"
+  - Required: No
+  - Description: Detailed description of the service
+
+• general_service_description (TextField)
+  - Type: TextField(blank=True, null=True, default=None)
+  - Admin Display: "General service description"
+  - Required: No
+  - Description: General/overview description of the service
+
+• service_tags (TaggableManager)
+  - Type: TaggableManager(blank=True)
+  - Admin Display: "Service tags"
+  - Required: No
+  - Description: Tags for categorizing services (uses django-taggit)
+
+• rating_score (DecimalField)
+  - Type: DecimalField(max_digits=3, decimal_places=1, blank=True, null=True, default=None)
+  - Admin Display: "Rating score"
+  - Required: No
+  - Description: Service rating (0.0 to 99.9, typically 0-5 scale)
+
+• rating_description (TextField)
+  - Type: TextField(blank=True, null=True, default=None)
+  - Admin Display: "Rating description"
+  - Required: No
+  - Description: Textual description of rating/reviews
+
+• pricing (TextField)
+  - Type: TextField(blank=True, null=True, default=None)
+  - Admin Display: "Pricing"
+  - Required: No
+  - Description: Pricing information for the service
+
+• date_modified (DateTimeField)
+  - Type: DateTimeField(auto_now=True)
+  - Admin Display: "Date modified"
+  - Auto-updated: Yes
+  - Description: Last modification timestamp
+
+• date_created (DateTimeField)
+  - Type: DateTimeField(auto_now_add=True)
+  - Admin Display: "Date created"
+  - Auto-set: Yes (on creation)
+  - Description: Creation timestamp
+
+===========================================================
+RELATIONSHIPS SUMMARY
+===========================================================
+
+1. CustomUser → ServiceProviderProfile
+   - One-to-One relationship
+   - Each user can have one service provider profile
+
+2. CustomUser → ServiceProviderMemberProfile
+   - One-to-One relationship
+   - Each user can be a member of one company
+
+3. ServiceProviderProfile → Service
+   - One-to-Many relationship
+   - Each provider can offer multiple services
+
+4. ServiceProviderProfile → ServiceProviderMemberProfile
+   - One-to-Many relationship
+   - Each company can have multiple members
+   - Only works when provider_type='Company'
+
+===========================================================
+SPECIAL NOTES FOR INTEGRATION
+===========================================================
+
+1. PostgreSQL-specific fields:
+   - ArrayField is used for telephones, mobiles, and emails
+   - VectorField for AI/ML embeddings (requires pgvector extension)
+
+2. Auto-generated fields:
+   - growbal_link is auto-populated on save if empty
+   - date_modified updates automatically on save
+   - date_created sets automatically on creation
+
+3. Validation rules:
+   - ServiceProviderMemberProfile can only link to companies (provider_type='Company')
+   - CustomUser requires username and name fields
+   - Username must be unique
+
+4. Third-party dependencies:
+   - django-taggit for service tags
+   - pgvector for vector embeddings
+
+5. Custom Manager:
+   - CustomUser uses CustomUserManager with special create methods
+   - Supports auto-username generation from name field

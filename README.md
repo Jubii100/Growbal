@@ -103,4 +103,4 @@ Refer to each subproject’s README for complete configuration and usage.
 
 ## License
 
-This project is proprietary and confidential to the Growbal Intelligence Platform.
+This project is proprietary and confidential to the Growbal Platform.
