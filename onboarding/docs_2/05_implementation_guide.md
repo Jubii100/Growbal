@@ -437,7 +437,7 @@ services:
     environment:
       POSTGRES_DB: growbal_onboarding
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
